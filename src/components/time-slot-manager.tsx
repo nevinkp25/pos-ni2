@@ -126,7 +126,7 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
       if (result.success) {
         toast({
           title: "Success",
-          description: `${selectedSlots.length} slots have been ${status === 'blocked' ? 'blocked' : 'unblocked'}.`,
+          description: `${selectedSlots.length} slots have been ${status === 'blocked' ? 'unblocked' : 'unblocked'}.`,
         });
         setSelectedSlots([]);
         setLastSelectedSlot(null);
@@ -158,16 +158,81 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-        <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Block Slots</h1>
-            <p className="text-muted-foreground mt-1">Manage all blocked time slots across restaurants</p>
+    <div className="flex flex-col h-full">
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm p-4 sm:p-6 md:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+          <div>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Block Slots</h1>
+              <p className="text-muted-foreground mt-1">Manage all blocked time slots across restaurants</p>
+          </div>
+          <Button onClick={() => setIsSheetOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Block slots
+          </Button>
         </div>
-         <Button onClick={() => setIsSheetOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Block slots
-        </Button>
+
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-4 rounded-lg border p-4 bg-card">
+              <Select value={selectedRestaurant} onValueChange={setSelectedRestaurant}>
+                <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Select Restaurant" /></SelectTrigger>
+                <SelectContent>
+                  {restaurants.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              <Select value={selectedFloor} onValueChange={setSelectedFloor} disabled={!selectedRestaurant}>
+                <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Select Floor" /></SelectTrigger>
+                <SelectContent>
+                  {availableFloors.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant={"outline"} className={cn("w-full sm:w-48 justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {selectedDate ? format(selectedDate, 'dd/MM/yyyy') : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={selectedDate} onSelect={(date) => date && setSelectedDate(date)} initialFocus /></PopoverContent>
+              </Popover>
+              
+              <div className="flex items-center gap-4 text-sm text-muted-foreground ml-auto">
+                  <div className="flex items-center gap-2"><Dot className="text-green-500 w-6 h-6" /> Available</div>
+                  <div className="flex items-center gap-2"><Dot className="text-red-500 w-6 h-6" /> Booked</div>
+                  <div className="flex items-center gap-2"><Dot className="text-gray-400 w-6 h-6" /> Blocked</div>
+              </div>
+          </div>
+
+          <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
+              <div className="flex items-center gap-2">
+                  <Tabs defaultValue="view" onValueChange={(value) => setEditMode(value === 'edit')}>
+                      <TabsList>
+                          <TabsTrigger value="view" disabled={isPending}>View</TabsTrigger>
+                          <TabsTrigger value="edit" disabled={isPending}>Edit</TabsTrigger>
+                      </TabsList>
+                  </Tabs>
+
+                  {editMode && (
+                    <div className="flex items-center gap-2 ml-4">
+                      <Button variant="outline" size="sm" onClick={() => handleUpdate('blocked')} disabled={isPending || selectedSlots.length === 0}>
+                        {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Block slots
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => handleUpdate('available')} disabled={isPending || selectedSlots.length === 0}>
+                        {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Unblock slots
+                      </Button>
+                    </div>
+                  )}
+              </div>
+
+              <Button variant="secondary" onClick={handleGetSummary} disabled={isPending || !selectedFloor}>
+                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4 text-primary" />}
+                AI Summary
+              </Button>
+          </div>
+        </div>
       </div>
 
       <BlockSlotsSheet
@@ -195,69 +260,8 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
           });
         }}
        />
-
-      <div className="space-y-4">
-        <div className="flex flex-wrap items-center gap-4 rounded-lg border p-4 bg-card">
-            <Select value={selectedRestaurant} onValueChange={setSelectedRestaurant}>
-              <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Select Restaurant" /></SelectTrigger>
-              <SelectContent>
-                {restaurants.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedFloor} onValueChange={setSelectedFloor} disabled={!selectedRestaurant}>
-              <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Select Floor" /></SelectTrigger>
-              <SelectContent>
-                {availableFloors.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant={"outline"} className={cn("w-full sm:w-48 justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {selectedDate ? format(selectedDate, 'dd/MM/yyyy') : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={selectedDate} onSelect={(date) => date && setSelectedDate(date)} initialFocus /></PopoverContent>
-            </Popover>
-            
-            <div className="flex items-center gap-4 text-sm text-muted-foreground ml-auto">
-                <div className="flex items-center gap-2"><Dot className="text-green-500 w-6 h-6" /> Available</div>
-                <div className="flex items-center gap-2"><Dot className="text-red-500 w-6 h-6" /> Booked</div>
-                <div className="flex items-center gap-2"><Dot className="text-gray-400 w-6 h-6" /> Blocked</div>
-            </div>
-        </div>
-
-        <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
-            <div className="flex items-center gap-2">
-                 <Tabs defaultValue="view" onValueChange={(value) => setEditMode(value === 'edit')}>
-                    <TabsList>
-                        <TabsTrigger value="view" disabled={isPending}>View</TabsTrigger>
-                        <TabsTrigger value="edit" disabled={isPending}>Edit</TabsTrigger>
-                    </TabsList>
-                </Tabs>
-
-                {editMode && (
-                  <div className="flex items-center gap-2 ml-4">
-                    <Button variant="outline" size="sm" onClick={() => handleUpdate('blocked')} disabled={isPending || selectedSlots.length === 0}>
-                      {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Block slots
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => handleUpdate('available')} disabled={isPending || selectedSlots.length === 0}>
-                      {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                      Unblock slots
-                    </Button>
-                  </div>
-                )}
-            </div>
-
-            <Button variant="secondary" onClick={handleGetSummary} disabled={isPending || !selectedFloor}>
-              {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4 text-primary" />}
-              AI Summary
-            </Button>
-        </div>
       
+      <div className="flex-1 overflow-auto px-4 sm:px-6 md:px-8 pb-8">
         <TimeSlotGrid
           tables={tablesOnFloor}
           timeSlots={timeSlots}

@@ -48,8 +48,8 @@ export const TimeSlotGrid = React.memo(function TimeSlotGrid({
 
   return (
     <div className={cn("relative rounded-lg border overflow-hidden", isPending && "opacity-50 pointer-events-none")}>
-        <div className="overflow-auto h-[calc(100vh-32rem)]">
-            <table className="min-w-full text-sm -mt-1">
+        <div className="overflow-auto">
+            <table className="min-w-full text-sm -mt-1 border-separate border-spacing-0">
             <thead className="bg-muted/50 sticky top-0 z-10">
                 <tr>
                 <th scope="col" className="w-40 min-w-40 px-4 py-3 text-left font-semibold text-muted-foreground sticky left-0 bg-muted/50 z-20">
@@ -62,10 +62,10 @@ export const TimeSlotGrid = React.memo(function TimeSlotGrid({
                 ))}
                 </tr>
             </thead>
-            <tbody className="divide-y divide-border bg-card">
+            <tbody className="bg-card">
                 {timeSlots.map(time => (
                 <tr key={time}>
-                    <td className="w-40 min-w-40 px-4 py-3 font-medium text-foreground whitespace-nowrap sticky left-0 bg-card z-10">
+                    <td className="w-40 min-w-40 px-4 py-3 font-medium text-foreground whitespace-nowrap sticky left-0 bg-card z-10 border-b">
                     {formatTimeForDisplay(time)}
                     </td>
                     {tables.map(table => {
@@ -76,7 +76,7 @@ export const TimeSlotGrid = React.memo(function TimeSlotGrid({
                     return (
                         <td
                         key={slotId}
-                        className="p-1 w-24 min-w-24"
+                        className="p-1 w-24 min-w-24 border-b"
                         onClick={(e) => onSlotClick(e, table.id, time)}
                         >
                         <div
