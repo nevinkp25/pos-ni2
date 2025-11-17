@@ -2,18 +2,19 @@
 
 import { useState, useMemo, useTransition, useEffect } from 'react';
 import type { Restaurant, Floor, Table, Booking } from '@/lib/types';
-import { format, add, startOfDay } from 'date-fns';
-import { Calendar as CalendarIcon, Loader2, Sparkles } from 'lucide-react';
+import { format, add, startOfDay, parse } from 'date-fns';
+import { Calendar as CalendarIcon, Loader2, Sparkles, Plus, Dot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from '@/components/ui/alert-dialog';
 import { batchUpdateSlots, getAISummary } from '@/app/actions';
 import { TimeSlotGrid } from './time-slot-grid';
 import { useToast } from '@/hooks/use-toast';
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 
 interface TimeSlotManagerProps {
   restaurants: Restaurant[];
@@ -35,12 +36,13 @@ const generateTimeSlots = (start: Date, end: Date, interval: number): string[] =
 export function TimeSlotManager({ restaurants, floors, tables, initialBookings }: TimeSlotManagerProps) {
   const [selectedRestaurant, setSelectedRestaurant] = useState<string | undefined>(restaurants[0]?.id);
   const [selectedFloor, setSelectedFloor] = useState<string | undefined>();
-  const [selectedDate, setSelectedDate] = useState<Date>(startOfDay(new Date('2024-08-10')));
+  const [selectedDate, setSelectedDate] = useState<Date>(startOfDay(parse('17/11/2025', 'dd/MM/yyyy', new Date())));
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
   const [lastSelectedSlot, setLastSelectedSlot] = useState<{ tableId: string; time: string } | null>(null);
 
   const [aiSummary, setAiSummary] = useState<string>('');
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
@@ -75,10 +77,11 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
     dayStart.setHours(8, 0, 0, 0);
     const dayEnd = new Date(formattedDate);
     dayEnd.setHours(23, 0, 0, 0);
-    return generateTimeSlots(dayStart, dayEnd, 30);
+    return generateTimeSlots(dayStart, dayEnd, 60);
   }, [formattedDate]);
 
   const handleSlotClick = (e: React.MouseEvent, tableId: string, time: string) => {
+    if (!editMode) return;
     const slotId = `${tableId}_${time}`;
     const isShiftClick = e.shiftKey;
 
@@ -154,22 +157,27 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Time Slotter</h1>
+        <div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Block Slots</h1>
+            <p className="text-muted-foreground mt-1">Manage all blocked time slots across restaurants</p>
+        </div>
+        <Button>
+          <Plus className="mr-2 h-4 w-4" />
+          Block slots
+        </Button>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Filters & Actions</CardTitle>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 pt-4">
+      <div className="space-y-4">
+        <div className="flex flex-wrap items-center gap-4 rounded-lg border p-4 bg-card">
             <Select value={selectedRestaurant} onValueChange={setSelectedRestaurant}>
-              <SelectTrigger><SelectValue placeholder="Select Restaurant" /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Select Restaurant" /></SelectTrigger>
               <SelectContent>
                 {restaurants.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
               </SelectContent>
             </Select>
 
             <Select value={selectedFloor} onValueChange={setSelectedFloor} disabled={!selectedRestaurant}>
-              <SelectTrigger><SelectValue placeholder="Select Floor" /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-48"><SelectValue placeholder="Select Floor" /></SelectTrigger>
               <SelectContent>
                 {availableFloors.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
               </SelectContent>
@@ -177,41 +185,59 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
 
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant={"outline"} className={cn("justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
+                <Button variant={"outline"} className={cn("w-full sm:w-48 justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {selectedDate ? format(selectedDate, 'PPP') : <span>Pick a date</span>}
+                  {selectedDate ? format(selectedDate, 'dd/MM/yyyy') : <span>Pick a date</span>}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={selectedDate} onSelect={(date) => date && setSelectedDate(date)} initialFocus /></PopoverContent>
             </Popover>
             
-            <div className="col-span-1 xl:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
-                <Button onClick={() => handleUpdate('blocked')} disabled={isPending || selectedSlots.length === 0} className="w-full">
-                  {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Block Slots
-                </Button>
-                <Button variant="outline" onClick={() => handleUpdate('available')} disabled={isPending || selectedSlots.length === 0} className="w-full">
-                  {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Unblock
-                </Button>
-                <Button variant="secondary" onClick={handleGetSummary} disabled={isPending || !selectedFloor} className="w-full col-span-2 lg:col-span-1">
-                  {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                  AI Summary
-                </Button>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground ml-auto">
+                <div className="flex items-center gap-2"><Dot className="text-green-500 w-6 h-6" /> Available</div>
+                <div className="flex items-center gap-2"><Dot className="text-red-500 w-6 h-6" /> Booked</div>
+                <div className="flex items-center gap-2"><Dot className="text-gray-400 w-6 h-6" /> Blocked</div>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <TimeSlotGrid
-            tables={tablesOnFloor}
-            timeSlots={timeSlots}
-            bookings={bookingsForDate}
-            selectedSlots={selectedSlots}
-            onSlotClick={handleSlotClick}
-            isPending={isPending}
-          />
-        </CardContent>
-      </Card>
+        </div>
+
+        <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
+            <div className="flex items-center gap-2">
+                 <Tabs defaultValue="edit" onValueChange={(value) => setEditMode(value === 'edit')}>
+                    <TabsList>
+                        <TabsTrigger value="view" disabled={isPending}>View</TabsTrigger>
+                        <TabsTrigger value="edit" disabled={isPending}>Edit</TabsTrigger>
+                    </TabsList>
+                </Tabs>
+
+                {editMode && (
+                  <div className="flex items-center gap-2 ml-4">
+                    <Button variant="outline" size="sm" onClick={() => handleUpdate('blocked')} disabled={isPending || selectedSlots.length === 0}>
+                      {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Block slots
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleUpdate('available')} disabled={isPending || selectedSlots.length === 0}>
+                      {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Unblock slots
+                    </Button>
+                  </div>
+                )}
+            </div>
+
+            <Button variant="secondary" onClick={handleGetSummary} disabled={isPending || !selectedFloor}>
+              {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4 text-primary" />}
+              AI Summary
+            </Button>
+        </div>
+      
+        <TimeSlotGrid
+          tables={tablesOnFloor}
+          timeSlots={timeSlots}
+          bookings={bookingsForDate}
+          selectedSlots={selectedSlots}
+          onSlotClick={handleSlotClick}
+          isPending={isPending}
+        />
+      </div>
       
       <AlertDialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
         <AlertDialogContent>
