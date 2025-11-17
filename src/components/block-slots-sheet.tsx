@@ -1,0 +1,241 @@
+'use client';
+
+import { useState, useMemo, useEffect } from 'react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetFooter,
+  SheetClose,
+} from '@/components/ui/sheet';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
+import { Calendar as CalendarIcon, Clock } from 'lucide-react';
+import { format } from 'date-fns';
+import { Table } from '@/lib/types';
+
+interface BlockSlotsSheetProps {
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
+  tables: Table[];
+  timeSlots: string[];
+  initialDate: Date;
+  onBlockConfirm: (
+    slotsToBlock: { tableId: string; time: string }[],
+    date: string
+  ) => void;
+}
+
+export function BlockSlotsSheet({
+  isOpen,
+  onOpenChange,
+  tables,
+  timeSlots,
+  initialDate,
+  onBlockConfirm,
+}: BlockSlotsSheetProps) {
+  const [date, setDate] = useState(initialDate);
+  const [fromTime, setFromTime] = useState('');
+  const [toTime, setToTime] = useState('');
+  const [applyToWholeDay, setApplyToWholeDay] = useState(false);
+  const [selectedTables, setSelectedTables] = useState<string[]>([]);
+  const [reason, setReason] = useState('');
+
+  useEffect(() => {
+    setDate(initialDate);
+  }, [initialDate]);
+
+  const handleSelectAllTables = () => {
+    if (selectedTables.length === tables.length) {
+      setSelectedTables([]);
+    } else {
+      setSelectedTables(tables.map((t) => t.id));
+    }
+  };
+
+  const handleTableClick = (tableId: string) => {
+    setSelectedTables((prev) =>
+      prev.includes(tableId)
+        ? prev.filter((id) => id !== tableId)
+        : [...prev, tableId]
+    );
+  };
+  
+  const handleConfirm = () => {
+      const slotsToBlock = [];
+      const startTime = applyToWholeDay ? timeSlots[0] : fromTime;
+      const endTime = applyToWholeDay ? timeSlots[timeSlots.length - 1] : toTime;
+      
+      const startIndex = timeSlots.indexOf(startTime);
+      const endIndex = timeSlots.indexOf(endTime);
+
+      if (startIndex === -1 || endIndex === -1 || startIndex > endIndex) {
+          // Handle invalid time range
+          console.error("Invalid time range");
+          return;
+      }
+
+      for (const tableId of selectedTables) {
+          for (let i = startIndex; i <= endIndex; i++) {
+              slotsToBlock.push({ tableId, time: timeSlots[i] });
+          }
+      }
+      onBlockConfirm(slotsToBlock, format(date, 'yyyy-MM-dd'));
+  }
+
+  const reasonSuggestions = [
+    'Private Event',
+    'Maintenance',
+    'Staff Shortage',
+    'Deep Cleaning',
+    'VIP Usage',
+  ];
+
+  return (
+    <Sheet open={isOpen} onOpenChange={onOpenChange}>
+      <SheetContent className="w-full sm:max-w-md lg:max-w-lg p-0">
+        <SheetHeader className="p-6 border-b">
+          <SheetTitle className="text-xl">Block / Unblock Slots</SheetTitle>
+          <SheetDescription>
+            Select an action, date, time range, and the tables you want to
+            manage.
+          </SheetDescription>
+        </SheetHeader>
+        <div className="p-6 space-y-8 overflow-y-auto h-[calc(100vh-140px)]">
+          <div className="space-y-4">
+            <h3 className="font-semibold">2. Select Date and Time</h3>
+            <div className="space-y-2">
+              <Label htmlFor="date">Date</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={'outline'}
+                    className={cn(
+                      'w-full justify-start text-left font-normal',
+                      !date && 'text-muted-foreground'
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {date ? format(date, 'PPP') : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(d) => d && setDate(d)}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="from">From</Label>
+                <div className="relative">
+                   <Input id="from" type="time" value={fromTime} onChange={(e) => setFromTime(e.target.value)} disabled={applyToWholeDay} />
+                   <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="to">To</Label>
+                 <div className="relative">
+                    <Input id="to" type="time" value={toTime} onChange={(e) => setToTime(e.target.value)} disabled={applyToWholeDay} />
+                    <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="whole-day"
+                checked={applyToWholeDay}
+                onCheckedChange={(checked) => setApplyToWholeDay(!!checked)}
+              />
+              <Label htmlFor="whole-day" className="font-normal">
+                Apply to whole day
+              </Label>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="font-semibold">3. Select Tables to block</h3>
+              <Button
+                variant="link"
+                className="p-0 h-auto"
+                onClick={handleSelectAllTables}
+              >
+                {selectedTables.length === tables.length
+                  ? 'Deselect All'
+                  : 'Select All'}
+              </Button>
+            </div>
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+              {tables.map((table) => (
+                <Button
+                  key={table.id}
+                  variant={
+                    selectedTables.includes(table.id) ? 'default' : 'outline'
+                  }
+                  className={cn(
+                    'font-normal',
+                    selectedTables.includes(table.id) &&
+                      'bg-primary text-primary-foreground'
+                  )}
+                  onClick={() => handleTableClick(table.id)}
+                >
+                  {table.name}
+                </Button>
+              ))}
+            </div>
+            {tables.length > 8 && (
+              <Button variant="link" className="p-0 h-auto text-primary">
+                Show all tables
+              </Button>
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <h3 className="font-semibold">4. Provide a Reason</h3>
+            <Textarea
+              placeholder="e.g. Private event booking"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
+            <div className="flex flex-wrap gap-2">
+              {reasonSuggestions.map((suggestion) => (
+                <Button
+                  key={suggestion}
+                  variant="outline"
+                  size="sm"
+                  className="font-normal"
+                  onClick={() => setReason(suggestion)}
+                >
+                  {suggestion}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
+        <SheetFooter className="p-6 border-t bg-card absolute bottom-0 w-full">
+          <SheetClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </SheetClose>
+          <Button onClick={handleConfirm}>Confirm Block</Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
+}

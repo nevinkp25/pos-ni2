@@ -14,6 +14,7 @@ import { batchUpdateSlots, getAISummary } from '@/app/actions';
 import { TimeSlotGrid } from './time-slot-grid';
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { BlockSlotsSheet } from './block-slots-sheet';
 
 
 interface TimeSlotManagerProps {
@@ -43,6 +44,8 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
   const [aiSummary, setAiSummary] = useState<string>('');
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
 
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
@@ -161,11 +164,37 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Block Slots</h1>
             <p className="text-muted-foreground mt-1">Manage all blocked time slots across restaurants</p>
         </div>
-        <Button>
+         <Button onClick={() => setIsSheetOpen(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Block slots
         </Button>
       </div>
+
+      <BlockSlotsSheet
+        isOpen={isSheetOpen}
+        onOpenChange={setIsSheetOpen}
+        tables={tablesOnFloor}
+        timeSlots={timeSlots}
+        initialDate={selectedDate}
+        onBlockConfirm={(slotsToBlock, date) => {
+          startTransition(async () => {
+            const result = await batchUpdateSlots(slotsToBlock, date, 'blocked');
+            if (result.success) {
+              toast({
+                title: 'Success',
+                description: `${slotsToBlock.length} slots have been blocked.`,
+              });
+              setIsSheetOpen(false);
+            } else {
+              toast({
+                variant: 'destructive',
+                title: 'Error',
+                description: 'Failed to block slots.',
+              });
+            }
+          });
+        }}
+       />
 
       <div className="space-y-4">
         <div className="flex flex-wrap items-center gap-4 rounded-lg border p-4 bg-card">
@@ -202,7 +231,7 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
 
         <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
             <div className="flex items-center gap-2">
-                 <Tabs defaultValue="edit" onValueChange={(value) => setEditMode(value === 'edit')}>
+                 <Tabs defaultValue="view" onValueChange={(value) => setEditMode(value === 'edit')}>
                     <TabsList>
                         <TabsTrigger value="view" disabled={isPending}>View</TabsTrigger>
                         <TabsTrigger value="edit" disabled={isPending}>Edit</TabsTrigger>
