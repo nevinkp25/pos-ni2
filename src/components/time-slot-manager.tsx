@@ -178,36 +178,44 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
     });
   };
 
-  const handleBlockConfirm = (slotsToBlock: { tableId: string; time: string }[], date: string) => {
+  const handleSheetConfirm = (slotsToUpdate: { tableId: string; time: string }[], date: string, status: 'blocked' | 'available') => {
     startTransition(async () => {
-      const result = await batchUpdateSlots(slotsToBlock, date, 'blocked');
+      const result = await batchUpdateSlots(slotsToUpdate, date, status);
       if (result.success) {
+        const statusText = status === 'blocked' ? 'blocked' : 'unblocked';
         toast({
           title: 'Success',
-          description: `${slotsToBlock.length} slots have been blocked.`,
+          description: `${slotsToUpdate.length} time slots have been ${statusText}.`,
         });
-
-        const newBookings: Booking[] = slotsToBlock.map(slot => ({
-          ...slot,
-          date,
-          status: 'blocked',
-        }));
-
-        const existingSlots = new Set(bookings.map(b => `${b.tableId}-${b.date}-${b.time}`));
-        const filteredNewBookings = newBookings.filter(b => !existingSlots.has(`${b.tableId}-${b.date}-${b.time}`));
-        
-        setBookings(prev => [...prev, ...filteredNewBookings]);
-
+  
+        if (status === 'available') {
+          const slotsToUpdateSet = new Set(slotsToUpdate.map(s => `${s.tableId}-${s.time}`));
+          setBookings(prev => prev.filter(
+            (b) => !(b.date === date && b.status === 'blocked' && slotsToUpdateSet.has(`${b.tableId}-${b.time}`))
+          ));
+        } else { // blocked
+          const newBookings: Booking[] = slotsToUpdate.map(slot => ({
+            ...slot,
+            date,
+            status: 'blocked',
+          }));
+  
+          const existingSlots = new Set(bookings.map(b => `${b.tableId}-${b.date}-${b.time}`));
+          const filteredNewBookings = newBookings.filter(b => !existingSlots.has(`${b.tableId}-${b.date}-${b.time}`));
+          
+          setBookings(prev => [...prev, ...filteredNewBookings]);
+        }
+  
         setIsSheetOpen(false);
       } else {
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: 'Failed to block slots.',
+          description: `Failed to ${status} slots.`,
         });
       }
     });
-  }
+  };
 
   return (
     <div className="flex flex-col h-full">
@@ -293,7 +301,7 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
         tables={tablesOnFloor}
         timeSlots={timeSlots}
         initialDate={selectedDate}
-        onBlockConfirm={handleBlockConfirm}
+        onConfirm={handleSheetConfirm}
        />
       
       <div className="flex-1 overflow-auto px-4 sm:px-6 md:px-8 pb-8">

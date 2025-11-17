@@ -21,6 +21,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { format, parse } from 'date-fns';
@@ -33,9 +34,10 @@ interface BlockSlotsSheetProps {
   tables: Table[];
   timeSlots: string[];
   initialDate: Date;
-  onBlockConfirm: (
-    slotsToBlock: { tableId: string; time: string }[],
-    date: string
+  onConfirm: (
+    slotsToUpdate: { tableId: string; time: string }[],
+    date: string,
+    status: 'blocked' | 'available'
   ) => void;
 }
 
@@ -45,8 +47,9 @@ export function BlockSlotsSheet({
   tables,
   timeSlots,
   initialDate,
-  onBlockConfirm,
+  onConfirm,
 }: BlockSlotsSheetProps) {
+  const [action, setAction] = useState<'block' | 'unblock'>('block');
   const [date, setDate] = useState(initialDate);
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
@@ -60,6 +63,7 @@ export function BlockSlotsSheet({
     setDate(initialDate);
     // Reset state when sheet opens or initial date changes
     if (isOpen) {
+      setAction('block');
       setShowAllTables(false);
       setSelectedTables([]);
       setFromTime('');
@@ -90,44 +94,54 @@ export function BlockSlotsSheet({
   };
   
   const handleConfirm = () => {
-      const slotsToBlock = [];
+      const slotsToUpdate = [];
       const startTime = applyToWholeDay ? timeSlots[0] : fromTime;
       const endTime = applyToWholeDay ? timeSlots[timeSlots.length - 1] : toTime;
 
       // The HTML time input returns 'HH:mm'. We find the closest matching slot.
       const findSlotIndex = (time: string) => {
           if (!time || !time.includes(':')) return -1;
-          // The input gives HH:mm, so we just need the hour part for comparison.
           const inputHour = parseInt(time.split(':')[0], 10);
-          return timeSlots.findIndex(slot => {
+          const inputMinute = parseInt(time.split(':')[1], 10);
+          
+          let closestIndex = -1;
+          let smallestDiff = Infinity;
+          
+          timeSlots.forEach((slot, index) => {
               const slotHour = parseInt(slot.split(':')[0], 10);
-              return slotHour === inputHour;
+              const slotMinute = parseInt(slot.split(':')[1], 10);
+              const diff = Math.abs((inputHour * 60 + inputMinute) - (slotHour * 60 + slotMinute));
+              
+              if (diff < smallestDiff) {
+                  smallestDiff = diff;
+                  closestIndex = index;
+              }
           });
+          
+          return closestIndex;
       };
       
       let startIndex, endIndex;
       
       if(applyToWholeDay) {
           startIndex = 0;
-          endIndex = timeSlots.length -1;
+          endIndex = timeSlots.length - 1;
       } else {
           startIndex = findSlotIndex(startTime);
           endIndex = findSlotIndex(endTime);
       }
 
-
       if (startIndex === -1 || endIndex === -1 || startIndex > endIndex) {
-          // Handle invalid time range
           console.error("Invalid time range", { fromTime, toTime, startTime, endTime, startIndex, endIndex, timeSlots });
           return;
       }
 
       for (const tableId of selectedTables) {
           for (let i = startIndex; i <= endIndex; i++) {
-              slotsToBlock.push({ tableId, time: timeSlots[i] });
+              slotsToUpdate.push({ tableId, time: timeSlots[i] });
           }
       }
-      onBlockConfirm(slotsToBlock, format(date, 'yyyy-MM-dd'));
+      onConfirm(slotsToUpdate, format(date, 'yyyy-MM-dd'), action === 'block' ? 'blocked' : 'available');
   }
 
   const reasonSuggestions = [
@@ -150,6 +164,24 @@ export function BlockSlotsSheet({
         </SheetHeader>
         <ScrollArea className="flex-1">
           <div className="p-6 space-y-8">
+            <div className="space-y-4">
+              <h3 className="font-semibold">1. Select Action</h3>
+              <RadioGroup
+                defaultValue="block"
+                value={action}
+                onValueChange={(value: 'block' | 'unblock') => setAction(value)}
+                className="flex items-center gap-4"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="block" id="block" />
+                  <Label htmlFor="block">Block</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="unblock" id="unblock" />
+                  <Label htmlFor="unblock">Unblock</Label>
+                </div>
+              </RadioGroup>
+            </div>
             <div className="space-y-4">
               <h3 className="font-semibold">2. Select Date and Time</h3>
               <div className="space-y-2">
@@ -200,7 +232,7 @@ export function BlockSlotsSheet({
             </div>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="font-semibold">3. Select Tables to block</h3>
+                <h3 className="font-semibold">3. Select Tables to {action}</h3>
                 <Button variant="link" className="p-0 h-auto" onClick={handleSelectAllTables}>
                     {selectedTables.length === tables.length ? 'Deselect All' : 'Select All'}
                 </Button>
@@ -222,24 +254,28 @@ export function BlockSlotsSheet({
                 </Button>
               )}
             </div>
-            <div className="space-y-4">
-                <h3 className="font-semibold">4. Provide a Reason</h3>
-                <Textarea placeholder="e.g. Private event booking" value={reason} onChange={(e) => setReason(e.target.value)} />
-                <div className="flex flex-wrap gap-2">
-                    {reasonSuggestions.map(suggestion => (
-                        <Button key={suggestion} variant="outline" size="sm" onClick={() => setReason(suggestion)}>
-                            {suggestion}
-                        </Button>
-                    ))}
-                </div>
-            </div>
+            {action === 'block' && (
+              <div className="space-y-4">
+                  <h3 className="font-semibold">4. Provide a Reason</h3>
+                  <Textarea placeholder="e.g. Private event booking" value={reason} onChange={(e) => setReason(e.target.value)} />
+                  <div className="flex flex-wrap gap-2">
+                      {reasonSuggestions.map(suggestion => (
+                          <Button key={suggestion} variant="outline" size="sm" onClick={() => setReason(suggestion)}>
+                              {suggestion}
+                          </Button>
+                      ))}
+                  </div>
+              </div>
+            )}
           </div>
         </ScrollArea>
         <SheetFooter className="p-6 border-t flex-shrink-0 bg-background">
             <SheetClose asChild>
                 <Button variant="outline">Cancel</Button>
             </SheetClose>
-            <Button onClick={handleConfirm} disabled={selectedTables.length === 0 || (!applyToWholeDay && (!fromTime || !toTime))}>Confirm Block</Button>
+            <Button onClick={handleConfirm} disabled={selectedTables.length === 0 || (!applyToWholeDay && (!fromTime || !toTime))}>
+                Confirm {action === 'block' ? 'Block' : 'Unblock'}
+            </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>
