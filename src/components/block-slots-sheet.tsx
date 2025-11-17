@@ -157,30 +157,16 @@ export function BlockSlotsSheet({
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-md lg:max-w-lg flex flex-col p-0">
         <SheetHeader className="p-6 border-b flex-shrink-0">
-          <SheetTitle className="text-xl">Block / Unblock Slots</SheetTitle>
+          <SheetTitle className="text-xl">Block Time Slots</SheetTitle>
           <SheetDescription>
-            Select an action, date, time range, and the tables you want to
-            manage.
+            Select a date, time range, and tables to block them off.
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="flex-1">
           <div className="p-6 space-y-8">
+            
             <div className="space-y-4">
-              <h3 className="font-semibold">1. Select Action</h3>
-               <Tabs
-                defaultValue="block"
-                value={action}
-                onValueChange={(value) => setAction(value as 'block' | 'unblock')}
-                className="w-full"
-              >
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="block">Block</TabsTrigger>
-                  <TabsTrigger value="unblock">Unblock</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-            <div className="space-y-4">
-              <h3 className="font-semibold">2. Select Date and Time</h3>
+              <h3 className="font-semibold">1. Select Date and Time</h3>
               <div className="space-y-2">
                 <Label htmlFor="date">Date</Label>
                 <Popover>
@@ -229,7 +215,7 @@ export function BlockSlotsSheet({
             </div>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="font-semibold">3. Select Tables to {action}</h3>
+                <h3 className="font-semibold">2. Select Tables to Block</h3>
                 <Button variant="link" className="p-0 h-auto" onClick={handleSelectAllTables}>
                     {selectedTables.length === tables.length ? 'Deselect All' : 'Select All'}
                 </Button>
@@ -253,7 +239,7 @@ export function BlockSlotsSheet({
             </div>
             {action === 'block' && (
               <div className="space-y-4">
-                  <h3 className="font-semibold">4. Provide a Reason</h3>
+                  <h3 className="font-semibold">3. Provide a Reason</h3>
                   <Textarea placeholder="e.g. Private event booking" value={reason} onChange={(e) => setReason(e.target.value)} />
                   <div className="flex flex-wrap gap-2">
                       {reasonSuggestions.map(suggestion => (
@@ -271,7 +257,7 @@ export function BlockSlotsSheet({
                 <Button variant="outline">Cancel</Button>
             </SheetClose>
             <Button onClick={handleConfirm} disabled={selectedTables.length === 0 || (!applyToWholeDay && (!fromTime || !toTime))}>
-                Confirm {action === 'block' ? 'Block' : 'Unblock'}
+                Confirm Block
             </Button>
         </SheetFooter>
       </SheetContent>

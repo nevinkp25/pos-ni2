@@ -266,7 +266,7 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
 
           <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
               <div className="flex items-center gap-2">
-                  <Tabs defaultValue="view" onValueChange={(value) => setEditMode(value === 'edit')}>
+                  <Tabs defaultValue="view" value={editMode ? 'edit' : 'view'} onValueChange={(value) => setEditMode(value === 'edit')}>
                       <TabsList>
                           <TabsTrigger value="view" disabled={isPending}>View</TabsTrigger>
                           <TabsTrigger value="edit" disabled={isPending}>Edit</TabsTrigger>
