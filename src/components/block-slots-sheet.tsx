@@ -21,11 +21,10 @@ import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
-import { format, parse } from 'date-fns';
-import { Table } from '@/lib/types';
+import { format } from 'date-fns';
+import type { Table, Booking } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface BlockSlotsSheetProps {
@@ -39,6 +38,7 @@ interface BlockSlotsSheetProps {
     date: string,
     status: 'blocked' | 'available'
   ) => void;
+  bookings: Booking[];
 }
 
 export function BlockSlotsSheet({
@@ -48,8 +48,8 @@ export function BlockSlotsSheet({
   timeSlots,
   initialDate,
   onConfirm,
+  bookings
 }: BlockSlotsSheetProps) {
-  const [action, setAction] = useState<'block' | 'unblock'>('block');
   const [date, setDate] = useState(initialDate);
   const [fromTime, setFromTime] = useState('');
   const [toTime, setToTime] = useState('');
@@ -57,12 +57,13 @@ export function BlockSlotsSheet({
   const [selectedTables, setSelectedTables] = useState<string[]>([]);
   const [reason, setReason] = useState('');
   const [showAllTables, setShowAllTables] = useState(false);
+  const [action, setAction] = useState<'block' | 'unblock'>('block');
 
 
   useEffect(() => {
-    setDate(initialDate);
     // Reset state when sheet opens or initial date changes
     if (isOpen) {
+      setDate(initialDate);
       setAction('block');
       setShowAllTables(false);
       setSelectedTables([]);
@@ -72,6 +73,13 @@ export function BlockSlotsSheet({
       setReason('');
     }
   }, [initialDate, isOpen]);
+
+  // Determine the action based on the selected slots
+  useEffect(() => {
+      const selectedSlotsAreBlocked = areSelectedSlotsBlocked();
+      setAction(selectedSlotsAreBlocked ? 'unblock' : 'block');
+  }, [selectedTables, fromTime, toTime, applyToWholeDay, date, bookings]);
+  
 
   const displayedTables = useMemo(() => {
     return showAllTables ? tables : tables.slice(0, 6);
@@ -93,37 +101,33 @@ export function BlockSlotsSheet({
     );
   };
   
-  const handleConfirm = () => {
-      const slotsToUpdate = [];
+  const getSlotsToUpdate = () => {
+      const slots = [];
       const startTime = applyToWholeDay ? timeSlots[0] : fromTime;
       const endTime = applyToWholeDay ? timeSlots[timeSlots.length - 1] : toTime;
 
-      // The HTML time input returns 'HH:mm'. We find the closest matching slot.
       const findSlotIndex = (time: string) => {
           if (!time || !time.includes(':')) return -1;
-          const inputHour = parseInt(time.split(':')[0], 10);
-          const inputMinute = parseInt(time.split(':')[1], 10);
+          const inputDate = new Date(`1970-01-01T${time}`);
           
           let closestIndex = -1;
           let smallestDiff = Infinity;
           
           timeSlots.forEach((slot, index) => {
-              const slotHour = parseInt(slot.split(':')[0], 10);
-              const slotMinute = parseInt(slot.split(':')[1], 10);
-              const diff = Math.abs((inputHour * 60 + inputMinute) - (slotHour * 60 + slotMinute));
+              const slotDate = new Date(`1970-01-01T${slot}`);
+              const diff = Math.abs(inputDate.getTime() - slotDate.getTime());
               
               if (diff < smallestDiff) {
                   smallestDiff = diff;
                   closestIndex = index;
               }
           });
-          
           return closestIndex;
       };
       
       let startIndex, endIndex;
       
-      if(applyToWholeDay) {
+      if (applyToWholeDay) {
           startIndex = 0;
           endIndex = timeSlots.length - 1;
       } else {
@@ -133,17 +137,46 @@ export function BlockSlotsSheet({
 
       if (startIndex === -1 || endIndex === -1 || startIndex > endIndex) {
           console.error("Invalid time range", { fromTime, toTime, startTime, endTime, startIndex, endIndex, timeSlots });
-          return;
+          return [];
       }
 
       for (const tableId of selectedTables) {
           for (let i = startIndex; i <= endIndex; i++) {
-              slotsToUpdate.push({ tableId, time: timeSlots[i] });
+              slots.push({ tableId, time: timeSlots[i] });
           }
       }
-      onConfirm(slotsToUpdate, format(date, 'yyyy-MM-dd'), action === 'block' ? 'blocked' : 'available');
-      onOpenChange(false);
-  }
+      return slots;
+  };
+  
+  const areSelectedSlotsBlocked = (): boolean => {
+      const slotsToUpdate = getSlotsToUpdate();
+      if (slotsToUpdate.length === 0) return false;
+
+      const bookingsMap = new Map<string, 'booked' | 'blocked'>();
+      bookings.forEach(b => {
+          if (b.date === format(date, 'yyyy-MM-dd')) {
+              bookingsMap.set(`${b.tableId}_${b.time}`, b.status);
+          }
+      });
+
+      // If all selected slots are already blocked, action should be unblock
+      return slotsToUpdate.every(slot => {
+          const slotId = `${slot.tableId}_${slot.time}`;
+          return bookingsMap.get(slotId) === 'blocked';
+      });
+  };
+
+  const handleConfirm = () => {
+    const slotsToUpdate = getSlotsToUpdate();
+    if (slotsToUpdate.length === 0) {
+        console.error("No slots to update");
+        return;
+    }
+    
+    onConfirm(slotsToUpdate, format(date, 'yyyy-MM-dd'), action === 'block' ? 'blocked' : 'available');
+    onOpenChange(false);
+  };
+
 
   const reasonSuggestions = [
     'Private Event',
@@ -153,13 +186,15 @@ export function BlockSlotsSheet({
     'VIP Usage',
   ];
 
+  const confirmButtonText = action === 'block' ? 'Confirm Block' : 'Confirm Unblock';
+
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-md lg:max-w-lg flex flex-col p-0">
         <SheetHeader className="p-6 border-b flex-shrink-0">
           <SheetTitle className="text-xl">Block Time Slots</SheetTitle>
           <SheetDescription>
-            Select a date, time range, and tables to block them off.
+            Select a date, time range, and tables to block or unblock them.
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="flex-1">
@@ -215,7 +250,7 @@ export function BlockSlotsSheet({
             </div>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="font-semibold">2. Select Tables to Block</h3>
+                <h3 className="font-semibold">2. Select Tables</h3>
                 <Button variant="link" className="p-0 h-auto" onClick={handleSelectAllTables}>
                     {selectedTables.length === tables.length ? 'Deselect All' : 'Select All'}
                 </Button>
@@ -257,7 +292,7 @@ export function BlockSlotsSheet({
                 <Button variant="outline">Cancel</Button>
             </SheetClose>
             <Button onClick={handleConfirm} disabled={selectedTables.length === 0 || (!applyToWholeDay && (!fromTime || !toTime))}>
-                Confirm Block
+                {confirmButtonText}
             </Button>
         </SheetFooter>
       </SheetContent>

@@ -266,7 +266,11 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
 
           <div className="flex items-center justify-between p-4 rounded-lg border bg-card">
               <div className="flex items-center gap-2">
-                  <Tabs defaultValue="view" value={editMode ? 'edit' : 'view'} onValueChange={(value) => setEditMode(value === 'edit')}>
+                  <Tabs defaultValue="view" value={editMode ? 'edit' : 'view'} onValueChange={(value) => {
+                    setEditMode(value === 'edit');
+                    setSelectedSlots([]);
+                    setLastSelectedSlot(null);
+                  }}>
                       <TabsList>
                           <TabsTrigger value="view" disabled={isPending}>View</TabsTrigger>
                           <TabsTrigger value="edit" disabled={isPending}>Edit</TabsTrigger>
@@ -302,6 +306,7 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
         timeSlots={timeSlots}
         initialDate={selectedDate}
         onConfirm={handleSheetConfirm}
+        bookings={bookingsForDate}
        />
       
       <div className="flex-1 overflow-auto px-4 sm:px-6 md:px-8 pb-8">
