@@ -1,0 +1,229 @@
+'use client';
+
+import { useState, useMemo, useTransition, useEffect } from 'react';
+import type { Restaurant, Floor, Table, Booking } from '@/lib/types';
+import { format, add, startOfDay } from 'date-fns';
+import { Calendar as CalendarIcon, Loader2, Sparkles } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from '@/components/ui/alert-dialog';
+import { batchUpdateSlots, getAISummary } from '@/app/actions';
+import { TimeSlotGrid } from './time-slot-grid';
+import { useToast } from '@/hooks/use-toast';
+
+interface TimeSlotManagerProps {
+  restaurants: Restaurant[];
+  floors: Floor[];
+  tables: Table[];
+  initialBookings: Booking[];
+}
+
+const generateTimeSlots = (start: Date, end: Date, interval: number): string[] => {
+  const slots = [];
+  let current = start;
+  while (current < end) {
+    slots.push(format(current, 'HH:mm'));
+    current = add(current, { minutes: interval });
+  }
+  return slots;
+};
+
+export function TimeSlotManager({ restaurants, floors, tables, initialBookings }: TimeSlotManagerProps) {
+  const [selectedRestaurant, setSelectedRestaurant] = useState<string | undefined>(restaurants[0]?.id);
+  const [selectedFloor, setSelectedFloor] = useState<string | undefined>();
+  const [selectedDate, setSelectedDate] = useState<Date>(startOfDay(new Date('2024-08-10')));
+  const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
+  const [lastSelectedSlot, setLastSelectedSlot] = useState<{ tableId: string; time: string } | null>(null);
+
+  const [aiSummary, setAiSummary] = useState<string>('');
+  const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
+
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const availableFloors = useMemo(() => floors.filter(f => f.restaurantId === selectedRestaurant), [selectedRestaurant, floors]);
+
+  useEffect(() => {
+    if (availableFloors.length > 0 && !availableFloors.find(f => f.id === selectedFloor)) {
+      setSelectedFloor(availableFloors[0].id);
+    } else if (availableFloors.length === 0) {
+      setSelectedFloor(undefined);
+    }
+  }, [availableFloors, selectedFloor]);
+
+
+  const tablesOnFloor = useMemo(() => {
+    return tables
+      .filter(t => t.floorId === selectedFloor)
+      .sort((a, b) => {
+        const numA = parseInt(a.name.replace(/[^0-9]/g, ''), 10);
+        const numB = parseInt(b.name.replace(/[^0-9]/g, ''), 10);
+        return numA - numB;
+      });
+  }, [selectedFloor, tables]);
+
+
+  const formattedDate = useMemo(() => format(selectedDate, 'yyyy-MM-dd'), [selectedDate]);
+  const bookingsForDate = useMemo(() => initialBookings.filter(b => b.date === formattedDate), [formattedDate, initialBookings]);
+
+  const timeSlots = useMemo(() => {
+    const dayStart = new Date(formattedDate);
+    dayStart.setHours(8, 0, 0, 0);
+    const dayEnd = new Date(formattedDate);
+    dayEnd.setHours(23, 0, 0, 0);
+    return generateTimeSlots(dayStart, dayEnd, 30);
+  }, [formattedDate]);
+
+  const handleSlotClick = (e: React.MouseEvent, tableId: string, time: string) => {
+    const slotId = `${tableId}_${time}`;
+    const isShiftClick = e.shiftKey;
+
+    if (isShiftClick && lastSelectedSlot && lastSelectedSlot.tableId === tableId) {
+      const lastIndex = timeSlots.indexOf(lastSelectedSlot.time);
+      const currentIndex = timeSlots.indexOf(time);
+      const [start, end] = [lastIndex, currentIndex].sort((a, b) => a - b);
+      const slotsToToggle = timeSlots.slice(start, end + 1).map(t => `${tableId}_${t}`);
+      
+      const allSelected = slotsToToggle.every(s => selectedSlots.includes(s));
+      if (allSelected) {
+        setSelectedSlots(prev => prev.filter(s => !slotsToToggle.includes(s)));
+      } else {
+        setSelectedSlots(prev => [...new Set([...prev, ...slotsToToggle])]);
+      }
+    } else {
+      setSelectedSlots(prev => prev.includes(slotId) ? prev.filter(s => s !== slotId) : [...prev, slotId]);
+    }
+    setLastSelectedSlot({ tableId, time });
+  };
+  
+  const handleUpdate = (status: 'blocked' | 'available') => {
+    if (selectedSlots.length === 0) {
+      toast({
+        variant: "destructive",
+        title: "No slots selected",
+        description: "Please select one or more slots to update.",
+      });
+      return;
+    }
+    
+    startTransition(async () => {
+      const slotsToUpdate = selectedSlots.map(s => {
+        const [tableId, time] = s.split('_');
+        return { tableId, time };
+      });
+      
+      const result = await batchUpdateSlots(slotsToUpdate, formattedDate, status);
+      if (result.success) {
+        toast({
+          title: "Success",
+          description: `${selectedSlots.length} slots have been ${status === 'blocked' ? 'blocked' : 'unblocked'}.`,
+        });
+        setSelectedSlots([]);
+        setLastSelectedSlot(null);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to update slots.",
+        });
+      }
+    });
+  };
+
+  const handleGetSummary = () => {
+    if (!selectedRestaurant || !selectedFloor) return;
+    startTransition(async () => {
+      const result = await getAISummary(formattedDate, selectedRestaurant, selectedFloor);
+      if (result.summary) {
+        setAiSummary(result.summary);
+        setIsSummaryDialogOpen(true);
+      } else {
+        toast({
+          variant: "destructive",
+          title: "AI Summary Failed",
+          description: result.error,
+        });
+      }
+    });
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Time Slotter</h1>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Filters & Actions</CardTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 pt-4">
+            <Select value={selectedRestaurant} onValueChange={setSelectedRestaurant}>
+              <SelectTrigger><SelectValue placeholder="Select Restaurant" /></SelectTrigger>
+              <SelectContent>
+                {restaurants.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+
+            <Select value={selectedFloor} onValueChange={setSelectedFloor} disabled={!selectedRestaurant}>
+              <SelectTrigger><SelectValue placeholder="Select Floor" /></SelectTrigger>
+              <SelectContent>
+                {availableFloors.map(f => <SelectItem key={f.id} value={f.id}>{f.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant={"outline"} className={cn("justify-start text-left font-normal", !selectedDate && "text-muted-foreground")}>
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate ? format(selectedDate, 'PPP') : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0"><Calendar mode="single" selected={selectedDate} onSelect={(date) => date && setSelectedDate(date)} initialFocus /></PopoverContent>
+            </Popover>
+            
+            <div className="col-span-1 xl:col-span-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
+                <Button onClick={() => handleUpdate('blocked')} disabled={isPending || selectedSlots.length === 0} className="w-full">
+                  {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Block Slots
+                </Button>
+                <Button variant="outline" onClick={() => handleUpdate('available')} disabled={isPending || selectedSlots.length === 0} className="w-full">
+                  {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Unblock
+                </Button>
+                <Button variant="secondary" onClick={handleGetSummary} disabled={isPending || !selectedFloor} className="w-full col-span-2 lg:col-span-1">
+                  {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
+                  AI Summary
+                </Button>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <TimeSlotGrid
+            tables={tablesOnFloor}
+            timeSlots={timeSlots}
+            bookings={bookingsForDate}
+            selectedSlots={selectedSlots}
+            onSlotClick={handleSlotClick}
+            isPending={isPending}
+          />
+        </CardContent>
+      </Card>
+      
+      <AlertDialog open={isSummaryDialogOpen} onOpenChange={setIsSummaryDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2"><Sparkles className="text-primary"/> AI-Generated Summary</AlertDialogTitle>
+            <AlertDialogDescription className="pt-4 text-foreground/80 whitespace-pre-wrap">{aiSummary}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setIsSummaryDialogOpen(false)}>Close</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}
