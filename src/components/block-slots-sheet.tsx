@@ -273,7 +273,7 @@ export function BlockSlotsSheet({
             <SheetClose asChild>
                 <Button variant="outline">Cancel</Button>
             </SheetClose>
-            <Button onClick={handleConfirm} disabled={selectedTables.length === 0 || (!applyToWholeDay && (!fromTime || !toTime))}>
+            <Button onClick={() => { handleConfirm(); onOpenChange(false); }} disabled={selectedTables.length === 0 || (!applyToWholeDay && (!fromTime || !toTime))}>
                 Confirm {action === 'block' ? 'Block' : 'Unblock'}
             </Button>
         </SheetFooter>
