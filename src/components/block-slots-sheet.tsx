@@ -23,7 +23,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { Table } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -91,13 +91,21 @@ export function BlockSlotsSheet({
       const slotsToBlock = [];
       const startTime = applyToWholeDay ? timeSlots[0] : fromTime;
       const endTime = applyToWholeDay ? timeSlots[timeSlots.length - 1] : toTime;
-      
-      const startIndex = timeSlots.indexOf(startTime);
-      const endIndex = timeSlots.indexOf(endTime);
+
+      // The HTML time input returns 'HH:mm', but our time slots are 'HH:00'.
+      // We need to parse and format it to match.
+      const formatTime = (time: string) => {
+        if (!time || !time.includes(':')) return time;
+        const parsedTime = parse(time, 'HH:mm', new Date());
+        return format(parsedTime, 'HH:mm');
+      }
+
+      const startIndex = timeSlots.indexOf(formatTime(startTime));
+      const endIndex = timeSlots.indexOf(formatTime(endTime));
 
       if (startIndex === -1 || endIndex === -1 || startIndex > endIndex) {
           // Handle invalid time range
-          console.error("Invalid time range");
+          console.error("Invalid time range", { fromTime, toTime, startTime, endTime, startIndex, endIndex, timeSlots });
           return;
       }
 
@@ -160,14 +168,14 @@ export function BlockSlotsSheet({
                 <div className="space-y-2">
                   <Label htmlFor="from">From</Label>
                   <div className="relative">
-                    <Input id="from" type="time" value={fromTime} onChange={(e) => setFromTime(e.target.value)} disabled={applyToWholeDay} />
+                    <Input id="from" type="time" value={fromTime} onChange={(e) => setFromTime(e.target.value)} disabled={applyToWholeDay} step="3600" />
                     <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="to">To</Label>
                   <div className="relative">
-                      <Input id="to" type="time" value={toTime} onChange={(e) => setToTime(e.target.value)} disabled={applyToWholeDay} />
+                      <Input id="to" type="time" value={toTime} onChange={(e) => setToTime(e.target.value)} disabled={applyToWholeDay} step="3600" />
                       <Clock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
                   </div>
                 </div>
