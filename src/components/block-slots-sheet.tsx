@@ -21,7 +21,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { Calendar as CalendarIcon, Clock } from 'lucide-react';
 import { format, parse } from 'date-fns';
@@ -142,6 +142,7 @@ export function BlockSlotsSheet({
           }
       }
       onConfirm(slotsToUpdate, format(date, 'yyyy-MM-dd'), action === 'block' ? 'blocked' : 'available');
+      onOpenChange(false);
   }
 
   const reasonSuggestions = [
@@ -166,21 +167,17 @@ export function BlockSlotsSheet({
           <div className="p-6 space-y-8">
             <div className="space-y-4">
               <h3 className="font-semibold">1. Select Action</h3>
-              <RadioGroup
+               <Tabs
                 defaultValue="block"
                 value={action}
-                onValueChange={(value: 'block' | 'unblock') => setAction(value)}
-                className="flex items-center gap-4"
+                onValueChange={(value) => setAction(value as 'block' | 'unblock')}
+                className="w-full"
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="block" id="block" />
-                  <Label htmlFor="block">Block</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="unblock" id="unblock" />
-                  <Label htmlFor="unblock">Unblock</Label>
-                </div>
-              </RadioGroup>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="block">Block</TabsTrigger>
+                  <TabsTrigger value="unblock">Unblock</TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
             <div className="space-y-4">
               <h3 className="font-semibold">2. Select Date and Time</h3>
@@ -273,7 +270,7 @@ export function BlockSlotsSheet({
             <SheetClose asChild>
                 <Button variant="outline">Cancel</Button>
             </SheetClose>
-            <Button onClick={() => { handleConfirm(); onOpenChange(false); }} disabled={selectedTables.length === 0 || (!applyToWholeDay && (!fromTime || !toTime))}>
+            <Button onClick={handleConfirm} disabled={selectedTables.length === 0 || (!applyToWholeDay && (!fromTime || !toTime))}>
                 Confirm {action === 'block' ? 'Block' : 'Unblock'}
             </Button>
         </SheetFooter>
