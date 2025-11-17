@@ -59,12 +59,14 @@ export function BlockSlotsSheet({
   useEffect(() => {
     setDate(initialDate);
     // Reset state when sheet opens or initial date changes
-    setShowAllTables(false);
-    setSelectedTables([]);
-    setFromTime('');
-    setToTime('');
-    setApplyToWholeDay(false);
-    setReason('');
+    if (isOpen) {
+      setShowAllTables(false);
+      setSelectedTables([]);
+      setFromTime('');
+      setToTime('');
+      setApplyToWholeDay(false);
+      setReason('');
+    }
   }, [initialDate, isOpen]);
 
   const displayedTables = useMemo(() => {
@@ -92,16 +94,27 @@ export function BlockSlotsSheet({
       const startTime = applyToWholeDay ? timeSlots[0] : fromTime;
       const endTime = applyToWholeDay ? timeSlots[timeSlots.length - 1] : toTime;
 
-      // The HTML time input returns 'HH:mm', but our time slots are 'HH:00'.
-      // We need to parse and format it to match.
-      const formatTime = (time: string) => {
-        if (!time || !time.includes(':')) return time;
-        const parsedTime = parse(time, 'HH:mm', new Date());
-        return format(parsedTime, 'HH:mm');
+      // The HTML time input returns 'HH:mm'. We find the closest matching slot.
+      const findSlotIndex = (time: string) => {
+          if (!time || !time.includes(':')) return -1;
+          // The input gives HH:mm, so we just need the hour part for comparison.
+          const inputHour = parseInt(time.split(':')[0], 10);
+          return timeSlots.findIndex(slot => {
+              const slotHour = parseInt(slot.split(':')[0], 10);
+              return slotHour === inputHour;
+          });
+      };
+      
+      let startIndex, endIndex;
+      
+      if(applyToWholeDay) {
+          startIndex = 0;
+          endIndex = timeSlots.length -1;
+      } else {
+          startIndex = findSlotIndex(startTime);
+          endIndex = findSlotIndex(endTime);
       }
 
-      const startIndex = timeSlots.indexOf(formatTime(startTime));
-      const endIndex = timeSlots.indexOf(formatTime(endTime));
 
       if (startIndex === -1 || endIndex === -1 || startIndex > endIndex) {
           // Handle invalid time range
