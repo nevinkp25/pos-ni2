@@ -52,10 +52,23 @@ export function BlockSlotsSheet({
   const [applyToWholeDay, setApplyToWholeDay] = useState(false);
   const [selectedTables, setSelectedTables] = useState<string[]>([]);
   const [reason, setReason] = useState('');
+  const [showAllTables, setShowAllTables] = useState(false);
+
 
   useEffect(() => {
     setDate(initialDate);
-  }, [initialDate]);
+    // Reset state when sheet opens or initial date changes
+    setShowAllTables(false);
+    setSelectedTables([]);
+    setFromTime('');
+    setToTime('');
+    setApplyToWholeDay(false);
+    setReason('');
+  }, [initialDate, isOpen]);
+
+  const displayedTables = useMemo(() => {
+    return showAllTables ? tables : tables.slice(0, 6);
+  }, [tables, showAllTables]);
 
   const handleSelectAllTables = () => {
     if (selectedTables.length === tables.length) {
@@ -183,7 +196,7 @@ export function BlockSlotsSheet({
               </Button>
             </div>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-              {tables.map((table) => (
+              {displayedTables.map((table) => (
                 <Button
                   key={table.id}
                   variant={
@@ -200,9 +213,9 @@ export function BlockSlotsSheet({
                 </Button>
               ))}
             </div>
-            {tables.length > 8 && (
-              <Button variant="link" className="p-0 h-auto text-primary">
-                Show all tables
+            {tables.length > 6 && (
+              <Button variant="link" className="p-0 h-auto text-primary" onClick={() => setShowAllTables(prev => !prev)}>
+                {showAllTables ? 'Show less' : 'Show all tables'}
               </Button>
             )}
           </div>
