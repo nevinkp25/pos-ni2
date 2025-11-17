@@ -40,6 +40,7 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
   const [selectedDate, setSelectedDate] = useState<Date>(startOfDay(parse('17/11/2025', 'dd/MM/yyyy', new Date())));
   const [selectedSlots, setSelectedSlots] = useState<string[]>([]);
   const [lastSelectedSlot, setLastSelectedSlot] = useState<{ tableId: string; time: string } | null>(null);
+  const [bookings, setBookings] = useState<Booking[]>(initialBookings);
 
   const [aiSummary, setAiSummary] = useState<string>('');
   const [isSummaryDialogOpen, setIsSummaryDialogOpen] = useState(false);
@@ -49,6 +50,10 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
 
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+
+  useEffect(() => {
+    setBookings(initialBookings);
+  }, [initialBookings]);
 
   const availableFloors = useMemo(() => floors.filter(f => f.restaurantId === selectedRestaurant), [selectedRestaurant, floors]);
 
@@ -73,7 +78,7 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
 
 
   const formattedDate = useMemo(() => format(selectedDate, 'yyyy-MM-dd'), [selectedDate]);
-  const bookingsForDate = useMemo(() => initialBookings.filter(b => b.date === formattedDate), [formattedDate, initialBookings]);
+  const bookingsForDate = useMemo(() => bookings.filter(b => b.date === formattedDate), [formattedDate, bookings]);
 
   const timeSlots = useMemo(() => {
     const dayStart = new Date(formattedDate);
@@ -126,8 +131,24 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
       if (result.success) {
         toast({
           title: "Success",
-          description: `${selectedSlots.length} slots have been ${status === 'blocked' ? 'unblocked' : 'unblocked'}.`,
+          description: `${selectedSlots.length} slots have been ${status === 'blocked' ? 'blocked' : 'unblocked'}.`,
         });
+        
+        // Manually update the client-side state
+        if (status === 'available') {
+            const slotsToUpdateSet = new Set(slotsToUpdate.map(s => `${s.tableId}-${s.time}`));
+            setBookings(prev => prev.filter(
+              (b) => !(b.date === formattedDate && b.status === 'blocked' && slotsToUpdateSet.has(`${b.tableId}-${b.time}`))
+            ));
+        } else {
+            const newBookings: Booking[] = slotsToUpdate.map(slot => ({
+                ...slot,
+                date: formattedDate,
+                status: 'blocked',
+            }));
+            setBookings(prev => [...prev, ...newBookings]);
+        }
+
         setSelectedSlots([]);
         setLastSelectedSlot(null);
       } else {
@@ -156,6 +177,37 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
       }
     });
   };
+
+  const handleBlockConfirm = (slotsToBlock: { tableId: string; time: string }[], date: string) => {
+    startTransition(async () => {
+      const result = await batchUpdateSlots(slotsToBlock, date, 'blocked');
+      if (result.success) {
+        toast({
+          title: 'Success',
+          description: `${slotsToBlock.length} slots have been blocked.`,
+        });
+
+        const newBookings: Booking[] = slotsToBlock.map(slot => ({
+          ...slot,
+          date,
+          status: 'blocked',
+        }));
+
+        const existingSlots = new Set(bookings.map(b => `${b.tableId}-${b.date}-${b.time}`));
+        const filteredNewBookings = newBookings.filter(b => !existingSlots.has(`${b.tableId}-${b.date}-${b.time}`));
+        
+        setBookings(prev => [...prev, ...filteredNewBookings]);
+
+        setIsSheetOpen(false);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Failed to block slots.',
+        });
+      }
+    });
+  }
 
   return (
     <div className="flex flex-col h-full">
@@ -217,11 +269,11 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
                     <div className="flex items-center gap-2 ml-4">
                       <Button variant="outline" size="sm" onClick={() => handleUpdate('blocked')} disabled={isPending || selectedSlots.length === 0}>
                         {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Block slots
+                        Block selected
                       </Button>
                       <Button variant="outline" size="sm" onClick={() => handleUpdate('available')} disabled={isPending || selectedSlots.length === 0}>
                         {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Unblock slots
+                        Unblock selected
                       </Button>
                     </div>
                   )}
@@ -241,24 +293,7 @@ export function TimeSlotManager({ restaurants, floors, tables, initialBookings }
         tables={tablesOnFloor}
         timeSlots={timeSlots}
         initialDate={selectedDate}
-        onBlockConfirm={(slotsToBlock, date) => {
-          startTransition(async () => {
-            const result = await batchUpdateSlots(slotsToBlock, date, 'blocked');
-            if (result.success) {
-              toast({
-                title: 'Success',
-                description: `${slotsToBlock.length} slots have been blocked.`,
-              });
-              setIsSheetOpen(false);
-            } else {
-              toast({
-                variant: 'destructive',
-                title: 'Error',
-                description: 'Failed to block slots.',
-              });
-            }
-          });
-        }}
+        onBlockConfirm={handleBlockConfirm}
        />
       
       <div className="flex-1 overflow-auto px-4 sm:px-6 md:px-8 pb-8">

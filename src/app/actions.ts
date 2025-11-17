@@ -35,7 +35,7 @@ export async function batchUpdateSlots(
     updateBookings([...currentBookings, ...filteredNewBookings]);
   }
 
-  revalidatePath('/');
+  // revalidatePath('/'); // No longer needed for this component, but keeping for potential other uses.
   return { success: true };
 }
 
