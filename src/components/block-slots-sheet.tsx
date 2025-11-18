@@ -76,8 +76,11 @@ export function BlockSlotsSheet({
 
   // Determine the action based on the selected slots
   useEffect(() => {
-      const selectedSlotsAreBlocked = areSelectedSlotsBlocked();
-      setAction(selectedSlotsAreBlocked ? 'unblock' : 'block');
+    if ((!fromTime || !toTime) && !applyToWholeDay) {
+        return;
+    }
+    const selectedSlotsAreBlocked = areSelectedSlotsBlocked();
+    setAction(selectedSlotsAreBlocked ? 'unblock' : 'block');
   }, [selectedTables, fromTime, toTime, applyToWholeDay, date, bookings]);
   
 
