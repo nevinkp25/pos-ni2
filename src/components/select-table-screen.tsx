@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 
 interface SelectTableScreenProps {
   onBack?: () => void;
+  onStartOrder?: (tableNumber: string) => void;
 }
 
 interface TableStatus {
@@ -14,7 +15,7 @@ interface TableStatus {
   isAvailable: boolean;
 }
 
-export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
+export function SelectTableScreen({ onBack, onStartOrder }: SelectTableScreenProps) {
   const [tableNumber, setTableNumber] = useState<string>('');
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [guestCount, setGuestCount] = useState(1);
@@ -220,6 +221,7 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
 
             <div className="px-6">
               <button 
+                onClick={() => onStartOrder?.(tableNumber)}
                 className="w-full h-[52px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[16px] text-[16px] font-black shadow-[0_6px_20px_rgba(0,102,178,0.25)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
               >
                 Start Order
