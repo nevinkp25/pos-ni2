@@ -168,6 +168,36 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
             { name: 'Asparagus', price: 15 }
           ]
         },
+        { 
+          name: 'Spaghetti alle Vongole', 
+          description: 'Fresh clams, garlic, white wine, parsley',
+          allergens: ['Shellfish', 'Gluten'], 
+          basePrice: 98,
+          nutritionalInfo: { kcal: 650, protein: '28g', carbs: '85g', fat: '18g' },
+          variations: [
+            { name: 'Classic', price: 0 },
+            { name: 'Spicy', price: 0 }
+          ],
+          addons: [
+            { name: 'Extra Clams', price: 35 },
+            { name: 'Bottarga', price: 20 }
+          ]
+        },
+        { 
+          name: 'Branzino al Forno', 
+          description: 'Baked whole sea bass, herbs, lemon',
+          allergens: ['Fish'], 
+          basePrice: 130,
+          nutritionalInfo: { kcal: 420, protein: '45g', carbs: '5g', fat: '15g' },
+          variations: [
+            { name: 'Grilled', price: 0 },
+            { name: 'Al Forno', price: 0 }
+          ],
+          addons: [
+            { name: 'Roasted Potatoes', price: 15 },
+            { name: 'Sautéed Spinach', price: 15 }
+          ]
+        },
       ] 
     },
     { 
@@ -278,7 +308,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
 
   const handleAddToCart = (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => {
     setCart(prev => {
-      // For items with options, we usually want to add a new unique entry unless it's identical
       const isIdentical = (ci: CartItem) => ci.name === item.name && ci.flavor === flavor && JSON.stringify(ci.addons) === JSON.stringify(addons) && ci.specialRequests === requests;
       const existing = prev.find(isIdentical);
       
@@ -394,60 +423,60 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                           onClick={() => handleItemClick(item)}
                         >
                           <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                            <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight truncate">
+                            <h3 className="text-[17px] font-black text-[#1a1c2e] leading-tight truncate">
                               {item.name}
                             </h3>
                             <div className="flex gap-1.5 flex-wrap">
                               {item.allergens.map((allergen) => (
                                 <span 
                                   key={allergen}
-                                  className="px-2.5 py-0.5 rounded-full border border-[#f59e0b]/40 text-[#f59e0b] text-[10px] font-black tracking-tight"
+                                  className="px-2.5 py-0.5 rounded-full border-[1.5px] border-[#f59e0b] text-[#f59e0b] text-[11px] font-black tracking-tight"
                                 >
                                   {allergen}
                                 </span>
                               ))}
                             </div>
-                            <p className="text-[#0066b2] text-[15px] font-black mt-1">
+                            <p className="text-[#0066b2] text-[20px] font-black mt-1">
                               AED {item.basePrice.toFixed(2)}
                             </p>
                           </div>
 
-                          <div className="flex flex-col items-end gap-2 shrink-0">
+                          <div className="flex flex-col items-end gap-1.5 shrink-0">
                             {quantity > 0 ? (
                               <>
                                 <button 
-                                  className="flex items-center gap-1 text-[#0066b2] text-[11px] font-black tracking-tight mb-1 whitespace-nowrap"
+                                  className="flex items-center gap-1.5 text-[#0066b2] text-[12px] font-black tracking-tight mb-1 whitespace-nowrap"
                                   onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
                                 >
-                                  <FileEdit className="w-3 h-3" />
+                                  <FileEdit className="w-3.5 h-3.5" />
                                   <span className="border-b border-dotted border-[#0066b2]">Add Instruction</span>
                                 </button>
-                                <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-sm h-11 min-w-[100px] justify-between">
+                                <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between">
                                   <button 
                                     onClick={(e) => handleMinusClick(e, item.name)}
-                                    className="w-9 h-9 flex items-center justify-center rounded-full bg-[#f1f5f9] text-[#ef4444] active:scale-90 transition-all"
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#f8fafc] text-[#ef4444] active:scale-90 transition-all"
                                   >
                                     {quantity === 1 ? (
-                                      <Trash2 className="w-4 h-4" />
+                                      <Trash2 className="w-4.5 h-4.5" />
                                     ) : (
-                                      <Minus className="w-4 h-4 stroke-[3px]" />
+                                      <Minus className="w-4.5 h-4.5 stroke-[3px]" />
                                     )}
                                   </button>
-                                  <span className="text-[15px] font-black text-[#1a1c2e] px-2">{quantity}</span>
+                                  <span className="text-[18px] font-black text-[#1a1c2e] px-2 tabular-nums">{quantity}</span>
                                   <button 
                                     onClick={(e) => handlePlusClick(e, item)}
-                                    className="w-9 h-9 flex items-center justify-center rounded-full bg-[#0066b2] text-white active:scale-90 transition-all shadow-md shadow-blue-200"
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white active:scale-90 transition-all shadow-md shadow-blue-100"
                                   >
-                                    <Plus className="w-4 h-4 stroke-[3px]" />
+                                    <Plus className="w-4.5 h-4.5 stroke-[3px]" />
                                   </button>
                                 </div>
                               </>
                             ) : (
                               <button 
                                 onClick={(e) => handlePlusClick(e, item)}
-                                className="w-12 h-12 bg-[#0066b2] rounded-full flex items-center justify-center text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
+                                className="w-14 h-14 bg-[#0066b2] rounded-full flex items-center justify-center text-white shadow-[0_6px_20px_rgba(0,102,178,0.25)] active:scale-90 transition-all"
                               >
-                                <Plus className="w-6 h-6 stroke-[3px]" />
+                                <Plus className="w-7 h-7 stroke-[3px]" />
                               </button>
                             )}
                           </div>
@@ -532,7 +561,6 @@ function ItemDetailSheet({
 
   const handleFlavorSelect = (flavor: MenuItemOption) => {
     setSelectedFlavor(flavor);
-    // Auto scroll to addons or special requests
     setTimeout(() => {
       if (item?.addons && item.addons.length > 0) {
         addonsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -577,7 +605,7 @@ function ItemDetailSheet({
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="bottom" className={cn(
         "rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden",
-        isCompact ? "h-[75vh]" : "h-[85vh]"
+        isCompact ? "h-[85vh]" : "h-[85vh]"
       )}>
         <SheetHeader className="sr-only">
           <SheetTitle>{item.name}</SheetTitle>
@@ -661,7 +689,6 @@ function ItemDetailSheet({
               </>
             )}
 
-            {/* Flavor Section (Required if exists) */}
             {item.variations.length > 0 && (
               <div className="bg-[#f8fafc] rounded-[24px] p-5 border border-[#f1f5f9]">
                 <div className="flex items-center justify-between mb-1">
@@ -699,7 +726,6 @@ function ItemDetailSheet({
               </div>
             )}
 
-            {/* Addons Section (Multi-select with Quantity) */}
             {item.addons && item.addons.length > 0 && (
               <div ref={addonsSectionRef} className="bg-[#f8fafc] rounded-[24px] p-5 border border-[#f1f5f9]">
                 <div className="flex items-center justify-between mb-1">
