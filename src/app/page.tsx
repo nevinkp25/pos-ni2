@@ -4,10 +4,11 @@ import { useState } from 'react';
 import { WelcomeScreen } from '@/components/welcome-screen';
 import { StaffSignInScreen } from '@/components/staff-signin-screen';
 import { StaffDashboardScreen } from '@/components/staff-dashboard-screen';
+import { SelectTableScreen } from '@/components/select-table-screen';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Page() {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard'>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table'>('welcome');
   const { toast } = useToast();
 
   const handleStarted = () => {
@@ -27,6 +28,14 @@ export default function Page() {
     });
   };
 
+  const handleOrderMenu = () => {
+    setCurrentScreen('select-table');
+  };
+
+  const handleBackToDashboard = () => {
+    setCurrentScreen('staff-dashboard');
+  };
+
   return (
     <main>
       {currentScreen === 'welcome' && (
@@ -36,7 +45,10 @@ export default function Page() {
         <StaffSignInScreen onLogin={handleLogin} />
       )}
       {currentScreen === 'staff-dashboard' && (
-        <StaffDashboardScreen onLogout={handleLogout} />
+        <StaffDashboardScreen onLogout={handleLogout} onOrderMenu={handleOrderMenu} />
+      )}
+      {currentScreen === 'select-table' && (
+        <SelectTableScreen onBack={handleBackToDashboard} />
       )}
     </main>
   );

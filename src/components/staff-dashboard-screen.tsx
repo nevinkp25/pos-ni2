@@ -7,15 +7,17 @@ import { cn } from '@/lib/utils';
 
 interface StaffDashboardScreenProps {
   onLogout?: () => void;
+  onOrderMenu?: () => void;
 }
 
-export function StaffDashboardScreen({ onLogout }: StaffDashboardScreenProps) {
+export function StaffDashboardScreen({ onLogout, onOrderMenu }: StaffDashboardScreenProps) {
   const actions = [
     {
       title: 'Order Menu',
       description: 'Start a new table order',
       icon: <List className="w-6 h-6 text-[#0066b2]" />,
       bgColor: 'bg-[#f0f7ff]',
+      onClick: onOrderMenu,
     },
     {
       title: 'Pay Order',
@@ -79,6 +81,7 @@ export function StaffDashboardScreen({ onLogout }: StaffDashboardScreenProps) {
           {actions.map((action, index) => (
             <div 
               key={index}
+              onClick={action.onClick}
               className="group bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col hover:bg-[#0081d3] hover:shadow-[0_8px_30px_rgba(0,129,211,0.2)] transition-all active:scale-[0.98] cursor-pointer"
             >
               <div className={cn(
