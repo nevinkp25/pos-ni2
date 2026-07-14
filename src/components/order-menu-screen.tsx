@@ -33,8 +33,22 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
   }, []);
 
   const menuData: MenuCategory[] = [
-    { title: 'STARTERS', items: [] },
-    { title: 'PIZZA', items: [] },
+    { 
+      title: 'STARTERS', 
+      items: [
+        { name: 'Burrata con Pomodorini', allergens: ['Dairy'], price: '65.00' },
+        { name: 'Calamari Fritti', allergens: ['Shellfish', 'Gluten'], price: '55.00' },
+        { name: 'Bruschetta Classica', allergens: ['Gluten'], price: '42.00' },
+      ] 
+    },
+    { 
+      title: 'PIZZA', 
+      items: [
+        { name: 'Margherita', allergens: ['Dairy', 'Gluten'], price: '75.00' },
+        { name: 'Diavola', allergens: ['Dairy', 'Gluten'], price: '85.00' },
+        { name: 'Quattro Formaggi', allergens: ['Dairy', 'Gluten'], price: '90.00' },
+      ] 
+    },
     { 
       title: 'MAINS', 
       items: [
@@ -43,9 +57,22 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
         { name: 'Branzino al Forno', allergens: ['Fish'], price: '130.00' },
       ] 
     },
-    { title: 'PIZZA', items: [] }, // Repeat as per screenshot
-    { title: 'SIDES & SAUCES', items: [] },
-    { title: 'DESSERTS', items: [] },
+    { 
+      title: 'SIDES & SAUCES', 
+      items: [
+        { name: 'Patatine Fritte', allergens: [], price: '25.00' },
+        { name: 'Insalata Mista', allergens: [], price: '30.00' },
+        { name: 'Pane all\'Aglio', allergens: ['Gluten', 'Dairy'], price: '22.00' },
+      ] 
+    },
+    { 
+      title: 'DESSERTS', 
+      items: [
+        { name: 'Tiramisu Classico', allergens: ['Dairy', 'Gluten', 'Eggs'], price: '48.00' },
+        { name: 'Panna Cotta ai Frutti di Bosco', allergens: ['Dairy'], price: '42.00' },
+        { name: 'Cannoli Siciliani', allergens: ['Dairy', 'Gluten', 'Nuts'], price: '45.00' },
+      ] 
+    },
   ];
 
   const toggleCategory = (title: string) => {
