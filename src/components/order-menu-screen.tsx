@@ -17,7 +17,8 @@ import {
   Flame,
   AlertTriangle,
   Pencil,
-  Circle
+  Circle,
+  SquarePen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -286,8 +287,10 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   const handleMinusClick = (e: React.MouseEvent, itemName: string) => {
     e.stopPropagation();
     setCart(prev => {
-      const existing = prev.find(ci => ci.name === itemName && !ci.flavor && ci.addons.length === 0 && !ci.specialRequests);
+      // Find the most recently added version of this item (or the simple one)
+      const existing = prev.filter(ci => ci.name === itemName).pop();
       if (!existing) return prev;
+      
       if (existing.quantity > 1) {
         return prev.map(ci => ci.id === existing.id ? { ...ci, quantity: ci.quantity - 1 } : ci);
       }
@@ -301,9 +304,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
     setIsDetailSheetOpen(true);
   };
 
-  const getBasicItemQty = (itemName: string) => {
-    const item = cart.find(ci => ci.name === itemName && !ci.flavor && ci.addons.length === 0 && !ci.specialRequests);
-    return item?.quantity || 0;
+  const getItemQty = (itemName: string) => {
+    return cart.filter(ci => ci.name === itemName).reduce((sum, item) => sum + item.quantity, 0);
   };
 
   const handleAddToCart = (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => {
@@ -412,7 +414,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                 {isExpanded && category.items.length > 0 && (
                   <div className="bg-[#f8fbff] animate-in fade-in slide-in-from-top-2 duration-300">
                     {category.items.map((item, itemIndex) => {
-                      const quantity = getBasicItemQty(item.name);
+                      const quantity = getItemQty(item.name);
                       return (
                         <div 
                           key={itemIndex} 
@@ -422,7 +424,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                           )}
                           onClick={() => handleItemClick(item)}
                         >
-                          <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                          <div className="flex flex-col gap-1 flex-1 min-w-0">
                             <h3 className="text-[17px] font-black text-[#1a1c2e] leading-tight truncate">
                               {item.name}
                             </h3>
@@ -436,38 +438,38 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                                 </span>
                               ))}
                             </div>
-                            <p className="text-[#0066b2] text-[20px] font-black mt-1">
+                            <p className="text-[#0066b2] text-[18px] font-black mt-1">
                               AED {item.basePrice.toFixed(2)}
                             </p>
                           </div>
 
-                          <div className="flex flex-col items-end gap-1.5 shrink-0">
+                          <div className="flex flex-col items-end gap-1 shrink-0">
                             {quantity > 0 ? (
                               <>
                                 <button 
                                   className="flex items-center gap-1.5 text-[#0066b2] text-[12px] font-black tracking-tight mb-1 whitespace-nowrap"
                                   onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
                                 >
-                                  <FileEdit className="w-3.5 h-3.5" />
+                                  <SquarePen className="w-3.5 h-3.5" />
                                   <span className="border-b border-dotted border-[#0066b2]">Add Instruction</span>
                                 </button>
                                 <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between">
                                   <button 
                                     onClick={(e) => handleMinusClick(e, item.name)}
-                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#f8fafc] text-[#ef4444] active:scale-90 transition-all"
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-900 active:scale-90 transition-all"
                                   >
                                     {quantity === 1 ? (
-                                      <Trash2 className="w-4.5 h-4.5" />
+                                      <Trash2 className="w-4.5 h-4.5 text-[#ef4444]" />
                                     ) : (
-                                      <Minus className="w-4.5 h-4.5 stroke-[3px]" />
+                                      <Minus className="w-4.5 h-4.5 stroke-[3.5px] text-gray-900" />
                                     )}
                                   </button>
                                   <span className="text-[18px] font-black text-[#1a1c2e] px-2 tabular-nums">{quantity}</span>
                                   <button 
                                     onClick={(e) => handlePlusClick(e, item)}
-                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white active:scale-90 transition-all shadow-md shadow-blue-100"
+                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white active:scale-90 transition-all shadow-md"
                                   >
-                                    <Plus className="w-4.5 h-4.5 stroke-[3px]" />
+                                    <Plus className="w-4.5 h-4.5 stroke-[3.5px]" />
                                   </button>
                                 </div>
                               </>
@@ -476,7 +478,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                                 onClick={(e) => handlePlusClick(e, item)}
                                 className="w-14 h-14 bg-[#0066b2] rounded-full flex items-center justify-center text-white shadow-[0_6px_20px_rgba(0,102,178,0.25)] active:scale-90 transition-all"
                               >
-                                <Plus className="w-7 h-7 stroke-[3px]" />
+                                <Plus className="w-7 h-7 stroke-[3.5px]" />
                               </button>
                             )}
                           </div>
@@ -577,10 +579,7 @@ function ItemDetailSheet({
     }));
   };
 
-  const isCustomized = useMemo(() => {
-    if (!item) return false;
-    return item.variations.length === 0 || selectedFlavor !== null;
-  }, [item, selectedFlavor]);
+  const isCustomized = item ? (item.variations.length === 0 || selectedFlavor !== null) : false;
 
   const totalPrice = useMemo(() => {
     if (!item) return 0;
@@ -604,8 +603,7 @@ function ItemDetailSheet({
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="bottom" className={cn(
-        "rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden",
-        isCompact ? "h-[85vh]" : "h-[85vh]"
+        "rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden h-[85vh]"
       )}>
         <SheetHeader className="sr-only">
           <SheetTitle>{item.name}</SheetTitle>
