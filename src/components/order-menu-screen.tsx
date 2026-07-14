@@ -23,7 +23,7 @@ interface OrderMenuScreenProps {
 
 export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreenProps) {
   const [showSuccess, setShowSuccess] = useState(false);
-  const [expandedCategory, setExpandedCategory] = useState<string | null>('MAINS');
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
   useEffect(() => {
     // Show the success toast when component mounts
