@@ -3,6 +3,7 @@
 import React from 'react';
 import { Menu, User, LogOut, List, CreditCard, QrCode, CircleDollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface StaffDashboardScreenProps {
   onLogout?: () => void;
@@ -78,13 +79,26 @@ export function StaffDashboardScreen({ onLogout }: StaffDashboardScreenProps) {
           {actions.map((action, index) => (
             <div 
               key={index}
-              className="bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all active:scale-[0.98] cursor-pointer"
+              className="group bg-white rounded-[24px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.02)] flex flex-col hover:bg-[#0081d3] hover:shadow-[0_8px_30px_rgba(0,129,211,0.2)] transition-all active:scale-[0.98] cursor-pointer"
             >
-              <div className={`w-12 h-12 ${action.bgColor} rounded-2xl flex items-center justify-center mb-6`}>
-                {action.icon}
+              <div className={cn(
+                "w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-colors",
+                action.bgColor,
+                "group-hover:bg-white/20"
+              )}>
+                {React.cloneElement(action.icon as React.ReactElement, {
+                  className: cn(
+                    (action.icon as React.ReactElement).props.className,
+                    "group-hover:text-white transition-colors"
+                  )
+                })}
               </div>
-              <h4 className="font-bold text-[#1a1c2e] text-base mb-1 tracking-tight">{action.title}</h4>
-              <p className="text-[#94a3b8] text-[13px] leading-tight font-medium">{action.description}</p>
+              <h4 className="font-bold text-[#1a1c2e] group-hover:text-white text-base mb-1 tracking-tight transition-all duration-200">
+                {action.title}
+              </h4>
+              <p className="text-[#94a3b8] group-hover:text-white/90 text-[13px] leading-tight font-medium transition-all duration-200">
+                {action.description}
+              </p>
             </div>
           ))}
         </div>
