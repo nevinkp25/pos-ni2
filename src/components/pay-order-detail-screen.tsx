@@ -173,6 +173,53 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
             </div>
           </div>
 
+          {/* Item 3 */}
+          <div className="space-y-4 pb-6 border-b border-gray-50">
+            <div className="flex items-start justify-between">
+              <div className="flex gap-4 flex-1">
+                <div className="w-9 h-9 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="text-[#0066b2] text-[14px] font-black">2x</span>
+                </div>
+                <div className="flex flex-col gap-3 flex-1">
+                  <h3 className="text-[17px] font-black text-[#1a1c2e] leading-tight">The Wagyu Signature</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[#0066b2] font-black text-sm">+</span>
+                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-bold">Med-Rare</span>
+                        <div className="flex-1 border-b border-dotted border-gray-200 min-w-[60px]" />
+                      </div>
+                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-bold">
+                        <CurrencySymbol className="w-3.5 h-3.5" />
+                        <span>0.00</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[#0066b2] font-black text-sm">+</span>
+                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-bold">Truffle Sauce</span>
+                        <div className="flex-1 border-b border-dotted border-gray-200 min-w-[60px]" />
+                      </div>
+                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-bold">
+                        <CurrencySymbol className="w-3.5 h-3.5" />
+                        <span>3.00</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="inline-flex">
+                    <span className="bg-[#fffbeb] text-[#f59e0b] px-3 py-1.5 rounded-lg text-[12px] font-black shadow-sm">
+                      +5 more
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 text-[#1a1c2e] font-black text-[22px] ml-4">
+                <CurrencySymbol className="w-5 h-5" />
+                <span>16.00</span>
+              </div>
+            </div>
+          </div>
+
           <div className="pt-4 flex justify-center">
             <button className="flex items-center gap-2 bg-[#f0f7ff] px-10 h-14 rounded-full text-[#0066b2] text-[15px] font-black active:scale-95 transition-all shadow-sm">
               See More
@@ -184,7 +231,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
         {/* Totals Breakdown Card */}
         <div className="bg-[#f0f7ff] rounded-[32px] p-8 border-[2.5px] border-[#0066b2] space-y-5 shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-[16px] font-black text-[#0066b2] uppercase">Subtotal</span>
+            <span className="text-[16px] font-black text-[#0066b2] uppercase">SUBTOTAL</span>
             <div className="flex items-center gap-1 text-[#0066b2] font-black text-[24px]">
               <CurrencySymbol className="w-5 h-5" />
               <span>65.00</span>
@@ -193,14 +240,14 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
           
           <div className="space-y-4 pt-2">
             <div className="flex items-center justify-between text-[13px] font-bold text-[#94a3b8]">
-              <span className="uppercase">Extra Charges (10%)</span>
+              <span className="uppercase">EXTRA CHARGES (10%)</span>
               <div className="flex items-center gap-1">
                 <CurrencySymbol className="w-3.5 h-3.5" />
                 <span>3.58</span>
               </div>
             </div>
             <div className="flex items-center justify-between text-[13px] font-bold text-[#94a3b8]">
-              <span className="uppercase">Vat (5%)</span>
+              <span className="uppercase">VAT (5%)</span>
               <div className="flex items-center gap-1">
                 <CurrencySymbol className="w-3.5 h-3.5" />
                 <span>3.58</span>
@@ -210,8 +257,8 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
 
           <div className="pt-8 mt-2 border-t border-[#d1e9ff] flex items-end justify-between">
             <div className="flex flex-col gap-1.5">
-              <span className="text-[13px] font-bold text-[#94a3b8] uppercase leading-none">Total Balance Due</span>
-              <span className="text-[13px] font-bold text-[#0066b2] uppercase leading-none">Order # 2536</span>
+              <span className="text-[13px] font-bold text-[#94a3b8] uppercase leading-none">TOTAL BALANCE DUE</span>
+              <span className="text-[13px] font-bold text-[#0066b2] uppercase leading-none">ORDER # 2536</span>
             </div>
             <div className="flex items-center gap-1.5 text-[#0066b2] font-black text-[42px] leading-none">
               <CurrencySymbol className="w-10 h-10" />
@@ -241,9 +288,9 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
         </div>
         
         <button 
-          className="w-full h-16 bg-white border-[2px] border-gray-100 text-[#1a1c2e] rounded-[20px] text-[15px] font-bold uppercase active:bg-gray-50 transition-colors shadow-sm"
+          className="w-full h-16 bg-white border-[2.5px] border-gray-100 text-[#1a1c2e] rounded-[20px] text-[15px] font-black uppercase active:bg-gray-50 transition-colors shadow-sm"
         >
-          Custom Payment
+          CUSTOM PAYMENT
         </button>
       </div>
     </div>
