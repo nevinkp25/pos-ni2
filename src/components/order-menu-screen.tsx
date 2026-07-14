@@ -198,12 +198,12 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                         <div 
                           key={itemIndex} 
                           className={cn(
-                            "px-6 py-5 flex items-center justify-between",
+                            "px-6 py-5 flex items-center justify-between gap-4",
                             itemIndex !== category.items.length - 1 && "border-b border-[#eef2f8]"
                           )}
                         >
-                          <div className="flex flex-col gap-1.5 max-w-[65%]">
-                            <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight">
+                          <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+                            <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight truncate">
                               {item.name}
                             </h3>
                             <div className="flex gap-1.5 flex-wrap">
@@ -221,11 +221,11 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                             </p>
                           </div>
 
-                          <div className="flex flex-col items-end gap-3">
+                          <div className="flex flex-col items-end gap-3 shrink-0">
                             {quantity > 0 ? (
                               <>
-                                <button className="flex items-center gap-1.5 text-[#0066b2] text-[12px] font-black tracking-tight mb-1">
-                                  <FileEdit className="w-3.5 h-3.5" />
+                                <button className="flex items-center gap-1 text-[#0066b2] text-[11px] font-black tracking-tight mb-1 whitespace-nowrap">
+                                  <FileEdit className="w-3 h-3" />
                                   <span className="border-b border-dotted border-[#0066b2]">Add Instruction</span>
                                 </button>
                                 <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-sm h-11 min-w-[100px] justify-between">
