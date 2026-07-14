@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Home, Search, ChevronDown, ChevronUp, Check, X, Plus } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { ChevronLeft, Home, Search, ChevronDown, ChevronUp, Check, X, Plus, Minus, Trash2, ShoppingCart, FileEdit } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MenuItem {
@@ -24,6 +24,8 @@ interface OrderMenuScreenProps {
 export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreenProps) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  // Cart state: Record<itemName, quantity>
+  const [cart, setCart] = useState<Record<string, number>>({});
 
   useEffect(() => {
     // Show the success toast when component mounts
@@ -75,8 +77,35 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
     },
   ];
 
+  const totalItemsInCart = useMemo(() => {
+    return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+  }, [cart]);
+
+  const getCategoryCartCount = (category: MenuCategory) => {
+    return category.items.reduce((sum, item) => sum + (cart[item.name] || 0), 0);
+  };
+
   const toggleCategory = (title: string) => {
     setExpandedCategory(expandedCategory === title ? null : title);
+  };
+
+  const addToCart = (itemName: string) => {
+    setCart(prev => ({
+      ...prev,
+      [itemName]: (prev[itemName] || 0) + 1
+    }));
+  };
+
+  const removeFromCart = (itemName: string) => {
+    setCart(prev => {
+      const newCart = { ...prev };
+      if (newCart[itemName] > 1) {
+        newCart[itemName] -= 1;
+      } else {
+        delete newCart[itemName];
+      }
+      return newCart;
+    });
   };
 
   return (
@@ -101,11 +130,21 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
             onClick={onHome}
             className="w-10 h-10 flex items-center justify-center rounded-full border border-[#eef2f8] bg-white shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
           >
-            <Home className="w-5 h-5 text-[#0066b2] fill-[#0066b2]/10 stroke-[2.5px]" />
+            <Home className="w-5 h-5 text-[#0066b2] stroke-[2.5px]" />
           </button>
           <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
             <Search className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
           </button>
+          <div className="relative">
+            <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
+              <ShoppingCart className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
+            </button>
+            {totalItemsInCart > 0 && (
+              <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#ef4444] rounded-full border-2 border-white flex items-center justify-center">
+                <span className="text-white text-[10px] font-black">{totalItemsInCart}</span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -114,6 +153,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
         <div className="bg-white rounded-[24px] shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-[#f0f4f8] overflow-hidden">
           {menuData.map((category, index) => {
             const isExpanded = expandedCategory === category.title;
+            const categoryItemsInCart = getCategoryCartCount(category);
+
             return (
               <div key={index} className={cn(index !== menuData.length - 1 && "border-b border-[#f0f4f8]")}>
                 {/* Category Header */}
@@ -127,52 +168,96 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                   <span className="text-[14px] font-black text-[#334155] tracking-wide">
                     {category.title}
                   </span>
-                  <div className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
-                    isExpanded ? "bg-[#e8edff]" : "bg-[#f0f7ff]"
-                  )}>
-                    {isExpanded ? (
-                      <ChevronUp className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
+                  <div className="flex items-center gap-3">
+                    {categoryItemsInCart > 0 && (
+                      <div className="w-6 h-6 bg-[#ef4444] rounded-full flex items-center justify-center shadow-sm">
+                        <span className="text-white text-[11px] font-black">{categoryItemsInCart}</span>
+                      </div>
                     )}
+                    <div className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                      isExpanded ? "bg-[#e8edff]" : "bg-[#f0f7ff]"
+                    )}>
+                      {isExpanded ? (
+                        <ChevronUp className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
+                      )}
+                    </div>
                   </div>
                 </button>
 
                 {/* Category Content (Items) */}
                 {isExpanded && category.items.length > 0 && (
                   <div className="bg-[#f8fbff] animate-in fade-in slide-in-from-top-2 duration-300">
-                    {category.items.map((item, itemIndex) => (
-                      <div 
-                        key={itemIndex} 
-                        className={cn(
-                          "px-6 py-5 flex items-center justify-between",
-                          itemIndex !== category.items.length - 1 && "border-b border-[#eef2f8]"
-                        )}
-                      >
-                        <div className="flex flex-col gap-1.5">
-                          <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight">
-                            {item.name}
-                          </h3>
-                          <div className="flex gap-1.5">
-                            {item.allergens.map((allergen) => (
-                              <span 
-                                key={allergen}
-                                className="px-2.5 py-0.5 rounded-full border border-[#f59e0b]/40 text-[#f59e0b] text-[10px] font-black tracking-tight"
-                              >
-                                {allergen}
-                              </span>
-                            ))}
+                    {category.items.map((item, itemIndex) => {
+                      const quantity = cart[item.name] || 0;
+                      return (
+                        <div 
+                          key={itemIndex} 
+                          className={cn(
+                            "px-6 py-5 flex items-center justify-between",
+                            itemIndex !== category.items.length - 1 && "border-b border-[#eef2f8]"
+                          )}
+                        >
+                          <div className="flex flex-col gap-1.5 max-w-[65%]">
+                            <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight">
+                              {item.name}
+                            </h3>
+                            <div className="flex gap-1.5 flex-wrap">
+                              {item.allergens.map((allergen) => (
+                                <span 
+                                  key={allergen}
+                                  className="px-2.5 py-0.5 rounded-full border border-[#f59e0b]/40 text-[#f59e0b] text-[10px] font-black tracking-tight"
+                                >
+                                  {allergen}
+                                </span>
+                              ))}
+                            </div>
+                            <p className="text-[#0066b2] text-[15px] font-black mt-1">
+                              AED {item.price}
+                            </p>
                           </div>
-                          <p className="text-[#0066b2] text-[15px] font-black mt-1">
-                            AED {item.price}
-                          </p>
+
+                          <div className="flex flex-col items-end gap-3">
+                            {quantity > 0 ? (
+                              <>
+                                <button className="flex items-center gap-1.5 text-[#0066b2] text-[12px] font-black tracking-tight mb-1">
+                                  <FileEdit className="w-3.5 h-3.5" />
+                                  <span className="border-b border-dotted border-[#0066b2]">Add Instruction</span>
+                                </button>
+                                <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-sm h-11 min-w-[100px] justify-between">
+                                  <button 
+                                    onClick={() => removeFromCart(item.name)}
+                                    className="w-9 h-9 flex items-center justify-center rounded-full bg-[#f1f5f9] text-[#ef4444] active:scale-90 transition-all"
+                                  >
+                                    {quantity === 1 ? (
+                                      <Trash2 className="w-4 h-4" />
+                                    ) : (
+                                      <Minus className="w-4 h-4 stroke-[3px]" />
+                                    )}
+                                  </button>
+                                  <span className="text-[15px] font-black text-[#1a1c2e] px-2">{quantity}</span>
+                                  <button 
+                                    onClick={() => addToCart(item.name)}
+                                    className="w-9 h-9 flex items-center justify-center rounded-full bg-[#0066b2] text-white active:scale-90 transition-all shadow-md shadow-blue-200"
+                                  >
+                                    <Plus className="w-4 h-4 stroke-[3px]" />
+                                  </button>
+                                </div>
+                              </>
+                            ) : (
+                              <button 
+                                onClick={() => addToCart(item.name)}
+                                className="w-12 h-12 bg-[#0066b2] rounded-full flex items-center justify-center text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
+                              >
+                                <Plus className="w-6 h-6 stroke-[3px]" />
+                              </button>
+                            )}
+                          </div>
                         </div>
-                        <button className="w-12 h-12 bg-[#0066b2] rounded-full flex items-center justify-center text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all">
-                          <Plus className="w-6 h-6 stroke-[3px]" />
-                        </button>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </div>
