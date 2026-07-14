@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   ChevronLeft, 
   Home, 
@@ -39,6 +39,7 @@ interface MenuItem {
     fat: string;
   };
   variations: string[];
+  addons?: string[];
 }
 
 interface MenuCategory {
@@ -77,7 +78,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Dairy'], 
           price: '65.00',
           nutritionalInfo: { kcal: 450, protein: '15g', carbs: '10g', fat: '35g' },
-          variations: ['Extra Pesto', 'With Focaccia', 'Extra Tomatoes', 'Balsamic Glaze']
+          variations: ['Extra Pesto', 'With Focaccia', 'Extra Tomatoes', 'Balsamic Glaze'],
+          addons: ['Extra Burrata', 'Extra Pesto', 'Focaccia Bread', 'Arugula']
         },
         { 
           name: 'Calamari Fritti', 
@@ -85,7 +87,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Shellfish', 'Gluten'], 
           price: '55.00',
           nutritionalInfo: { kcal: 520, protein: '22g', carbs: '35g', fat: '28g' },
-          variations: ['Spicy Marinara', 'Garlic Aioli', 'Lemon Wedge', 'Tartar Sauce']
+          variations: ['Spicy Marinara', 'Garlic Aioli', 'Lemon Wedge', 'Tartar Sauce'],
+          addons: ['Extra Sauce', 'Lemon Wedges', 'Side Salad']
         },
         { 
           name: 'Bruschetta Classica', 
@@ -93,7 +96,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Gluten'], 
           price: '42.00',
           nutritionalInfo: { kcal: 310, protein: '8g', carbs: '45g', fat: '12g' },
-          variations: ['Extra Garlic', 'Balsamic Drizzle', 'With Anchovies', 'Standard']
+          variations: ['Extra Garlic', 'Balsamic Drizzle', 'With Anchovies', 'Standard'],
+          addons: ['Extra Tomatoes', 'Prosciutto', 'Buffalo Mozzarella']
         },
       ] 
     },
@@ -106,7 +110,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Dairy', 'Gluten'], 
           price: '75.00',
           nutritionalInfo: { kcal: 850, protein: '32g', carbs: '95g', fat: '34g' },
-          variations: ['Buffalo Mozzarella', 'Extra Basil', 'Thin Crust', 'Thick Crust']
+          variations: ['Buffalo Mozzarella', 'Extra Basil', 'Thin Crust', 'Thick Crust'],
+          addons: ['Olives', 'Mushrooms', 'Hot Salami', 'Bell Peppers']
         },
         { 
           name: 'Diavola', 
@@ -114,7 +119,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Dairy', 'Gluten'], 
           price: '85.00',
           nutritionalInfo: { kcal: 980, protein: '38g', carbs: '92g', fat: '45g' },
-          variations: ['Extra Spicy', 'Less Cheese', 'With Olives', 'Standard']
+          variations: ['Extra Spicy', 'Less Cheese', 'With Olives', 'Standard'],
+          addons: ['Jalapenos', 'Hot Honey', 'Extra Salami']
         },
         { 
           name: 'Quattro Formaggi', 
@@ -122,7 +128,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Dairy', 'Gluten'], 
           price: '90.00',
           nutritionalInfo: { kcal: 1100, protein: '42g', carbs: '98g', fat: '58g' },
-          variations: ['Honey Drizzle', 'With Walnuts', 'Thin Crust', 'Extra Gorgonzola']
+          variations: ['Honey Drizzle', 'With Walnuts', 'Thin Crust', 'Extra Gorgonzola'],
+          addons: ['Truffle Oil', 'Caramelized Onions']
         },
       ] 
     },
@@ -135,7 +142,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Dairy', 'Gluten'], 
           price: '145.00',
           nutritionalInfo: { kcal: 892, protein: '32g', carbs: '98g', fat: '38g' },
-          variations: ['Variation / Condiments 1', 'Variation / Condiments 2', 'Variation / Condiments 3', 'Variation / Condiments 4']
+          variations: ['Classic Saffron', 'Extra Risotto', 'Less Sauce', 'Soft Veal'],
+          addons: ['Bone Marrow', 'Asparagus', 'Parmesan Crisps']
         },
         { 
           name: 'Spaghetti alle Vongole', 
@@ -143,7 +151,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Shellfish', 'Gluten'], 
           price: '98.00',
           nutritionalInfo: { kcal: 680, protein: '28g', carbs: '85g', fat: '22g' },
-          variations: ['Extra Chili', 'More Garlic', 'White Wine Sauce', 'Red Sauce']
+          variations: ['Extra Chili', 'More Garlic', 'White Wine Sauce', 'Red Sauce'],
+          addons: ['Extra Clams', 'Breadcrumbs', 'Parsley']
         },
         { 
           name: 'Branzino al Forno', 
@@ -151,7 +160,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Fish'], 
           price: '130.00',
           nutritionalInfo: { kcal: 550, protein: '45g', carbs: '15g', fat: '32g' },
-          variations: ['Lemon Butter', 'Olive Tapenade', 'Grilled Veggies', 'Roasted Potatoes']
+          variations: ['Lemon Butter', 'Olive Tapenade', 'Grilled Veggies', 'Roasted Potatoes'],
+          addons: ['Spinach', 'Lemon Wedges', 'Herb Oil']
         },
       ] 
     },
@@ -164,7 +174,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: [], 
           price: '25.00',
           nutritionalInfo: { kcal: 400, protein: '4g', carbs: '48g', fat: '20g' },
-          variations: ['Truffle Oil', 'Parmesan', 'Spicy Dip', 'Ketchup']
+          variations: ['Truffle Oil', 'Parmesan', 'Spicy Dip', 'Ketchup'],
+          addons: ['Cheese Dip', 'Garlic Mayo']
         },
         { 
           name: 'Insalata Mista', 
@@ -172,15 +183,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: [], 
           price: '30.00',
           nutritionalInfo: { kcal: 150, protein: '2g', carbs: '12g', fat: '8g' },
-          variations: ['Italian Dressing', 'Caesar Dressing', 'No Dressing', 'Lemon Vinaigrette']
-        },
-        { 
-          name: 'Pane all\'Aglio', 
-          description: 'Garlic bread with herbs',
-          allergens: ['Gluten', 'Dairy'], 
-          price: '22.00',
-          nutritionalInfo: { kcal: 350, protein: '6g', carbs: '42g', fat: '18g' },
-          variations: ['Extra Cheese', 'Soft Bread', 'Crispy Bread', 'Standard']
+          variations: ['Italian Dressing', 'Caesar Dressing', 'No Dressing', 'Lemon Vinaigrette'],
+          addons: ['Croutons', 'Feta Cheese']
         },
       ] 
     },
@@ -193,7 +197,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Dairy', 'Gluten', 'Eggs'], 
           price: '48.00',
           nutritionalInfo: { kcal: 580, protein: '8g', carbs: '55g', fat: '32g' },
-          variations: ['Extra Cocoa', 'With Berries', 'Decaf Version', 'Standard']
+          variations: ['Extra Cocoa', 'With Berries', 'Decaf Version', 'Standard'],
+          addons: ['Chocolate Shavings', 'Espresso Shot']
         },
         { 
           name: 'Panna Cotta', 
@@ -201,15 +206,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Dairy'], 
           price: '42.00',
           nutritionalInfo: { kcal: 420, protein: '4g', carbs: '38g', fat: '28g' },
-          variations: ['Frutti di Bosco', 'Caramel Sauce', 'Vanilla Bean', 'Chocolate Drizzle']
-        },
-        { 
-          name: 'Cannoli Siciliani', 
-          description: 'Pastry shells with sweet ricotta filling',
-          allergens: ['Dairy', 'Gluten', 'Nuts'], 
-          price: '45.00',
-          nutritionalInfo: { kcal: 480, protein: '10g', carbs: '52g', fat: '25g' },
-          variations: ['Pistachio', 'Chocolate chip', 'Orange Zest', 'Standard']
+          variations: ['Frutti di Bosco', 'Caramel Sauce', 'Vanilla Bean', 'Chocolate Drizzle'],
+          addons: ['Mixed Berries', 'Mint Leaf']
         },
       ] 
     },
@@ -445,9 +443,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
         isOpen={isDetailSheetOpen}
         onClose={() => setIsDetailSheetOpen(false)}
         item={selectedItem}
-        quantity={selectedItem ? (cart[selectedItem.name] || 0) : 0}
         onAdd={() => selectedItem && addToCart(selectedItem.name)}
-        onRemove={() => selectedItem && removeFromCart(selectedItem.name)}
       />
     </div>
   );
@@ -457,28 +453,58 @@ function ItemDetailSheet({
   isOpen, 
   onClose, 
   item, 
-  quantity, 
-  onAdd, 
-  onRemove 
+  onAdd,
 }: { 
   isOpen: boolean; 
   onClose: () => void; 
   item: MenuItem | null;
-  quantity: number;
   onAdd: () => void;
-  onRemove: () => void;
 }) {
+  const [selectedFlavor, setSelectedFlavor] = useState<string | null>(null);
+  const [addonQuantities, setAddonQuantities] = useState<Record<string, number>>({});
+  const [specialRequests, setSpecialRequests] = useState('');
+  
+  const addonsSectionRef = useRef<HTMLDivElement>(null);
+  const specialRequestsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedFlavor(null);
+      setAddonQuantities({});
+      setSpecialRequests('');
+    }
+  }, [isOpen]);
+
   if (!item) return null;
+
+  const handleFlavorSelect = (flavor: string) => {
+    setSelectedFlavor(flavor);
+    // Auto scroll to addons or special requests
+    setTimeout(() => {
+      if (item.addons && item.addons.length > 0) {
+        addonsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        specialRequestsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 300);
+  };
+
+  const updateAddonQty = (addon: string, delta: number) => {
+    setAddonQuantities(prev => ({
+      ...prev,
+      [addon]: Math.max(0, (prev[addon] || 0) + delta)
+    }));
+  };
+
+  const isCustomized = selectedFlavor !== null;
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="bottom" className="h-[94vh] rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden">
-        {/* Accessibility Title (Visually Hidden) */}
         <SheetHeader className="sr-only">
           <SheetTitle>{item.name}</SheetTitle>
         </SheetHeader>
 
-        {/* Close Button Header */}
         <div className="absolute top-6 right-6 z-20">
           <button 
             onClick={onClose}
@@ -490,7 +516,6 @@ function ItemDetailSheet({
 
         <div className="flex-1 overflow-y-auto pt-10 pb-32 px-6">
           <div className="max-w-md mx-auto space-y-8">
-            {/* Header Content */}
             <div className="space-y-2">
               <h2 className="text-[#1a1c2e] text-[32px] font-black leading-tight tracking-tight">
                 {item.name}
@@ -508,7 +533,6 @@ function ItemDetailSheet({
               </div>
             </div>
 
-            {/* Nutritional Info Section */}
             <div className="bg-[#f8fbff] rounded-[24px] p-6 border border-[#f0f4f8]">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
@@ -532,7 +556,6 @@ function ItemDetailSheet({
               </div>
             </div>
 
-            {/* Allergen Info Section */}
             <div className="bg-[#fffbeb] rounded-[24px] p-6 border border-[#fef3c7]">
               <div className="flex items-center gap-2 mb-4">
                 <AlertTriangle className="w-5 h-5 text-[#f59e0b] fill-[#f59e0b]/10" />
@@ -552,7 +575,7 @@ function ItemDetailSheet({
               </div>
             </div>
 
-            {/* Flavor Section */}
+            {/* Flavor Section (Required) */}
             <div className="bg-[#f8fafc] rounded-[24px] p-6 border border-[#f1f5f9]">
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
@@ -565,13 +588,16 @@ function ItemDetailSheet({
               <div className="space-y-4">
                 {item.variations.map((v, i) => (
                   <div key={i}>
-                    <div className="flex items-center justify-between py-2 group cursor-pointer">
+                    <div 
+                      className="flex items-center justify-between py-2 group cursor-pointer"
+                      onClick={() => handleFlavorSelect(v)}
+                    >
                       <span className="text-[#334155] text-[15px] font-black">{v}</span>
                       <div className={cn(
                         "w-6 h-6 rounded-full border-[2px] flex items-center justify-center transition-all",
-                        i === 0 ? "border-[#0066b2] bg-white" : "border-gray-200"
+                        selectedFlavor === v ? "border-[#0066b2] bg-white" : "border-gray-200"
                       )}>
-                        {i === 0 && <div className="w-3 h-3 bg-[#0066b2] rounded-full" />}
+                        {selectedFlavor === v && <div className="w-3 h-3 bg-[#0066b2] rounded-full" />}
                       </div>
                     </div>
                     {i !== item.variations.length - 1 && (
@@ -582,44 +608,87 @@ function ItemDetailSheet({
               </div>
             </div>
 
-            {/* Special Requests Section */}
-            <div className="bg-[#f8fafc] rounded-[24px] p-6 border border-[#f1f5f9]">
+            {/* Addons Section (Multi-select with Quantity) */}
+            {item.addons && item.addons.length > 0 && (
+              <div ref={addonsSectionRef} className="bg-[#f8fafc] rounded-[24px] p-6 border border-[#f1f5f9]">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#1a1c2e] text-[18px] font-black tracking-tight">Add-ons</span>
+                  </div>
+                </div>
+                <p className="text-[#94a3b8] text-[13px] font-bold mb-6">Select multiple extras</p>
+                
+                <div className="space-y-4">
+                  {item.addons.map((addon, i) => {
+                    const qty = addonQuantities[addon] || 0;
+                    return (
+                      <div key={i}>
+                        <div className="flex items-center justify-between py-2 group">
+                          <span className="text-[#334155] text-[15px] font-black">{addon}</span>
+                          <div className="flex items-center gap-3">
+                            {qty > 0 && (
+                              <button 
+                                onClick={() => updateAddonQty(addon, -1)}
+                                className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 text-[#ef4444] active:scale-90 transition-all"
+                              >
+                                {qty === 1 ? <Trash2 className="w-4 h-4" /> : <Minus className="w-4 h-4 stroke-[3.5px]" />}
+                              </button>
+                            )}
+                            {qty > 0 && <span className="text-[14px] font-black text-[#1a1c2e] min-w-[14px] text-center">{qty}</span>}
+                            <button 
+                              onClick={() => updateAddonQty(addon, 1)}
+                              className={cn(
+                                "w-8 h-8 flex items-center justify-center rounded-full transition-all active:scale-90",
+                                qty > 0 ? "bg-[#0066b2] text-white" : "bg-white border border-gray-200 text-[#0066b2]"
+                              )}
+                            >
+                              <Plus className="w-4 h-4 stroke-[3.5px]" />
+                            </button>
+                          </div>
+                        </div>
+                        {i !== item.addons!.length - 1 && (
+                          <div className="w-full border-b border-dotted border-gray-200 mt-2" />
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            <div ref={specialRequestsRef} className="bg-[#f8fafc] rounded-[24px] p-6 border border-[#f1f5f9]">
               <div className="flex items-center gap-2 mb-4">
                 <Pencil className="w-5 h-5 text-[#94a3b8]" />
                 <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Special requests</span>
               </div>
               <div className="relative">
                 <textarea 
+                  value={specialRequests}
+                  onChange={(e) => setSpecialRequests(e.target.value)}
                   placeholder="For example: less spicy, no sugar, etc."
                   className="w-full h-32 bg-white rounded-2xl border border-[#e2e8f0] p-4 text-[14px] font-medium placeholder:text-gray-300 focus:outline-none focus:border-[#0066b2] transition-colors resize-none"
                 />
-                <span className="absolute bottom-4 right-4 text-[#cbd5e1] text-[11px] font-bold">0/150</span>
+                <span className="absolute bottom-4 right-4 text-[#cbd5e1] text-[11px] font-bold">
+                  {specialRequests.length}/150
+                </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Footer Actions */}
         <div className="absolute bottom-0 inset-x-0 bg-white px-6 pt-5 pb-8 border-t border-[#f0f4f8] shadow-[0_-10px_40px_rgba(0,0,0,0.03)] flex items-center gap-4 z-30">
-          <div className="bg-[#f8fbff] border border-[#eef2f8] rounded-full p-1.5 flex items-center gap-4 shadow-sm h-14 shrink-0">
-            <button 
-              onClick={onRemove}
-              className="w-11 h-11 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all shadow-sm border border-[#eef2f8]"
-            >
-              {quantity <= 1 ? <Trash2 className="w-5 h-5" /> : <Minus className="w-5 h-5 stroke-[3px]" />}
-            </button>
-            <span className="text-[18px] font-black text-[#1a1c2e] min-w-[20px] text-center">{quantity || 1}</span>
-            <button 
-              onClick={onAdd}
-              className="w-11 h-11 flex items-center justify-center rounded-full bg-[#0066b2] text-white active:scale-90 transition-all shadow-[0_4px_12px_rgba(0,102,178,0.25)]"
-            >
-              <Plus className="w-5 h-5 stroke-[3px]" />
-            </button>
-          </div>
-          
           <button 
-            onClick={onClose}
-            className="flex-1 h-14 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-[17px] font-black shadow-[0_6px_20px_rgba(0,102,178,0.3)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
+            disabled={!isCustomized}
+            onClick={() => {
+              onAdd();
+              onClose();
+            }}
+            className={cn(
+              "flex-1 h-14 rounded-[18px] text-[17px] font-black shadow-[0_6px_20px_rgba(0,102,178,0.3)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all",
+              isCustomized 
+                ? "bg-[#0066b2] hover:bg-[#005596] text-white" 
+                : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed"
+            )}
           >
             Add · AED {item.price}
           </button>
