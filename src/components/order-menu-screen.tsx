@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Home, Search, ChevronDown, ChevronUp, Check, X, Plus } from 'lucide-react';
+import { ChevronLeft, LayoutGrid, Search, ChevronDown, ChevronUp, Check, X, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface MenuItem {
@@ -101,7 +101,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
             onClick={onHome}
             className="w-10 h-10 flex items-center justify-center rounded-full border border-[#eef2f8] bg-white shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
           >
-            <Home className="w-5 h-5 text-[#0066b2] fill-[#0066b2]" />
+            <LayoutGrid className="w-5 h-5 text-[#0066b2] fill-[#0066b2]/10 stroke-[2.5px]" />
           </button>
           <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
             <Search className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
