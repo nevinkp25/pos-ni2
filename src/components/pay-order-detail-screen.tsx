@@ -21,19 +21,16 @@ interface PayOrderDetailScreenProps {
   onSettle: () => void;
 }
 
-// Pixel-perfect recreation of the custom currency symbol in the design
+// Custom currency component using the requested Dirham symbol
 const CurrencySymbol = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 24 24" className={cn("fill-none", className)} xmlns="http://www.w3.org/2000/svg">
-    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-    <path d="M7 10H17M7 14H17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-  </svg>
+  <span className={cn("font-bold text-inherit", className)}>⃃</span>
 );
 
 export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: PayOrderDetailScreenProps) {
   return (
     <div className="flex flex-col h-screen bg-[#f7f9fc] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
       {/* Header */}
-      <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 z-10">
+      <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 z-10 border-b border-gray-50">
         <div className="flex items-center gap-4">
           <button 
             onClick={onBack}
@@ -42,7 +39,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
             <ChevronLeft className="w-7 h-7 text-[#0066b2] stroke-[3px]" />
           </button>
           <div className="flex flex-col">
-            <h1 className="text-[22px] font-bold leading-none text-[#1a1c2e] tracking-tight">Pay Order</h1>
+            <h1 className="text-[22px] font-bold leading-none text-[#1a1c2e]">Pay Order</h1>
             <span className="text-[#94a3b8] text-[14px] font-bold mt-1">Table # {tableNumber || '1020'}</span>
           </div>
         </div>
@@ -53,7 +50,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 px-5 pt-2 overflow-y-auto pb-48 space-y-4">
+      <div className="flex-1 px-5 pt-3 overflow-y-auto pb-48 space-y-4">
         
         {/* Order # Header Card */}
         <div className="bg-white rounded-[32px] p-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center">
@@ -66,7 +63,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
               <div className="w-12 h-12 bg-[#f0f7ff] rounded-full flex items-center justify-center mb-3">
                 <User className="w-6 h-6 text-[#0066b2]" />
               </div>
-              <span className="text-[11px] font-black text-[#94a3b8] uppercase mb-1.5">Staff</span>
+              <span className="text-[11px] font-bold text-[#94a3b8] uppercase mb-1.5">Staff</span>
               <span className="text-[17px] font-black text-[#1a1c2e]">232</span>
             </div>
             
@@ -74,7 +71,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
               <div className="w-12 h-12 bg-[#f0f7ff] rounded-full flex items-center justify-center mb-3">
                 <Clock className="w-6 h-6 text-[#0066b2]" />
               </div>
-              <span className="text-[11px] font-black text-[#94a3b8] uppercase mb-1.5">Date & Time</span>
+              <span className="text-[11px] font-bold text-[#94a3b8] uppercase mb-1.5">Date & Time</span>
               <span className="text-[17px] font-black text-[#1a1c2e]">Jul 1, 01:19 AM</span>
             </div>
           </div>
@@ -84,7 +81,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
         <div className="bg-white rounded-[32px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 space-y-6">
           <div className="flex items-center gap-2 mb-2">
             <ReceiptText className="w-4 h-4 text-[#94a3b8]" />
-            <span className="text-[12px] font-black text-[#94a3b8] uppercase">Current Orders</span>
+            <span className="text-[12px] font-bold text-[#94a3b8] uppercase">Current Orders</span>
           </div>
 
           {/* Item 1 */}
@@ -100,10 +97,10 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className="text-[#0066b2] font-black text-sm">+</span>
-                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-black">Regular</span>
+                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-bold">Regular</span>
                         <div className="flex-1 border-b border-dotted border-gray-200 min-w-[60px]" />
                       </div>
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-black">
+                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-bold">
                         <CurrencySymbol className="w-3.5 h-3.5" />
                         <span>0.00</span>
                       </div>
@@ -111,10 +108,10 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className="text-[#0066b2] font-black text-sm">+</span>
-                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-black">Cheese</span>
+                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-bold">Cheese</span>
                         <div className="flex-1 border-b border-dotted border-gray-200 min-w-[60px]" />
                       </div>
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-black">
+                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-bold">
                         <CurrencySymbol className="w-3.5 h-3.5" />
                         <span>1.50</span>
                       </div>
@@ -142,10 +139,10 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className="text-[#0066b2] font-black text-sm">+</span>
-                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-black">Garlic</span>
+                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-bold">Garlic</span>
                         <div className="flex-1 border-b border-dotted border-gray-200 min-w-[60px]" />
                       </div>
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-black">
+                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-bold">
                         <CurrencySymbol className="w-3.5 h-3.5" />
                         <span>0.50</span>
                       </div>
@@ -153,10 +150,10 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className="text-[#0066b2] font-black text-sm">+</span>
-                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-black">Tomato Basil</span>
+                        <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[12px] font-bold">Tomato Basil</span>
                         <div className="flex-1 border-b border-dotted border-gray-200 min-w-[60px]" />
                       </div>
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-black">
+                      <div className="flex items-center gap-1 text-[#94a3b8] text-[13px] font-bold">
                         <CurrencySymbol className="w-3.5 h-3.5" />
                         <span>1.00</span>
                       </div>
@@ -185,7 +182,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
         </div>
 
         {/* Totals Breakdown Card */}
-        <div className="bg-[#f0f7ff] rounded-[32px] p-8 border-[2px] border-[#0066b2] space-y-5">
+        <div className="bg-[#f0f7ff] rounded-[32px] p-8 border-[2.5px] border-[#0066b2] space-y-5 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-[16px] font-black text-[#0066b2] uppercase">Subtotal</span>
             <div className="flex items-center gap-1 text-[#0066b2] font-black text-[24px]">
@@ -195,15 +192,15 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
           </div>
           
           <div className="space-y-4 pt-2">
-            <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">Extra Charges (10%)</span>
+            <div className="flex items-center justify-between text-[13px] font-bold text-[#94a3b8]">
+              <span className="uppercase">Extra Charges (10%)</span>
               <div className="flex items-center gap-1">
                 <CurrencySymbol className="w-3.5 h-3.5" />
                 <span>3.58</span>
               </div>
             </div>
-            <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">Vat (5%)</span>
+            <div className="flex items-center justify-between text-[13px] font-bold text-[#94a3b8]">
+              <span className="uppercase">Vat (5%)</span>
               <div className="flex items-center gap-1">
                 <CurrencySymbol className="w-3.5 h-3.5" />
                 <span>3.58</span>
@@ -213,8 +210,8 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
 
           <div className="pt-8 mt-2 border-t border-[#d1e9ff] flex items-end justify-between">
             <div className="flex flex-col gap-1.5">
-              <span className="text-[13px] font-black text-[#94a3b8] uppercase leading-none">Total Balance Due</span>
-              <span className="text-[13px] font-black text-[#0066b2] uppercase leading-none">Order # 2536</span>
+              <span className="text-[13px] font-bold text-[#94a3b8] uppercase leading-none">Total Balance Due</span>
+              <span className="text-[13px] font-bold text-[#0066b2] uppercase leading-none">Order # 2536</span>
             </div>
             <div className="flex items-center gap-1.5 text-[#0066b2] font-black text-[42px] leading-none">
               <CurrencySymbol className="w-10 h-10" />
@@ -244,7 +241,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
         </div>
         
         <button 
-          className="w-full h-16 bg-white border-[2px] border-gray-100 text-[#1a1c2e] rounded-[20px] text-[15px] font-black uppercase active:bg-gray-50 transition-colors shadow-sm"
+          className="w-full h-16 bg-white border-[2px] border-gray-100 text-[#1a1c2e] rounded-[20px] text-[15px] font-bold uppercase active:bg-gray-50 transition-colors shadow-sm"
         >
           Custom Payment
         </button>
