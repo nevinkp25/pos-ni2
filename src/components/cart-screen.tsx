@@ -13,7 +13,8 @@ import {
   X,
   FileText,
   ChevronsRight,
-  Check
+  Check,
+  Pencil
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CartItem } from '@/lib/types';
@@ -128,7 +129,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
     const touchEndY = e.changedTouches[0].clientY;
     const diff = footerTouchStartY.current - touchEndY;
     if (Math.abs(diff) > 30) {
-      setIsFooterExpanded(diff > 0);
+      setIsFooterExpanded(diff < 0);
     }
   };
 
@@ -234,6 +235,12 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button 
+                      className="flex items-center gap-1 px-2 h-7 rounded-full bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all"
+                    >
+                      <Pencil className="w-3 h-3" />
+                      <span className="text-[10px] font-black uppercase tracking-tight">Edit</span>
+                    </button>
+                    <button 
                       onClick={() => toggleItem(item.id)}
                       className="w-7 h-7 rounded-full bg-[#f8fafc] flex items-center justify-center text-[#94a3b8]"
                     >
@@ -289,19 +296,19 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                         </span>
                       </button>
 
-                      <div className="flex items-center bg-white rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.06)] h-[46px] min-w-[120px] justify-between border border-gray-100">
+                      <div className="flex items-center bg-white rounded-full p-0.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] h-[38px] min-w-[90px] justify-between border border-gray-100">
                         <button 
                           onClick={() => updateQty(item.id, -1)}
-                          className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all hover:bg-red-50"
+                          className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all"
                         >
-                          {item.quantity === 1 ? <Trash2 className="w-4.5 h-4.5" /> : <Minus className="w-4.5 h-4.5 stroke-[3px]" />}
+                          {item.quantity === 1 ? <Trash2 className="w-3.5 h-3.5" /> : <Minus className="w-3.5 h-3.5 stroke-[3px]" />}
                         </button>
-                        <span className="text-[18px] font-black text-[#1a1c2e] px-2 tabular-nums">{item.quantity}</span>
+                        <span className="text-[14px] font-black text-[#1a1c2e] px-1 tabular-nums">{item.quantity}</span>
                         <button 
                           onClick={() => updateQty(item.id, 1)}
-                          className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-md active:scale-90 transition-all hover:bg-[#005ea1]"
+                          className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-sm active:scale-90 transition-all"
                         >
-                          <Plus className="w-4.5 h-4.5 stroke-[3px]" />
+                          <Plus className="w-3.5 h-3.5 stroke-[3px]" />
                         </button>
                       </div>
                     </div>
