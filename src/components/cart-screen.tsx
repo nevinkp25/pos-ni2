@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { 
   ChevronLeft, 
   Trash2, 
@@ -12,7 +12,8 @@ import {
   MessageCircle,
   X,
   FileText,
-  ChevronsRight
+  ChevronsRight,
+  Check
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CartItem } from '@/lib/types';
@@ -24,6 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 interface CartScreenProps {
   tableNumber: string;
@@ -36,7 +38,15 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
   const [expandedItems, setExpandedItems] = useState<string[]>(cart.map(i => i.id));
   const [isFooterExpanded, setIsFooterExpanded] = useState(true);
   const touchStartY = useRef(0);
+  const { toast } = useToast();
   
+  // Slider State
+  const [sliderX, setSliderX] = useState(0);
+  const [isSliding, setIsSliding] = useState(false);
+  const [isOrderSent, setIsOrderSent] = useState(false);
+  const sliderContainerRef = useRef<HTMLDivElement>(null);
+  const sliderStartX = useRef(0);
+
   // Item Instruction Dialog State
   const [isInstructionDialogOpen, setIsInstructionDialogOpen] = useState(false);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
@@ -108,20 +118,59 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
 
   const totalItemCount = cart.reduce((s, i) => s + i.quantity, 0);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
+  // Swipe for Footer (Up/Down)
+  const handleFooterTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
+  const handleFooterTouchEnd = (e: React.TouchEvent) => {
     const touchEndY = e.changedTouches[0].clientY;
     const diff = touchStartY.current - touchEndY;
-    
     if (Math.abs(diff) > 40) {
-      if (diff > 0) {
-        setIsFooterExpanded(true); // Swiped up
-      } else {
-        setIsFooterExpanded(false); // Swiped down
-      }
+      setIsFooterExpanded(diff > 0);
+    }
+  };
+
+  // Slider Logic (Left to Right)
+  const handleSliderTouchStart = (e: React.TouchEvent) => {
+    if (isOrderSent) return;
+    sliderStartX.current = e.touches[0].clientX;
+    setIsSliding(true);
+  };
+
+  const handleSliderTouchMove = (e: React.TouchEvent) => {
+    if (!isSliding || !sliderContainerRef.current || isOrderSent) return;
+    const currentX = e.touches[0].clientX;
+    const deltaX = currentX - sliderStartX.current;
+    const containerWidth = sliderContainerRef.current.offsetWidth;
+    const handleWidth = 44; // w-11
+    const maxPath = containerWidth - handleWidth - 8; // Adjusting for padding
+
+    if (deltaX > 0) {
+      setSliderX(Math.min(deltaX, maxPath));
+    }
+  };
+
+  const handleSliderTouchEnd = () => {
+    if (!isSliding || !sliderContainerRef.current || isOrderSent) return;
+    setIsSliding(false);
+    
+    const containerWidth = sliderContainerRef.current.offsetWidth;
+    const handleWidth = 44;
+    const maxPath = containerWidth - handleWidth - 8;
+
+    if (sliderX >= maxPath * 0.9) {
+      // Trigger order success
+      setSliderX(maxPath);
+      setIsOrderSent(true);
+      toast({
+        title: "Order Sent",
+        description: `Order for Table #${tableNumber} sent to kitchen.`,
+      });
+      // In a real app, navigate back after delay
+      setTimeout(() => onBack(), 2000);
+    } else {
+      setSliderX(0);
     }
   };
 
@@ -173,7 +222,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
               )}
             >
               <div className="p-3">
-                {/* Title Area */}
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col gap-0.5 min-w-0 flex-1 pr-2">
                     <div className="flex items-center gap-1.5 min-w-0">
@@ -204,7 +252,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
                   <div className="mt-2 space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
                     <div className="w-full border-t border-dashed border-gray-100" />
                     
-                    {/* Addons List */}
                     {item.addons.length > 0 && (
                       <div className="flex flex-wrap gap-1.5">
                         {item.addons.map((addon, idx) => (
@@ -223,7 +270,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
                       </div>
                     )}
 
-                    {/* Special Instruction Box */}
                     {hasInstructions && (
                       <div className="bg-[#fffbeb] rounded-[14px] p-2 border border-dashed border-[#f59e0b] space-y-0.5">
                         <span className="text-[#92400e] text-[8px] font-black uppercase tracking-wider block">Special Instruction</span>
@@ -233,7 +279,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
                       </div>
                     )}
 
-                    {/* Bottom Action Row */}
                     <div className="flex items-center justify-between pt-1">
                       <button 
                         onClick={() => openInstructionDialog(item.id, item.specialRequests)}
@@ -250,7 +295,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
                         </span>
                       </button>
 
-                      {/* Larger Quantity Selector Pill */}
                       <div className="flex items-center bg-white rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.06)] h-[46px] min-w-[120px] justify-between border border-gray-100">
                         <button 
                           onClick={() => updateQty(item.id, -1)}
@@ -273,35 +317,33 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
             </div>
           );
         })}
-        {/* Scroll Spacer */}
         <div className="h-16" />
       </div>
 
-      {/* Cart Footer - Expandable */}
+      {/* Cart Footer - Expandable & Swipable */}
       <div 
         className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-8px_30px_rgba(0,0,0,0.06)] rounded-t-[24px] px-5 pt-2 pb-5 flex flex-col z-20 transition-all duration-300 ease-in-out"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        onTouchStart={handleFooterTouchStart}
+        onTouchEnd={handleFooterTouchEnd}
       >
-        {/* Drag Handle */}
-        <div className="w-full flex justify-center py-1.5 mb-1.5 shrink-0">
+        <div className="w-full flex justify-center py-1.5 mb-1.5 shrink-0 cursor-ns-resize">
           <div className="w-8 h-1 bg-[#e2e8f0] rounded-full opacity-60" />
         </div>
         
         <div className="flex flex-col gap-2.5">
-          {/* Kitchen Instructions Button or Box - Collapsible */}
-          <div className={cn(
-            "overflow-hidden transition-all duration-300 ease-in-out shrink-0",
-            isFooterExpanded ? "max-height-[160px] opacity-100" : "max-height-0 opacity-0 pointer-events-none"
-          )}
-          style={{ maxHeight: isFooterExpanded ? '160px' : '0' }}
+          <div 
+            className={cn(
+              "overflow-hidden transition-all duration-300 ease-in-out shrink-0",
+              isFooterExpanded ? "max-h-[160px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+            )}
+            style={{ maxHeight: isFooterExpanded ? '160px' : '0' }}
           >
             {kitchenInstructions ? (
               <button 
                 onClick={openKitchenDialog}
-                className="w-full bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] space-y-0.5 text-left animate-in fade-in slide-in-from-bottom-1 duration-200"
+                className="w-full bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] text-left animate-in fade-in slide-in-from-bottom-1 duration-200"
               >
-                <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block">Order Instructions</span>
+                <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block mb-0.5">Order Instructions</span>
                 <p className="text-[#92400e] text-[12px] font-bold leading-tight">
                   {kitchenInstructions}
                 </p>
@@ -325,25 +367,53 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
             </div>
           </div>
 
-          <div className="relative h-[52px] w-full bg-[#0066b2] rounded-[16px] p-1 flex items-center overflow-hidden shadow-[0_6px_16px_rgba(0,102,178,0.15)] shrink-0">
+          {/* Swipeable Slide to Send Order */}
+          <div 
+            ref={sliderContainerRef}
+            className="relative h-[52px] w-full bg-[#0066b2] rounded-[16px] p-1 flex items-center overflow-hidden shadow-[0_6px_16px_rgba(0,102,178,0.15)] shrink-0"
+          >
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="text-white text-[14px] font-black tracking-tight">Slide to Send Order</span>
+              <span className="text-white text-[14px] font-black tracking-tight opacity-80">
+                {isOrderSent ? 'Order Processing...' : 'Slide to Send Order'}
+              </span>
             </div>
+            
+            {/* The Slidable Handle */}
             <div 
-              className="w-10 h-10 bg-white rounded-[12px] flex items-center justify-center shadow-lg cursor-pointer active:scale-95 transition-transform"
+              className={cn(
+                "h-10 w-11 bg-white rounded-[12px] flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing z-10 transition-transform",
+                !isSliding && "duration-300"
+              )}
+              style={{ 
+                transform: `translateX(${sliderX}px)`,
+                transition: isSliding ? 'none' : 'transform 0.3s ease-out'
+              }}
+              onTouchStart={handleSliderTouchStart}
+              onTouchMove={handleSliderTouchMove}
+              onTouchEnd={handleSliderTouchEnd}
             >
-              <ChevronsRight className="w-5 h-5 text-[#0066b2] stroke-[3px]" />
+              {isOrderSent ? (
+                <Check className="w-5 h-5 text-[#26ab5f] stroke-[4px]" />
+              ) : (
+                <ChevronsRight className="w-5 h-5 text-[#0066b2] stroke-[3.5px]" />
+              )}
+              
+              {/* Branding "N" Badge Overlay */}
+              <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#1a1c2e] rounded-sm flex items-center justify-center shadow-sm">
+                <span className="text-white text-[9px] font-black italic">N</span>
+              </div>
             </div>
           </div>
 
-          <div className={cn(
-            "transition-all duration-300 overflow-hidden shrink-0",
-            isFooterExpanded ? "max-height-[30px] opacity-70" : "max-height-0 opacity-0"
-          )}
-          style={{ maxHeight: isFooterExpanded ? '30px' : '0' }}
+          <div 
+            className={cn(
+              "transition-all duration-300 overflow-hidden shrink-0",
+              isFooterExpanded ? "max-h-[30px] opacity-70" : "max-h-0 opacity-0"
+            )}
+            style={{ maxHeight: isFooterExpanded ? '30px' : '0' }}
           >
             <p className="text-center text-[#94a3b8] text-[9px] font-bold leading-tight px-4">
-              Includes applicable taxes and service charges.
+              Final amount may include applicable taxes and service charges depending on payment method.
             </p>
           </div>
         </div>
