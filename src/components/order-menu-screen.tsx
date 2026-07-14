@@ -99,9 +99,9 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
         <div className="flex items-center gap-3">
           <button 
             onClick={onHome}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_4px_12px_rgba(0,102,178,0.2)] active:scale-95 transition-all"
+            className="w-10 h-10 flex items-center justify-center rounded-full border border-[#eef2f8] bg-white shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
           >
-            <Home className="w-5 h-5 fill-current" />
+            <Home className="w-5 h-5 text-[#0066b2] fill-[#0066b2]" />
           </button>
           <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
             <Search className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
