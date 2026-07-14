@@ -66,7 +66,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
   return (
     <div className="flex flex-col h-screen bg-[#f3f7fb] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
       {/* Header */}
-      <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-10">
+      <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-30">
         <div className="flex items-center gap-4">
           <button 
             onClick={onBack}
@@ -88,8 +88,8 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
         </button>
       </div>
 
-      {/* Cart List */}
-      <div className="flex-1 px-6 pt-6 overflow-y-auto pb-48 space-y-4">
+      {/* Cart List - Increased pb-80 to ensure full scrolling above footer */}
+      <div className="flex-1 px-6 pt-6 overflow-y-auto pb-80 space-y-4">
         {cart.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center px-8 opacity-40">
             <ShoppingCart className="w-16 h-16 mb-4 text-[#94a3b8]" />
@@ -170,10 +170,10 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
                     {/* Controls Row */}
                     <div className="flex items-center justify-between pt-2">
                       <button className={cn(
-                        "flex items-center gap-2 px-4 h-10 rounded-full border border-dashed transition-all active:scale-95",
+                        "flex items-center gap-2 px-4 h-10 rounded-full border border-dotted transition-all active:scale-95",
                         hasInstructions 
                           ? "bg-[#fffbeb] border-[#f59e0b]/30 text-[#f59e0b]" 
-                          : "bg-white border-[#d1e9ff] text-[#0066b2]"
+                          : "bg-white border-[#d1e9ff]/60 text-[#0066b2]"
                       )}>
                         {hasInstructions ? (
                           <>
@@ -212,36 +212,36 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
         })}
       </div>
 
-      {/* Cart Footer - Condensed */}
-      <div className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.05)] rounded-t-[32px] px-6 pt-3 pb-6 flex flex-col gap-3 z-20">
-        <div className="w-10 h-1 bg-[#e2e8f0] rounded-full mx-auto mb-1 opacity-50" />
+      {/* Cart Footer - Fixed and Shadowed */}
+      <div className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-15px_50px_rgba(0,0,0,0.08)] rounded-t-[40px] px-6 pt-4 pb-8 flex flex-col gap-4 z-20">
+        <div className="w-12 h-1.5 bg-[#e2e8f0] rounded-full mx-auto mb-1 opacity-60" />
         
-        <button className="w-full h-10 rounded-[12px] border-[1.5px] border-dashed border-[#0066b2]/30 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all group shrink-0">
+        <button className="w-full h-11 rounded-[16px] border-[1.5px] border-dashed border-[#0066b2]/30 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all group shrink-0">
           <FileText className="w-4 h-4 group-hover:scale-110 transition-transform" />
-          <span className="text-[13px] font-black">Add kitchen instructions</span>
+          <span className="text-[14px] font-black">Add kitchen instructions</span>
         </button>
 
         <div className="flex items-center justify-between py-1">
-          <h2 className="text-[#1a1c2e] text-[18px] font-black tracking-tight">Subtotal</h2>
-          <div className="flex items-baseline gap-1">
-            <span className="text-[16px] font-black text-[#1a1c2e]">AED</span>
-            <span className="text-[24px] font-black text-[#1a1c2e] tabular-nums">{subtotal.toFixed(2)}</span>
+          <h2 className="text-[#1a1c2e] text-[20px] font-black tracking-tight">Subtotal</h2>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[18px] font-black text-[#1a1c2e]">AED</span>
+            <span className="text-[28px] font-black text-[#1a1c2e] tabular-nums tracking-tighter">{subtotal.toFixed(2)}</span>
           </div>
         </div>
 
-        <div className="relative h-[60px] w-full bg-[#0066b2] rounded-[20px] p-1.5 flex items-center overflow-hidden shadow-[0_8px_25px_rgba(0,102,178,0.2)]">
+        <div className="relative h-[64px] w-full bg-[#0066b2] rounded-[24px] p-1.5 flex items-center overflow-hidden shadow-[0_10px_30px_rgba(0,102,178,0.25)]">
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="text-white text-[15px] font-black tracking-tight">Slide to Send Order</span>
+            <span className="text-white text-[16px] font-black tracking-tight">Slide to Send Order</span>
           </div>
           <div 
-            className="w-12 h-12 bg-white rounded-[16px] flex items-center justify-center shadow-lg cursor-pointer active:scale-95 transition-transform"
-            style={{ transform: `translateX(${slideProgress}px)` }}
+            className="w-13 h-13 bg-white rounded-[18px] flex items-center justify-center shadow-lg cursor-pointer active:scale-95 transition-transform"
+            style={{ transform: `translateX(${slideProgress}px)`, width: '52px', height: '52px' }}
           >
-            <ChevronsRight className="w-6 h-6 text-[#0066b2] stroke-[3px]" />
+            <ChevronsRight className="w-7 h-7 text-[#0066b2] stroke-[3.5px]" />
           </div>
         </div>
 
-        <p className="text-center text-[#94a3b8] text-[10px] font-bold leading-tight px-4 opacity-80">
+        <p className="text-center text-[#94a3b8] text-[11px] font-bold leading-tight px-4 opacity-80 mt-1">
           Final amount may include applicable taxes and service charges.
         </p>
       </div>
