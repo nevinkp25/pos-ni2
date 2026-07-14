@@ -63,6 +63,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
+  const [detailMode, setDetailMode] = useState<'full' | 'compact'>('full');
   
   // Cart state: Record<itemName, quantity>
   const [cart, setCart] = useState<Record<string, number>>({});
@@ -258,14 +259,18 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
 
   const handleItemClick = (item: MenuItem) => {
     setSelectedItem(item);
+    setDetailMode('full');
     setIsDetailSheetOpen(true);
   };
 
   const handlePlusClick = (e: React.MouseEvent, item: MenuItem) => {
     e.stopPropagation();
-    // If the item has variations or addons, open the detail sheet
-    if (item.variations.length > 0 || (item.addons && item.addons.length > 0)) {
-      handleItemClick(item);
+    const hasOptions = item.variations.length > 0 || (item.addons && item.addons.length > 0);
+    
+    if (hasOptions) {
+      setSelectedItem(item);
+      setDetailMode('compact');
+      setIsDetailSheetOpen(true);
     } else {
       addToCart(item.name);
     }
@@ -463,6 +468,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
         isOpen={isDetailSheetOpen}
         onClose={() => setIsDetailSheetOpen(false)}
         item={selectedItem}
+        mode={detailMode}
         onAdd={() => selectedItem && addToCart(selectedItem.name)}
       />
     </div>
@@ -473,11 +479,13 @@ function ItemDetailSheet({
   isOpen, 
   onClose, 
   item, 
+  mode,
   onAdd,
 }: { 
   isOpen: boolean; 
   onClose: () => void; 
   item: MenuItem | null;
+  mode: 'full' | 'compact';
   onAdd: () => void;
 }) {
   const [selectedFlavor, setSelectedFlavor] = useState<MenuItemOption | null>(null);
@@ -518,7 +526,6 @@ function ItemDetailSheet({
 
   const isCustomized = useMemo(() => {
     if (!item) return false;
-    // If there are variations, one must be selected. If no variations, it's customized by default.
     return item.variations.length === 0 || selectedFlavor !== null;
   }, [item, selectedFlavor]);
 
@@ -539,9 +546,14 @@ function ItemDetailSheet({
 
   if (!item) return null;
 
+  const isCompact = mode === 'compact';
+
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent side="bottom" className="h-[85vh] rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden">
+      <SheetContent side="bottom" className={cn(
+        "rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden",
+        isCompact ? "h-[70vh]" : "h-[85vh]"
+      )}>
         <SheetHeader className="sr-only">
           <SheetTitle>{item.name}</SheetTitle>
         </SheetHeader>
@@ -555,66 +567,74 @@ function ItemDetailSheet({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto pt-8 pb-32 px-6">
+        <div className={cn("flex-1 overflow-y-auto pb-32 px-6", isCompact ? "pt-12" : "pt-8")}>
           <div className="max-w-md mx-auto space-y-6">
-            <div className="space-y-1">
+            <div className={cn("space-y-1", isCompact && "text-center")}>
               <h2 className="text-[#1a1c2e] text-[28px] font-black leading-tight tracking-tight">
                 {item.name}
               </h2>
-              <p className="text-[#94a3b8] text-[15px] font-bold">
-                {item.description}
-              </p>
-              <div className="flex items-baseline gap-2 pt-1">
-                <span className="text-[#1a1c2e] text-[24px] font-black">
-                  AED {item.basePrice.toFixed(2)}
-                </span>
-                <span className="text-[#94a3b8] text-[13px] font-bold">
-                  (Base Price)
-                </span>
-              </div>
+              {!isCompact && (
+                <>
+                  <p className="text-[#94a3b8] text-[15px] font-bold">
+                    {item.description}
+                  </p>
+                  <div className="flex items-baseline gap-2 pt-1">
+                    <span className="text-[#1a1c2e] text-[24px] font-black">
+                      AED {item.basePrice.toFixed(2)}
+                    </span>
+                    <span className="text-[#94a3b8] text-[13px] font-bold">
+                      (Base Price)
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
 
-            <div className="bg-[#f8fbff] rounded-[24px] p-5 border border-[#f0f4f8]">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <Flame className="w-5 h-5 text-[#f97316] fill-[#f97316]" />
-                  <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Nutritional Info</span>
+            {!isCompact && (
+              <>
+                <div className="bg-[#f8fbff] rounded-[24px] p-5 border border-[#f0f4f8]">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Flame className="w-5 h-5 text-[#f97316] fill-[#f97316]" />
+                      <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Nutritional Info</span>
+                    </div>
+                    <span className="text-[#94a3b8] text-[11px] font-bold">Per serving</span>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {[
+                      { value: item.nutritionalInfo.kcal, label: 'Kcal' },
+                      { value: item.nutritionalInfo.protein, label: 'Protein' },
+                      { value: item.nutritionalInfo.carbs, label: 'Carbs' },
+                      { value: item.nutritionalInfo.fat, label: 'Fat' }
+                    ].map((stat, i) => (
+                      <div key={i} className="bg-white rounded-[16px] p-3 flex flex-col items-center justify-center shadow-sm border border-[#f1f5f9]">
+                        <span className="text-[#1a1c2e] text-[14px] font-black leading-none">{stat.value}</span>
+                        <span className="text-[#94a3b8] text-[9px] font-black mt-1 uppercase tracking-wider">{stat.label}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <span className="text-[#94a3b8] text-[11px] font-bold">Per serving</span>
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                {[
-                  { value: item.nutritionalInfo.kcal, label: 'Kcal' },
-                  { value: item.nutritionalInfo.protein, label: 'Protein' },
-                  { value: item.nutritionalInfo.carbs, label: 'Carbs' },
-                  { value: item.nutritionalInfo.fat, label: 'Fat' }
-                ].map((stat, i) => (
-                  <div key={i} className="bg-white rounded-[16px] p-3 flex flex-col items-center justify-center shadow-sm border border-[#f1f5f9]">
-                    <span className="text-[#1a1c2e] text-[14px] font-black leading-none">{stat.value}</span>
-                    <span className="text-[#94a3b8] text-[9px] font-black mt-1 uppercase tracking-wider">{stat.label}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div className="bg-[#fffbeb] rounded-[24px] p-5 border border-[#fef3c7]">
-              <div className="flex items-center gap-2 mb-3">
-                <AlertTriangle className="w-5 h-5 text-[#f59e0b] fill-[#f59e0b]/10" />
-                <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Allergen Information</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {item.allergens.map((allergen) => (
-                  <div key={allergen} className="bg-white rounded-xl px-3 py-1.5 border border-[#fef3c7] flex items-center gap-1.5 shadow-sm">
-                    {allergen === 'Gluten' && <Flame className="w-3.5 h-3.5 text-[#f59e0b]" />}
-                    {allergen === 'Dairy' && <Circle className="w-3.5 h-3.5 text-[#f59e0b] fill-[#f59e0b]" />}
-                    <span className="text-[#4b5563] text-[12px] font-black">{allergen}</span>
+                <div className="bg-[#fffbeb] rounded-[24px] p-5 border border-[#fef3c7]">
+                  <div className="flex items-center gap-2 mb-3">
+                    <AlertTriangle className="w-5 h-5 text-[#f59e0b] fill-[#f59e0b]/10" />
+                    <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Allergen Information</span>
                   </div>
-                ))}
-                {item.allergens.length === 0 && (
-                  <span className="text-[#94a3b8] text-[12px] font-bold">No common allergens</span>
-                )}
-              </div>
-            </div>
+                  <div className="flex flex-wrap gap-2">
+                    {item.allergens.map((allergen) => (
+                      <div key={allergen} className="bg-white rounded-xl px-3 py-1.5 border border-[#fef3c7] flex items-center gap-1.5 shadow-sm">
+                        {allergen === 'Gluten' && <Flame className="w-3.5 h-3.5 text-[#f59e0b]" />}
+                        {allergen === 'Dairy' && <Circle className="w-3.5 h-3.5 text-[#f59e0b] fill-[#f59e0b]" />}
+                        <span className="text-[#4b5563] text-[12px] font-black">{allergen}</span>
+                      </div>
+                    ))}
+                    {item.allergens.length === 0 && (
+                      <span className="text-[#94a3b8] text-[12px] font-bold">No common allergens</span>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
 
             {/* Flavor Section (Required if exists) */}
             {item.variations.length > 0 && (
