@@ -60,20 +60,18 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
       <div className="flex-1 flex flex-col items-center px-6 py-8 overflow-y-auto">
         {/* Table Number Display Card */}
         <div className="w-full aspect-[4/3] max-w-sm bg-[#f0f7ff] border border-[#d1e9ff] rounded-[32px] flex items-center justify-center mb-10 shadow-sm">
-          <div className="flex items-baseline gap-1">
-            <span className="text-[#94a3b8] text-[40px] font-bold tracking-tight">Table</span>
-            <div className="flex items-center min-w-[40px] justify-center">
-              {tableNumber ? (
-                <span className="text-[#0066b2] text-[64px] font-bold leading-none -mb-1 transition-all duration-200 animate-in fade-in zoom-in-95">
-                  {tableNumber}
-                </span>
-              ) : (
-                <span className="text-[#0066b2] text-[64px] font-bold leading-none -mb-1 opacity-30">
-                  #
-                </span>
-              )}
+          {tableNumber ? (
+            <span className="text-[#1E293B] text-[80px] font-bold leading-none transition-all duration-200 animate-in fade-in zoom-in-95">
+              {tableNumber}
+            </span>
+          ) : (
+            <div className="flex items-baseline gap-1">
+              <span className="text-[#94a3b8] text-[40px] font-bold tracking-tight">Table</span>
+              <span className="text-[#0066b2] text-[64px] font-bold leading-none opacity-30">
+                #
+              </span>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Keypad Grid */}
