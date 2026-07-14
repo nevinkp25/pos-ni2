@@ -206,72 +206,74 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
                   </div>
                 </div>
 
-                <div className="mt-3 space-y-4">
-                  <div className="w-full border-t border-dashed border-gray-100" />
-                  
-                  {/* Addons List */}
-                  {item.addons.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {item.addons.map((addon, idx) => (
-                        <div 
-                          key={idx}
-                          className="bg-[#f0f7ff] border border-[#d1e9ff] rounded-full px-3 py-1.5 flex items-center gap-2"
+                {isExpanded && (
+                  <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="w-full border-t border-dashed border-gray-100" />
+                    
+                    {/* Addons List */}
+                    {item.addons.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {item.addons.map((addon, idx) => (
+                          <div 
+                            key={idx}
+                            className="bg-[#f0f7ff] border border-[#d1e9ff] rounded-full px-3 py-1.5 flex items-center gap-2"
+                          >
+                            <span className="text-[#0066b2] text-[12px] font-black tracking-tight">
+                              + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
+                            </span>
+                            <span className="text-[#0066b2]/60 text-[11px] font-black">
+                              AED {(addon.price * addon.quantity).toFixed(2)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Special Instruction Box */}
+                    {hasInstructions && (
+                      <div className="bg-[#fffbeb] rounded-[20px] p-4 border border-dashed border-[#f59e0b] space-y-2">
+                        <span className="text-[#92400e] text-[10px] font-black uppercase tracking-wider block">Special Instruction</span>
+                        <p className="text-[#92400e] text-[13px] font-bold leading-snug">
+                          {item.specialRequests}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Bottom Action Row */}
+                    <div className="flex items-center justify-between pt-2">
+                      <button 
+                        onClick={() => openInstructionDialog(item.id, item.specialRequests)}
+                        className={cn(
+                          "flex items-center gap-2 px-4 h-11 rounded-full border-[1.5px] border-dotted transition-all active:scale-95",
+                          hasInstructions 
+                            ? "bg-[#fffbeb] border-[#f59e0b]/40 text-[#f59e0b]" 
+                            : "bg-white border-[#0066b2]/20 text-[#0066b2]"
+                        )}
+                      >
+                        <MessageCircle className={cn("w-4 h-4", hasInstructions ? "fill-current" : "")} />
+                        <span className="text-[13px] font-black">
+                          {hasInstructions ? "Edit Instruction" : "Add Instruction"}
+                        </span>
+                      </button>
+
+                      <div className="flex items-center bg-white rounded-full p-1 shadow-[0_2px_10px_rgba(0,0,0,0.06)] h-[48px] min-w-[120px] justify-between border border-gray-100">
+                        <button 
+                          onClick={() => updateQty(item.id, -1)}
+                          className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all"
                         >
-                          <span className="text-[#0066b2] text-[12px] font-black tracking-tight">
-                            + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
-                          </span>
-                          <span className="text-[#0066b2]/60 text-[11px] font-black">
-                            AED {(addon.price * addon.quantity).toFixed(2)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Special Instruction Box */}
-                  {hasInstructions && isExpanded && (
-                    <div className="bg-[#fffbeb] rounded-[20px] p-4 border border-dashed border-[#f59e0b] space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
-                      <span className="text-[#92400e] text-[10px] font-black uppercase tracking-wider block">Special Instruction</span>
-                      <p className="text-[#92400e] text-[13px] font-bold leading-snug">
-                        {item.specialRequests}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Bottom Action Row */}
-                  <div className="flex items-center justify-between pt-2">
-                    <button 
-                      onClick={() => openInstructionDialog(item.id, item.specialRequests)}
-                      className={cn(
-                        "flex items-center gap-2 px-4 h-11 rounded-full border-[1.5px] border-dotted transition-all active:scale-95",
-                        hasInstructions 
-                          ? "bg-[#fffbeb] border-[#f59e0b]/40 text-[#f59e0b]" 
-                          : "bg-white border-[#0066b2]/20 text-[#0066b2]"
-                      )}
-                    >
-                      <MessageCircle className={cn("w-4 h-4", hasInstructions ? "fill-current" : "")} />
-                      <span className="text-[13px] font-black">
-                        {hasInstructions ? "Edit Instruction" : "Add Instruction"}
-                      </span>
-                    </button>
-
-                    <div className="flex items-center bg-white rounded-full p-1 shadow-[0_2px_10px_rgba(0,0,0,0.06)] h-[48px] min-w-[120px] justify-between border border-gray-100">
-                      <button 
-                        onClick={() => updateQty(item.id, -1)}
-                        className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all"
-                      >
-                        {item.quantity === 1 ? <Trash2 className="w-4.5 h-4.5" /> : <Minus className="w-4.5 h-4.5 stroke-[3px]" />}
-                      </button>
-                      <span className="text-[17px] font-black text-[#1a1c2e] px-2 tabular-nums">{item.quantity}</span>
-                      <button 
-                        onClick={() => updateQty(item.id, 1)}
-                        className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
-                      >
-                        <Plus className="w-4.5 h-4.5 stroke-[3px]" />
-                      </button>
+                          {item.quantity === 1 ? <Trash2 className="w-4.5 h-4.5" /> : <Minus className="w-4.5 h-4.5 stroke-[3px]" />}
+                        </button>
+                        <span className="text-[17px] font-black text-[#1a1c2e] px-2 tabular-nums">{item.quantity}</span>
+                        <button 
+                          onClick={() => updateQty(item.id, 1)}
+                          className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
+                        >
+                          <Plus className="w-4.5 h-4.5 stroke-[3px]" />
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           );
