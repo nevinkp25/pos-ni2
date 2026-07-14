@@ -217,8 +217,8 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
             </div>
           </div>
 
-          <div className="pt-2 flex justify-center">
-            <button className="flex items-center gap-2 bg-[#f0f7ff] px-8 h-12 rounded-full text-[#0066b2] text-[14px] font-black active:scale-95 transition-all shadow-sm">
+          <div className="pt-2">
+            <button className="w-full flex items-center justify-center gap-2 bg-[#f0f7ff] h-12 rounded-full text-[#0066b2] text-[14px] font-black active:scale-95 transition-all shadow-sm">
               See More
               <ChevronDown className="w-4 h-4" />
             </button>
