@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { 
   ChevronLeft, 
   Trash2, 
@@ -36,6 +36,8 @@ interface CartScreenProps {
 
 export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>(cart.map(i => i.id));
+  const [isFooterExpanded, setIsFooterExpanded] = useState(true);
+  const touchStartY = useRef(0);
   
   // Item Instruction Dialog State
   const [isInstructionDialogOpen, setIsInstructionDialogOpen] = useState(false);
@@ -107,6 +109,23 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
   };
 
   const totalItemCount = cart.reduce((s, i) => s + i.quantity, 0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const touchEndY = e.changedTouches[0].clientY;
+    const diff = touchStartY.current - touchEndY;
+    
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) {
+        setIsFooterExpanded(true); // Swiped up
+      } else {
+        setIsFooterExpanded(false); // Swiped down
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen bg-[#f3f7fb] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
@@ -261,54 +280,80 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
         <div className="h-20" />
       </div>
 
-      {/* Cart Footer - Compact */}
-      <div className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-12px_40px_rgba(0,0,0,0.08)] rounded-t-[32px] px-6 pt-3 pb-6 flex flex-col gap-3 z-20">
-        <div className="w-10 h-1 bg-[#e2e8f0] rounded-full mx-auto mb-0.5 opacity-60" />
+      {/* Cart Footer - Expandable */}
+      <div 
+        className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-12px_40px_rgba(0,0,0,0.08)] rounded-t-[32px] px-6 pt-3 pb-6 flex flex-col z-20 transition-all duration-300 ease-in-out"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Drag Handle */}
+        <button 
+          onClick={() => setIsFooterExpanded(!isFooterExpanded)}
+          className="w-full flex justify-center py-1 mb-2 shrink-0 group"
+        >
+          <div className="w-10 h-1 bg-[#e2e8f0] rounded-full opacity-60 group-hover:bg-[#cbd5e1] transition-colors" />
+        </button>
         
-        {/* Kitchen Instructions Button or Box */}
-        {kitchenInstructions ? (
-          <button 
-            onClick={openKitchenDialog}
-            className="w-full bg-[#fffbeb] rounded-[20px] p-4 border border-dashed border-[#f59e0b] space-y-1 text-left animate-in fade-in slide-in-from-bottom-2 duration-300"
+        <div className="flex flex-col gap-3">
+          {/* Kitchen Instructions Button or Box - Collapsible */}
+          <div className={cn(
+            "overflow-hidden transition-all duration-300 ease-in-out shrink-0",
+            isFooterExpanded ? "max-height-[200px] opacity-100" : "max-height-0 opacity-0 pointer-events-none"
+          )}
+          style={{ maxHeight: isFooterExpanded ? '200px' : '0' }}
           >
-            <span className="text-[#92400e] text-[10px] font-black uppercase tracking-wider block">Special Instruction</span>
-            <p className="text-[#92400e] text-[13px] font-bold leading-snug">
-              {kitchenInstructions}
+            {kitchenInstructions ? (
+              <button 
+                onClick={openKitchenDialog}
+                className="w-full bg-[#fffbeb] rounded-[20px] p-4 border border-dashed border-[#f59e0b] space-y-1 text-left animate-in fade-in slide-in-from-bottom-2 duration-300"
+              >
+                <span className="text-[#92400e] text-[10px] font-black uppercase tracking-wider block">Special Instruction</span>
+                <p className="text-[#92400e] text-[13px] font-bold leading-snug">
+                  {kitchenInstructions}
+                </p>
+              </button>
+            ) : (
+              <button 
+                onClick={openKitchenDialog}
+                className="w-full h-10 rounded-[14px] border-[1.5px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all group shrink-0"
+              >
+                <FileText className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                <span className="text-[13px] font-black">Add kitchen instructions</span>
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center justify-between shrink-0">
+            <h2 className="text-[#1a1c2e] text-[18px] font-black tracking-tight">Subtotal</h2>
+            <div className="flex items-baseline gap-1">
+              <span className="text-[16px] font-black text-[#1a1c2e]">AED</span>
+              <span className="text-[24px] font-black text-[#1a1c2e] tabular-nums tracking-tighter">{subtotal.toFixed(2)}</span>
+            </div>
+          </div>
+
+          <div className="relative h-[58px] w-full bg-[#0066b2] rounded-[20px] p-1.5 flex items-center overflow-hidden shadow-[0_8px_24px_rgba(0,102,178,0.2)] shrink-0">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span className="text-white text-[15px] font-black tracking-tight">Slide to Send Order</span>
+            </div>
+            <div 
+              className="w-11 h-11 bg-white rounded-[16px] flex items-center justify-center shadow-lg cursor-pointer active:scale-95 transition-transform"
+              style={{ width: '46px', height: '46px' }}
+            >
+              <ChevronsRight className="w-6 h-6 text-[#0066b2] stroke-[3.5px]" />
+            </div>
+          </div>
+
+          <div className={cn(
+            "transition-all duration-300 overflow-hidden shrink-0",
+            isFooterExpanded ? "max-height-[40px] opacity-70" : "max-height-0 opacity-0"
+          )}
+          style={{ maxHeight: isFooterExpanded ? '40px' : '0' }}
+          >
+            <p className="text-center text-[#94a3b8] text-[10px] font-bold leading-tight px-4 mt-1">
+              Final amount may include applicable taxes and service charges.
             </p>
-          </button>
-        ) : (
-          <button 
-            onClick={openKitchenDialog}
-            className="w-full h-10 rounded-[14px] border-[1.5px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all group shrink-0"
-          >
-            <FileText className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-            <span className="text-[13px] font-black">Add kitchen instructions</span>
-          </button>
-        )}
-
-        <div className="flex items-center justify-between">
-          <h2 className="text-[#1a1c2e] text-[18px] font-black tracking-tight">Subtotal</h2>
-          <div className="flex items-baseline gap-1">
-            <span className="text-[16px] font-black text-[#1a1c2e]">AED</span>
-            <span className="text-[24px] font-black text-[#1a1c2e] tabular-nums tracking-tighter">{subtotal.toFixed(2)}</span>
           </div>
         </div>
-
-        <div className="relative h-[58px] w-full bg-[#0066b2] rounded-[20px] p-1.5 flex items-center overflow-hidden shadow-[0_8px_24px_rgba(0,102,178,0.2)]">
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="text-white text-[15px] font-black tracking-tight">Slide to Send Order</span>
-          </div>
-          <div 
-            className="w-11 h-11 bg-white rounded-[16px] flex items-center justify-center shadow-lg cursor-pointer active:scale-95 transition-transform"
-            style={{ width: '46px', height: '46px' }}
-          >
-            <ChevronsRight className="w-6 h-6 text-[#0066b2] stroke-[3.5px]" />
-          </div>
-        </div>
-
-        <p className="text-center text-[#94a3b8] text-[10px] font-bold leading-tight px-4 opacity-70">
-          Final amount may include applicable taxes and service charges.
-        </p>
       </div>
 
       {/* Item Instruction Dialog */}
