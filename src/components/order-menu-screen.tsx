@@ -27,19 +27,24 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 
+interface MenuItemOption {
+  name: string;
+  price: number;
+}
+
 interface MenuItem {
   name: string;
   description: string;
   allergens: string[];
-  price: string;
+  basePrice: number;
   nutritionalInfo: {
     kcal: number;
     protein: string;
     carbs: string;
     fat: string;
   };
-  variations: string[];
-  addons?: string[];
+  variations: MenuItemOption[];
+  addons?: MenuItemOption[];
 }
 
 interface MenuCategory {
@@ -76,28 +81,37 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           name: 'Burrata con Pomodorini', 
           description: 'Creamy burrata, cherry tomatoes, basil pesto',
           allergens: ['Dairy'], 
-          price: '65.00',
+          basePrice: 65,
           nutritionalInfo: { kcal: 450, protein: '15g', carbs: '10g', fat: '35g' },
-          variations: ['Extra Pesto', 'With Focaccia', 'Extra Tomatoes', 'Balsamic Glaze'],
-          addons: ['Extra Burrata', 'Extra Pesto', 'Focaccia Bread', 'Arugula']
+          variations: [
+            { name: 'Standard', price: 0 },
+            { name: 'Extra Pesto', price: 5 },
+            { name: 'With Focaccia', price: 10 },
+            { name: 'Balsamic Glaze', price: 2 }
+          ],
+          addons: [
+            { name: 'Extra Burrata', price: 25 },
+            { name: 'Extra Pesto', price: 5 },
+            { name: 'Focaccia Bread', price: 8 },
+            { name: 'Arugula', price: 4 }
+          ]
         },
         { 
           name: 'Calamari Fritti', 
           description: 'Crispy fried squid with spicy marinara',
           allergens: ['Shellfish', 'Gluten'], 
-          price: '55.00',
+          basePrice: 55,
           nutritionalInfo: { kcal: 520, protein: '22g', carbs: '35g', fat: '28g' },
-          variations: ['Spicy Marinara', 'Garlic Aioli', 'Lemon Wedge', 'Tartar Sauce'],
-          addons: ['Extra Sauce', 'Lemon Wedges', 'Side Salad']
-        },
-        { 
-          name: 'Bruschetta Classica', 
-          description: 'Toasted bread with tomatoes, garlic, and basil',
-          allergens: ['Gluten'], 
-          price: '42.00',
-          nutritionalInfo: { kcal: 310, protein: '8g', carbs: '45g', fat: '12g' },
-          variations: ['Extra Garlic', 'Balsamic Drizzle', 'With Anchovies', 'Standard'],
-          addons: ['Extra Tomatoes', 'Prosciutto', 'Buffalo Mozzarella']
+          variations: [
+            { name: 'Spicy Marinara', price: 0 },
+            { name: 'Garlic Aioli', price: 0 },
+            { name: 'Tartar Sauce', price: 0 }
+          ],
+          addons: [
+            { name: 'Extra Sauce', price: 5 },
+            { name: 'Lemon Wedges', price: 2 },
+            { name: 'Side Salad', price: 15 }
+          ]
         },
       ] 
     },
@@ -108,28 +122,35 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           name: 'Margherita', 
           description: 'Tomato sauce, fresh mozzarella, basil',
           allergens: ['Dairy', 'Gluten'], 
-          price: '75.00',
+          basePrice: 75,
           nutritionalInfo: { kcal: 850, protein: '32g', carbs: '95g', fat: '34g' },
-          variations: ['Buffalo Mozzarella', 'Extra Basil', 'Thin Crust', 'Thick Crust'],
-          addons: ['Olives', 'Mushrooms', 'Hot Salami', 'Bell Peppers']
+          variations: [
+            { name: 'Thin Crust', price: 0 },
+            { name: 'Thick Crust', price: 5 },
+            { name: 'Buffalo Mozzarella', price: 15 }
+          ],
+          addons: [
+            { name: 'Olives', price: 5 },
+            { name: 'Mushrooms', price: 8 },
+            { name: 'Hot Salami', price: 12 },
+            { name: 'Bell Peppers', price: 6 }
+          ]
         },
         { 
           name: 'Diavola', 
           description: 'Tomato sauce, mozzarella, spicy salami',
           allergens: ['Dairy', 'Gluten'], 
-          price: '85.00',
+          basePrice: 85,
           nutritionalInfo: { kcal: 980, protein: '38g', carbs: '92g', fat: '45g' },
-          variations: ['Extra Spicy', 'Less Cheese', 'With Olives', 'Standard'],
-          addons: ['Jalapenos', 'Hot Honey', 'Extra Salami']
-        },
-        { 
-          name: 'Quattro Formaggi', 
-          description: 'Mozzarella, gorgonzola, parmesan, fontina',
-          allergens: ['Dairy', 'Gluten'], 
-          price: '90.00',
-          nutritionalInfo: { kcal: 1100, protein: '42g', carbs: '98g', fat: '58g' },
-          variations: ['Honey Drizzle', 'With Walnuts', 'Thin Crust', 'Extra Gorgonzola'],
-          addons: ['Truffle Oil', 'Caramelized Onions']
+          variations: [
+            { name: 'Standard', price: 0 },
+            { name: 'Extra Spicy', price: 2 }
+          ],
+          addons: [
+            { name: 'Jalapenos', price: 5 },
+            { name: 'Hot Honey', price: 8 },
+            { name: 'Extra Salami', price: 15 }
+          ]
         },
       ] 
     },
@@ -140,28 +161,32 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           name: 'Osso Buco alla Milanese', 
           description: 'Veal shank · saffron risotto',
           allergens: ['Dairy', 'Gluten'], 
-          price: '145.00',
+          basePrice: 145,
           nutritionalInfo: { kcal: 892, protein: '32g', carbs: '98g', fat: '38g' },
-          variations: ['Classic Saffron', 'Extra Risotto', 'Less Sauce', 'Soft Veal'],
-          addons: ['Bone Marrow', 'Asparagus', 'Parmesan Crisps']
-        },
-        { 
-          name: 'Spaghetti alle Vongole', 
-          description: 'Spaghetti with fresh clams and white wine',
-          allergens: ['Shellfish', 'Gluten'], 
-          price: '98.00',
-          nutritionalInfo: { kcal: 680, protein: '28g', carbs: '85g', fat: '22g' },
-          variations: ['Extra Chili', 'More Garlic', 'White Wine Sauce', 'Red Sauce'],
-          addons: ['Extra Clams', 'Breadcrumbs', 'Parsley']
+          variations: [
+            { name: 'Classic Saffron', price: 0 },
+            { name: 'Extra Risotto', price: 25 }
+          ],
+          addons: [
+            { name: 'Bone Marrow', price: 30 },
+            { name: 'Asparagus', price: 15 },
+            { name: 'Parmesan Crisps', price: 10 }
+          ]
         },
         { 
           name: 'Branzino al Forno', 
           description: 'Roasted sea bass with herbs and vegetables',
           allergens: ['Fish'], 
-          price: '130.00',
+          basePrice: 130,
           nutritionalInfo: { kcal: 550, protein: '45g', carbs: '15g', fat: '32g' },
-          variations: ['Lemon Butter', 'Olive Tapenade', 'Grilled Veggies', 'Roasted Potatoes'],
-          addons: ['Spinach', 'Lemon Wedges', 'Herb Oil']
+          variations: [
+            { name: 'Lemon Butter', price: 0 },
+            { name: 'Olive Tapenade', price: 5 }
+          ],
+          addons: [
+            { name: 'Roasted Potatoes', price: 15 },
+            { name: 'Spinach', price: 12 }
+          ]
         },
       ] 
     },
@@ -172,19 +197,16 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           name: 'Patatine Fritte', 
           description: 'Classic crispy fries',
           allergens: [], 
-          price: '25.00',
+          basePrice: 25,
           nutritionalInfo: { kcal: 400, protein: '4g', carbs: '48g', fat: '20g' },
-          variations: ['Truffle Oil', 'Parmesan', 'Spicy Dip', 'Ketchup'],
-          addons: ['Cheese Dip', 'Garlic Mayo']
-        },
-        { 
-          name: 'Insalata Mista', 
-          description: 'Mixed garden salad with house dressing',
-          allergens: [], 
-          price: '30.00',
-          nutritionalInfo: { kcal: 150, protein: '2g', carbs: '12g', fat: '8g' },
-          variations: ['Italian Dressing', 'Caesar Dressing', 'No Dressing', 'Lemon Vinaigrette'],
-          addons: ['Croutons', 'Feta Cheese']
+          variations: [
+            { name: 'Classic', price: 0 },
+            { name: 'Truffle Oil & Parmesan', price: 10 }
+          ],
+          addons: [
+            { name: 'Cheese Dip', price: 5 },
+            { name: 'Garlic Mayo', price: 3 }
+          ]
         },
       ] 
     },
@@ -195,19 +217,16 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           name: 'Tiramisu Classico', 
           description: 'Coffee-soaked ladyfingers with mascarpone',
           allergens: ['Dairy', 'Gluten', 'Eggs'], 
-          price: '48.00',
+          basePrice: 48,
           nutritionalInfo: { kcal: 580, protein: '8g', carbs: '55g', fat: '32g' },
-          variations: ['Extra Cocoa', 'With Berries', 'Decaf Version', 'Standard'],
-          addons: ['Chocolate Shavings', 'Espresso Shot']
-        },
-        { 
-          name: 'Panna Cotta', 
-          description: 'Cooked cream dessert with berry coulis',
-          allergens: ['Dairy'], 
-          price: '42.00',
-          nutritionalInfo: { kcal: 420, protein: '4g', carbs: '38g', fat: '28g' },
-          variations: ['Frutti di Bosco', 'Caramel Sauce', 'Vanilla Bean', 'Chocolate Drizzle'],
-          addons: ['Mixed Berries', 'Mint Leaf']
+          variations: [
+            { name: 'Standard', price: 0 },
+            { name: 'Decaf Version', price: 0 }
+          ],
+          addons: [
+            { name: 'Chocolate Shavings', price: 5 },
+            { name: 'Espresso Shot', price: 8 }
+          ]
         },
       ] 
     },
@@ -358,7 +377,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                               ))}
                             </div>
                             <p className="text-[#0066b2] text-[15px] font-black mt-1">
-                              AED {item.price}
+                              AED {item.basePrice.toFixed(2)}
                             </p>
                           </div>
 
@@ -460,9 +479,10 @@ function ItemDetailSheet({
   item: MenuItem | null;
   onAdd: () => void;
 }) {
-  const [selectedFlavor, setSelectedFlavor] = useState<string | null>(null);
+  const [selectedFlavor, setSelectedFlavor] = useState<MenuItemOption | null>(null);
   const [addonQuantities, setAddonQuantities] = useState<Record<string, number>>({});
   const [specialRequests, setSpecialRequests] = useState('');
+  const [itemQuantity, setItemQuantity] = useState(1);
   
   const addonsSectionRef = useRef<HTMLDivElement>(null);
   const specialRequestsRef = useRef<HTMLDivElement>(null);
@@ -472,12 +492,13 @@ function ItemDetailSheet({
       setSelectedFlavor(null);
       setAddonQuantities({});
       setSpecialRequests('');
+      setItemQuantity(1);
     }
   }, [isOpen]);
 
   if (!item) return null;
 
-  const handleFlavorSelect = (flavor: string) => {
+  const handleFlavorSelect = (flavor: MenuItemOption) => {
     setSelectedFlavor(flavor);
     // Auto scroll to addons or special requests
     setTimeout(() => {
@@ -497,6 +518,20 @@ function ItemDetailSheet({
   };
 
   const isCustomized = selectedFlavor !== null;
+
+  const totalPrice = useMemo(() => {
+    let price = item.basePrice;
+    if (selectedFlavor) price += selectedFlavor.price;
+    
+    if (item.addons) {
+      item.addons.forEach(addon => {
+        const qty = addonQuantities[addon.name] || 0;
+        price += addon.price * qty;
+      });
+    }
+    
+    return price * itemQuantity;
+  }, [item, selectedFlavor, addonQuantities, itemQuantity]);
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
@@ -525,7 +560,7 @@ function ItemDetailSheet({
               </p>
               <div className="flex items-baseline gap-2 pt-2">
                 <span className="text-[#1a1c2e] text-[28px] font-black">
-                  AED {item.price}
+                  AED {item.basePrice.toFixed(2)}
                 </span>
                 <span className="text-[#94a3b8] text-[14px] font-bold">
                   (Base Price)
@@ -592,12 +627,15 @@ function ItemDetailSheet({
                       className="flex items-center justify-between py-2 group cursor-pointer"
                       onClick={() => handleFlavorSelect(v)}
                     >
-                      <span className="text-[#334155] text-[15px] font-black">{v}</span>
+                      <div className="flex flex-col">
+                        <span className="text-[#334155] text-[15px] font-black">{v.name}</span>
+                        {v.price > 0 && <span className="text-[#0066b2] text-[12px] font-bold">+ AED {v.price.toFixed(2)}</span>}
+                      </div>
                       <div className={cn(
                         "w-6 h-6 rounded-full border-[2px] flex items-center justify-center transition-all",
-                        selectedFlavor === v ? "border-[#0066b2] bg-white" : "border-gray-200"
+                        selectedFlavor?.name === v.name ? "border-[#0066b2] bg-white" : "border-gray-200"
                       )}>
-                        {selectedFlavor === v && <div className="w-3 h-3 bg-[#0066b2] rounded-full" />}
+                        {selectedFlavor?.name === v.name && <div className="w-3 h-3 bg-[#0066b2] rounded-full" />}
                       </div>
                     </div>
                     {i !== item.variations.length - 1 && (
@@ -620,15 +658,18 @@ function ItemDetailSheet({
                 
                 <div className="space-y-4">
                   {item.addons.map((addon, i) => {
-                    const qty = addonQuantities[addon] || 0;
+                    const qty = addonQuantities[addon.name] || 0;
                     return (
                       <div key={i}>
                         <div className="flex items-center justify-between py-2 group">
-                          <span className="text-[#334155] text-[15px] font-black">{addon}</span>
+                          <div className="flex flex-col">
+                            <span className="text-[#334155] text-[15px] font-black">{addon.name}</span>
+                            <span className="text-[#0066b2] text-[12px] font-bold">AED {addon.price.toFixed(2)}</span>
+                          </div>
                           <div className="flex items-center gap-3">
                             {qty > 0 && (
                               <button 
-                                onClick={() => updateAddonQty(addon, -1)}
+                                onClick={() => updateAddonQty(addon.name, -1)}
                                 className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 text-[#ef4444] active:scale-90 transition-all"
                               >
                                 {qty === 1 ? <Trash2 className="w-4 h-4" /> : <Minus className="w-4 h-4 stroke-[3.5px]" />}
@@ -636,7 +677,7 @@ function ItemDetailSheet({
                             )}
                             {qty > 0 && <span className="text-[14px] font-black text-[#1a1c2e] min-w-[14px] text-center">{qty}</span>}
                             <button 
-                              onClick={() => updateAddonQty(addon, 1)}
+                              onClick={() => updateAddonQty(addon.name, 1)}
                               className={cn(
                                 "w-8 h-8 flex items-center justify-center rounded-full transition-all active:scale-90",
                                 qty > 0 ? "bg-[#0066b2] text-white" : "bg-white border border-gray-200 text-[#0066b2]"
@@ -677,10 +718,32 @@ function ItemDetailSheet({
         </div>
 
         <div className="absolute bottom-0 inset-x-0 bg-white px-6 pt-5 pb-8 border-t border-[#f0f4f8] shadow-[0_-10px_40px_rgba(0,0,0,0.03)] flex items-center gap-4 z-30">
+          {/* High Fidelity Quantity Selector Pill */}
+          <div className="h-14 bg-white border border-[#f0f4f8] rounded-full shadow-sm flex items-center px-1.5 min-w-[120px] justify-between overflow-hidden">
+            <button 
+              onClick={() => setItemQuantity(Math.max(1, itemQuantity - 1))}
+              className={cn(
+                "w-11 h-11 flex items-center justify-center rounded-full transition-all active:scale-90",
+                itemQuantity === 1 ? "bg-white text-[#ef4444]" : "bg-[#f1f5f9] text-[#1a1c2e]"
+              )}
+            >
+              {itemQuantity === 1 ? <Trash2 className="w-5 h-5" /> : <Minus className="w-5 h-5 stroke-[2.5px]" />}
+            </button>
+            <span className="text-[20px] font-black text-[#1a1c2e] tabular-nums">{itemQuantity}</span>
+            <button 
+              onClick={() => setItemQuantity(itemQuantity + 1)}
+              className="w-11 h-11 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-md active:scale-90 transition-all"
+            >
+              <Plus className="w-5 h-5 stroke-[2.5px]" />
+            </button>
+          </div>
+
           <button 
             disabled={!isCustomized}
             onClick={() => {
-              onAdd();
+              for (let i = 0; i < itemQuantity; i++) {
+                onAdd();
+              }
               onClose();
             }}
             className={cn(
@@ -690,7 +753,7 @@ function ItemDetailSheet({
                 : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed"
             )}
           >
-            Add · AED {item.price}
+            Add <span className="opacity-40 font-normal">●</span> AED {totalPrice.toFixed(2)}
           </button>
         </div>
       </SheetContent>
