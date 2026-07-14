@@ -135,16 +135,18 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
             <Search className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
           </button>
-          <div className="relative">
-            <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
-              <ShoppingCart className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
-            </button>
-            {totalItemsInCart > 0 && (
+          
+          {/* Cart Icon in Header - Only visible when items are in cart */}
+          {totalItemsInCart > 0 && (
+            <div className="relative animate-in zoom-in duration-300">
+              <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
+                <ShoppingCart className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
+              </button>
               <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#ef4444] rounded-full border-2 border-white flex items-center justify-center">
                 <span className="text-white text-[10px] font-black">{totalItemsInCart}</span>
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
