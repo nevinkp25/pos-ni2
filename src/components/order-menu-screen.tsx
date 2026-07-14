@@ -453,7 +453,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                                   <SquarePen className="w-3.5 h-3.5" />
                                   <span className="border-b border-dotted border-[#0066b2]">Add Instruction</span>
                                 </button>
-                                <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between">
+                                <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between mt-5">
                                   <button 
                                     onClick={(e) => handleMinusClick(e, item.name)}
                                     className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-900 active:scale-90 transition-all"
@@ -649,7 +649,7 @@ function ItemDetailSheet({
                       <Flame className="w-5 h-5 text-[#f97316] fill-[#f97316]" />
                       <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Nutritional Info</span>
                     </div>
-                    <span className="text-[#94a3b8] text-[11px] font-bold">Per serving</span>
+                    <span className="text-[#94a3b8] text[] text-[11px] font-bold">Per serving</span>
                   </div>
                   <div className="grid grid-cols-4 gap-2">
                     {[
