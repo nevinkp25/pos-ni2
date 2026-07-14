@@ -1,8 +1,19 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Home, Search, ChevronDown, Check, X } from 'lucide-react';
+import { ChevronLeft, Home, Search, ChevronDown, ChevronUp, Check, X, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+interface MenuItem {
+  name: string;
+  allergens: string[];
+  price: string;
+}
+
+interface MenuCategory {
+  title: string;
+  items: MenuItem[];
+}
 
 interface OrderMenuScreenProps {
   tableNumber: string;
@@ -12,6 +23,7 @@ interface OrderMenuScreenProps {
 
 export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreenProps) {
   const [showSuccess, setShowSuccess] = useState(false);
+  const [expandedCategory, setExpandedCategory] = useState<string | null>('MAINS');
 
   useEffect(() => {
     // Show the success toast when component mounts
@@ -20,14 +32,25 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
     return () => clearTimeout(timer);
   }, []);
 
-  const categories = [
-    { title: 'STARTERS' },
-    { title: 'PIZZA' },
-    { title: 'MAINS' },
-    { title: 'PIZZA' },
-    { title: 'SIDES & SAUCES' },
-    { title: 'DESSERTS' },
+  const menuData: MenuCategory[] = [
+    { title: 'STARTERS', items: [] },
+    { title: 'PIZZA', items: [] },
+    { 
+      title: 'MAINS', 
+      items: [
+        { name: 'Osso Buco alla Milanese', allergens: ['Dairy', 'Gluten'], price: '145.00' },
+        { name: 'Spaghetti alle Vongole', allergens: ['Shellfish', 'Gluten'], price: '98.00' },
+        { name: 'Branzino al Forno', allergens: ['Fish'], price: '130.00' },
+      ] 
+    },
+    { title: 'PIZZA', items: [] }, // Repeat as per screenshot
+    { title: 'SIDES & SAUCES', items: [] },
+    { title: 'DESSERTS', items: [] },
   ];
+
+  const toggleCategory = (title: string) => {
+    setExpandedCategory(expandedCategory === title ? null : title);
+  };
 
   return (
     <div className="flex flex-col h-screen bg-[#fcfdff] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
@@ -62,22 +85,72 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
       {/* Main Content Area */}
       <div className="flex-1 px-6 pt-6 overflow-y-auto pb-24">
         <div className="bg-white rounded-[24px] shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-[#f0f4f8] overflow-hidden">
-          {categories.map((category, index) => (
-            <div 
-              key={index} 
-              className={cn(
-                "h-16 px-6 flex items-center justify-between transition-colors active:bg-gray-50",
-                index !== categories.length - 1 && "border-b border-[#f0f4f8]"
-              )}
-            >
-              <span className="text-[14px] font-black text-[#334155] tracking-wide">
-                {category.title}
-              </span>
-              <div className="w-8 h-8 rounded-full bg-[#f0f7ff] flex items-center justify-center">
-                <ChevronDown className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
+          {menuData.map((category, index) => {
+            const isExpanded = expandedCategory === category.title;
+            return (
+              <div key={index} className={cn(index !== menuData.length - 1 && "border-b border-[#f0f4f8]")}>
+                {/* Category Header */}
+                <button 
+                  onClick={() => toggleCategory(category.title)}
+                  className={cn(
+                    "w-full h-16 px-6 flex items-center justify-between transition-colors active:bg-gray-50",
+                    isExpanded && "bg-[#fcfdff]"
+                  )}
+                >
+                  <span className="text-[14px] font-black text-[#334155] tracking-wide">
+                    {category.title}
+                  </span>
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                    isExpanded ? "bg-[#e8edff]" : "bg-[#f0f7ff]"
+                  )}>
+                    {isExpanded ? (
+                      <ChevronUp className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
+                    ) : (
+                      <ChevronDown className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
+                    )}
+                  </div>
+                </button>
+
+                {/* Category Content (Items) */}
+                {isExpanded && category.items.length > 0 && (
+                  <div className="bg-[#f8fbff] animate-in fade-in slide-in-from-top-2 duration-300">
+                    {category.items.map((item, itemIndex) => (
+                      <div 
+                        key={itemIndex} 
+                        className={cn(
+                          "px-6 py-5 flex items-center justify-between",
+                          itemIndex !== category.items.length - 1 && "border-b border-[#eef2f8]"
+                        )}
+                      >
+                        <div className="flex flex-col gap-1.5">
+                          <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight">
+                            {item.name}
+                          </h3>
+                          <div className="flex gap-1.5">
+                            {item.allergens.map((allergen) => (
+                              <span 
+                                key={allergen}
+                                className="px-2.5 py-0.5 rounded-full border border-[#f59e0b]/40 text-[#f59e0b] text-[10px] font-black tracking-tight"
+                              >
+                                {allergen}
+                              </span>
+                            ))}
+                          </div>
+                          <p className="text-[#0066b2] text-[15px] font-black mt-1">
+                            AED {item.price}
+                          </p>
+                        </div>
+                        <button className="w-12 h-12 bg-[#0066b2] rounded-full flex items-center justify-center text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all">
+                          <Plus className="w-6 h-6 stroke-[3px]" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
