@@ -37,10 +37,15 @@ interface CartScreenProps {
 export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>(cart.map(i => i.id));
   
-  // Instruction Dialog State
+  // Item Instruction Dialog State
   const [isInstructionDialogOpen, setIsInstructionDialogOpen] = useState(false);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
   const [tempInstruction, setTempInstruction] = useState('');
+
+  // Global Kitchen Instructions State
+  const [kitchenInstructions, setKitchenInstructions] = useState('');
+  const [isKitchenDialogOpen, setIsKitchenDialogOpen] = useState(false);
+  const [tempKitchenInstruction, setTempKitchenInstruction] = useState('');
 
   const subtotal = useMemo(() => {
     return cart.reduce((sum, item) => {
@@ -89,6 +94,16 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
       setIsInstructionDialogOpen(false);
       setActiveItemId(null);
     }
+  };
+
+  const openKitchenDialog = () => {
+    setTempKitchenInstruction(kitchenInstructions);
+    setIsKitchenDialogOpen(true);
+  };
+
+  const saveKitchenInstruction = () => {
+    setKitchenInstructions(tempKitchenInstruction);
+    setIsKitchenDialogOpen(false);
   };
 
   const totalItemCount = cart.reduce((s, i) => s + i.quantity, 0);
@@ -196,7 +211,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
 
                   {/* Special Instruction Box */}
                   {hasInstructions && isExpanded && (
-                    <div className="bg-[#fffbeb] rounded-[20px] p-4 border border-[#fef3c7] space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="bg-[#fffbeb] rounded-[20px] p-4 border border-dashed border-[#f59e0b] space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
                       <span className="text-[#92400e] text-[10px] font-black uppercase tracking-wider block">Special Instruction</span>
                       <p className="text-[#92400e] text-[13px] font-bold leading-snug">
                         {item.specialRequests}
@@ -250,10 +265,26 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
       <div className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-12px_40px_rgba(0,0,0,0.08)] rounded-t-[32px] px-6 pt-3 pb-6 flex flex-col gap-3 z-20">
         <div className="w-10 h-1 bg-[#e2e8f0] rounded-full mx-auto mb-0.5 opacity-60" />
         
-        <button className="w-full h-10 rounded-[14px] border-[1.5px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all group shrink-0">
-          <FileText className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-          <span className="text-[13px] font-black">Add kitchen instructions</span>
-        </button>
+        {/* Kitchen Instructions Button or Box */}
+        {kitchenInstructions ? (
+          <button 
+            onClick={openKitchenDialog}
+            className="w-full bg-[#fffbeb] rounded-[20px] p-4 border border-dashed border-[#f59e0b] space-y-1 text-left animate-in fade-in slide-in-from-bottom-2 duration-300"
+          >
+            <span className="text-[#92400e] text-[10px] font-black uppercase tracking-wider block">Special Instruction</span>
+            <p className="text-[#92400e] text-[13px] font-bold leading-snug">
+              {kitchenInstructions}
+            </p>
+          </button>
+        ) : (
+          <button 
+            onClick={openKitchenDialog}
+            className="w-full h-10 rounded-[14px] border-[1.5px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all group shrink-0"
+          >
+            <FileText className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+            <span className="text-[13px] font-black">Add kitchen instructions</span>
+          </button>
+        )}
 
         <div className="flex items-center justify-between">
           <h2 className="text-[#1a1c2e] text-[18px] font-black tracking-tight">Subtotal</h2>
@@ -280,11 +311,11 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
         </p>
       </div>
 
-      {/* Instruction Dialog */}
+      {/* Item Instruction Dialog */}
       <Dialog open={isInstructionDialogOpen} onOpenChange={setIsInstructionDialogOpen}>
         <DialogContent className="rounded-[32px] sm:max-w-[400px] p-0 overflow-hidden border-none shadow-2xl">
           <DialogHeader className="px-6 pt-6 pb-2 flex flex-row items-center justify-between">
-            <DialogTitle className="text-xl font-black text-[#1a1c2e]">Special Instruction</DialogTitle>
+            <DialogTitle className="text-xl font-black text-[#1a1c2e]">Item Instruction</DialogTitle>
             <button 
               onClick={() => setIsInstructionDialogOpen(false)}
               className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:text-gray-600 transition-colors"
@@ -315,6 +346,46 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
               className="w-full h-14 bg-[#0066b2] hover:bg-[#005ea1] text-white rounded-[20px] text-base font-black shadow-[0_8px_24px_rgba(0,102,178,0.2)] active:scale-[0.98] transition-all"
             >
               Save Instruction
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Kitchen Instruction Dialog */}
+      <Dialog open={isKitchenDialogOpen} onOpenChange={setIsKitchenDialogOpen}>
+        <DialogContent className="rounded-[32px] sm:max-w-[400px] p-0 overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="px-6 pt-6 pb-2 flex flex-row items-center justify-between">
+            <DialogTitle className="text-xl font-black text-[#1a1c2e]">Kitchen Instruction</DialogTitle>
+            <button 
+              onClick={() => setIsKitchenDialogOpen(false)}
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </DialogHeader>
+          <div className="px-6 py-4 space-y-4">
+            <p className="text-[13px] font-bold text-[#94a3b8] leading-tight">
+              Add general instructions for the entire order that the kitchen should be aware of.
+            </p>
+            <div className="relative">
+              <Textarea 
+                value={tempKitchenInstruction}
+                onChange={(e) => setTempKitchenInstruction(e.target.value)}
+                placeholder="e.g. Serve all items together, allergen alerts, etc..."
+                className="h-32 rounded-2xl border-2 border-gray-100 focus:border-[#0066b2] focus:ring-0 transition-all text-sm font-bold p-4 resize-none placeholder:text-gray-300"
+                maxLength={200}
+              />
+              <span className="absolute bottom-4 right-4 text-[10px] font-black text-gray-300">
+                {tempKitchenInstruction.length}/200
+              </span>
+            </div>
+          </div>
+          <div className="px-6 pb-6 pt-2">
+            <Button 
+              onClick={saveKitchenInstruction}
+              className="w-full h-14 bg-[#0066b2] hover:bg-[#005ea1] text-white rounded-[20px] text-base font-black shadow-[0_8px_24px_rgba(0,102,178,0.2)] active:scale-[0.98] transition-all"
+            >
+              Save Kitchen Instruction
             </Button>
           </div>
         </DialogContent>
