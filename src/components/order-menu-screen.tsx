@@ -86,14 +86,12 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           variations: [
             { name: 'Standard', price: 0 },
             { name: 'Extra Pesto', price: 5 },
-            { name: 'With Focaccia', price: 10 },
-            { name: 'Balsamic Glaze', price: 2 }
+            { name: 'With Focaccia', price: 10 }
           ],
           addons: [
             { name: 'Extra Burrata', price: 25 },
             { name: 'Extra Pesto', price: 5 },
-            { name: 'Focaccia Bread', price: 8 },
-            { name: 'Arugula', price: 4 }
+            { name: 'Focaccia Bread', price: 8 }
           ]
         },
         { 
@@ -104,12 +102,10 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           nutritionalInfo: { kcal: 520, protein: '22g', carbs: '35g', fat: '28g' },
           variations: [
             { name: 'Spicy Marinara', price: 0 },
-            { name: 'Garlic Aioli', price: 0 },
-            { name: 'Tartar Sauce', price: 0 }
+            { name: 'Garlic Aioli', price: 0 }
           ],
           addons: [
             { name: 'Extra Sauce', price: 5 },
-            { name: 'Lemon Wedges', price: 2 },
             { name: 'Side Salad', price: 15 }
           ]
         },
@@ -132,8 +128,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           addons: [
             { name: 'Olives', price: 5 },
             { name: 'Mushrooms', price: 8 },
-            { name: 'Hot Salami', price: 12 },
-            { name: 'Bell Peppers', price: 6 }
+            { name: 'Hot Salami', price: 12 }
           ]
         },
         { 
@@ -148,8 +143,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           ],
           addons: [
             { name: 'Jalapenos', price: 5 },
-            { name: 'Hot Honey', price: 8 },
-            { name: 'Extra Salami', price: 15 }
+            { name: 'Hot Honey', price: 8 }
           ]
         },
       ] 
@@ -169,8 +163,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           ],
           addons: [
             { name: 'Bone Marrow', price: 30 },
-            { name: 'Asparagus', price: 15 },
-            { name: 'Parmesan Crisps', price: 10 }
+            { name: 'Asparagus', price: 15 }
           ]
         },
         { 
@@ -268,6 +261,16 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
     setIsDetailSheetOpen(true);
   };
 
+  const handlePlusClick = (e: React.MouseEvent, item: MenuItem) => {
+    e.stopPropagation();
+    // If the item has variations or addons, open the detail sheet
+    if (item.variations.length > 0 || (item.addons && item.addons.length > 0)) {
+      handleItemClick(item);
+    } else {
+      addToCart(item.name);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-[#fcfdff] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
       {/* Header */}
@@ -355,14 +358,12 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                         <div 
                           key={itemIndex} 
                           className={cn(
-                            "px-6 py-5 flex items-center justify-between gap-4 transition-colors active:bg-blue-50/30",
+                            "px-6 py-5 flex items-center justify-between gap-4 transition-colors active:bg-blue-50/30 cursor-pointer",
                             itemIndex !== category.items.length - 1 && "border-b border-[#eef2f8]"
                           )}
+                          onClick={() => handleItemClick(item)}
                         >
-                          <div 
-                            className="flex flex-col gap-1.5 flex-1 min-w-0 cursor-pointer"
-                            onClick={() => handleItemClick(item)}
-                          >
+                          <div className="flex flex-col gap-1.5 flex-1 min-w-0">
                             <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight truncate">
                               {item.name}
                             </h3>
@@ -381,19 +382,19 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                             </p>
                           </div>
 
-                          <div className="flex flex-col items-end gap-3 shrink-0">
+                          <div className="flex flex-col items-end gap-2 shrink-0">
                             {quantity > 0 ? (
                               <>
                                 <button 
                                   className="flex items-center gap-1 text-[#0066b2] text-[11px] font-black tracking-tight mb-1 whitespace-nowrap"
-                                  onClick={() => handleItemClick(item)}
+                                  onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
                                 >
                                   <FileEdit className="w-3 h-3" />
                                   <span className="border-b border-dotted border-[#0066b2]">Add Instruction</span>
                                 </button>
                                 <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-sm h-11 min-w-[100px] justify-between">
                                   <button 
-                                    onClick={() => removeFromCart(item.name)}
+                                    onClick={(e) => { e.stopPropagation(); removeFromCart(item.name); }}
                                     className="w-9 h-9 flex items-center justify-center rounded-full bg-[#f1f5f9] text-[#ef4444] active:scale-90 transition-all"
                                   >
                                     {quantity === 1 ? (
@@ -404,7 +405,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                                   </button>
                                   <span className="text-[15px] font-black text-[#1a1c2e] px-2">{quantity}</span>
                                   <button 
-                                    onClick={() => addToCart(item.name)}
+                                    onClick={(e) => handlePlusClick(e, item)}
                                     className="w-9 h-9 flex items-center justify-center rounded-full bg-[#0066b2] text-white active:scale-90 transition-all shadow-md shadow-blue-200"
                                   >
                                     <Plus className="w-4 h-4 stroke-[3px]" />
@@ -413,7 +414,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                               </>
                             ) : (
                               <button 
-                                onClick={() => addToCart(item.name)}
+                                onClick={(e) => handlePlusClick(e, item)}
                                 className="w-12 h-12 bg-[#0066b2] rounded-full flex items-center justify-center text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
                               >
                                 <Plus className="w-6 h-6 stroke-[3px]" />
@@ -515,7 +516,11 @@ function ItemDetailSheet({
     }));
   };
 
-  const isCustomized = selectedFlavor !== null;
+  const isCustomized = useMemo(() => {
+    if (!item) return false;
+    // If there are variations, one must be selected. If no variations, it's customized by default.
+    return item.variations.length === 0 || selectedFlavor !== null;
+  }, [item, selectedFlavor]);
 
   const totalPrice = useMemo(() => {
     if (!item) return 0;
@@ -536,7 +541,7 @@ function ItemDetailSheet({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent side="bottom" className="h-[94vh] rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden">
+      <SheetContent side="bottom" className="h-[85vh] rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden">
         <SheetHeader className="sr-only">
           <SheetTitle>{item.name}</SheetTitle>
         </SheetHeader>
@@ -550,122 +555,124 @@ function ItemDetailSheet({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto pt-10 pb-32 px-6">
-          <div className="max-w-md mx-auto space-y-8">
-            <div className="space-y-2">
-              <h2 className="text-[#1a1c2e] text-[32px] font-black leading-tight tracking-tight">
+        <div className="flex-1 overflow-y-auto pt-8 pb-32 px-6">
+          <div className="max-w-md mx-auto space-y-6">
+            <div className="space-y-1">
+              <h2 className="text-[#1a1c2e] text-[28px] font-black leading-tight tracking-tight">
                 {item.name}
               </h2>
-              <p className="text-[#94a3b8] text-[16px] font-bold">
+              <p className="text-[#94a3b8] text-[15px] font-bold">
                 {item.description}
               </p>
-              <div className="flex items-baseline gap-2 pt-2">
-                <span className="text-[#1a1c2e] text-[28px] font-black">
+              <div className="flex items-baseline gap-2 pt-1">
+                <span className="text-[#1a1c2e] text-[24px] font-black">
                   AED {item.basePrice.toFixed(2)}
                 </span>
-                <span className="text-[#94a3b8] text-[14px] font-bold">
+                <span className="text-[#94a3b8] text-[13px] font-bold">
                   (Base Price)
                 </span>
               </div>
             </div>
 
-            <div className="bg-[#f8fbff] rounded-[24px] p-6 border border-[#f0f4f8]">
-              <div className="flex items-center justify-between mb-5">
+            <div className="bg-[#f8fbff] rounded-[24px] p-5 border border-[#f0f4f8]">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Flame className="w-5 h-5 text-[#f97316] fill-[#f97316]" />
                   <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Nutritional Info</span>
                 </div>
                 <span className="text-[#94a3b8] text-[11px] font-bold">Per serving</span>
               </div>
-              <div className="grid grid-cols-4 gap-2.5">
+              <div className="grid grid-cols-4 gap-2">
                 {[
                   { value: item.nutritionalInfo.kcal, label: 'Kcal' },
                   { value: item.nutritionalInfo.protein, label: 'Protein' },
                   { value: item.nutritionalInfo.carbs, label: 'Carbs' },
                   { value: item.nutritionalInfo.fat, label: 'Fat' }
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white rounded-[16px] p-3.5 flex flex-col items-center justify-center shadow-sm border border-[#f1f5f9]">
-                    <span className="text-[#1a1c2e] text-[15px] font-black leading-none">{stat.value}</span>
-                    <span className="text-[#94a3b8] text-[10px] font-black mt-1 uppercase tracking-wider">{stat.label}</span>
+                  <div key={i} className="bg-white rounded-[16px] p-3 flex flex-col items-center justify-center shadow-sm border border-[#f1f5f9]">
+                    <span className="text-[#1a1c2e] text-[14px] font-black leading-none">{stat.value}</span>
+                    <span className="text-[#94a3b8] text-[9px] font-black mt-1 uppercase tracking-wider">{stat.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-[#fffbeb] rounded-[24px] p-6 border border-[#fef3c7]">
-              <div className="flex items-center gap-2 mb-4">
+            <div className="bg-[#fffbeb] rounded-[24px] p-5 border border-[#fef3c7]">
+              <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="w-5 h-5 text-[#f59e0b] fill-[#f59e0b]/10" />
                 <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Allergen Information</span>
               </div>
-              <div className="flex flex-wrap gap-2.5">
+              <div className="flex flex-wrap gap-2">
                 {item.allergens.map((allergen) => (
-                  <div key={allergen} className="bg-white rounded-xl px-4 py-2 border border-[#fef3c7] flex items-center gap-2 shadow-sm">
+                  <div key={allergen} className="bg-white rounded-xl px-3 py-1.5 border border-[#fef3c7] flex items-center gap-1.5 shadow-sm">
                     {allergen === 'Gluten' && <Flame className="w-3.5 h-3.5 text-[#f59e0b]" />}
                     {allergen === 'Dairy' && <Circle className="w-3.5 h-3.5 text-[#f59e0b] fill-[#f59e0b]" />}
-                    <span className="text-[#4b5563] text-[13px] font-black">{allergen}</span>
+                    <span className="text-[#4b5563] text-[12px] font-black">{allergen}</span>
                   </div>
                 ))}
                 {item.allergens.length === 0 && (
-                  <span className="text-[#94a3b8] text-[13px] font-bold">No common allergens</span>
+                  <span className="text-[#94a3b8] text-[12px] font-bold">No common allergens</span>
                 )}
               </div>
             </div>
 
-            {/* Flavor Section (Required) */}
-            <div className="bg-[#f8fafc] rounded-[24px] p-6 border border-[#f1f5f9]">
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-[#1a1c2e] text-[18px] font-black tracking-tight">Flavor</span>
-                  <span className="bg-[#fef2f2] text-[#ef4444] text-[9px] font-black px-2 py-0.5 rounded-full border border-[#fee2e2] uppercase">Required</span>
+            {/* Flavor Section (Required if exists) */}
+            {item.variations.length > 0 && (
+              <div className="bg-[#f8fafc] rounded-[24px] p-5 border border-[#f1f5f9]">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[#1a1c2e] text-[17px] font-black tracking-tight">Flavor</span>
+                    <span className="bg-[#fef2f2] text-[#ef4444] text-[8px] font-black px-2 py-0.5 rounded-full border border-[#fee2e2] uppercase">Required</span>
+                  </div>
+                </div>
+                <p className="text-[#94a3b8] text-[12px] font-bold mb-5">Select one option</p>
+                
+                <div className="space-y-3">
+                  {item.variations.map((v, i) => (
+                    <div key={i}>
+                      <div 
+                        className="flex items-center justify-between py-1 group cursor-pointer"
+                        onClick={() => handleFlavorSelect(v)}
+                      >
+                        <div className="flex flex-col">
+                          <span className="text-[#334155] text-[14px] font-black">{v.name}</span>
+                          {v.price > 0 && <span className="text-[#0066b2] text-[11px] font-bold">+ AED {v.price.toFixed(2)}</span>}
+                        </div>
+                        <div className={cn(
+                          "w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-all",
+                          selectedFlavor?.name === v.name ? "border-[#0066b2] bg-white" : "border-gray-200"
+                        )}>
+                          {selectedFlavor?.name === v.name && <div className="w-2.5 h-2.5 bg-[#0066b2] rounded-full" />}
+                        </div>
+                      </div>
+                      {i !== item.variations.length - 1 && (
+                        <div className="w-full border-b border-dotted border-gray-200 mt-2" />
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
-              <p className="text-[#94a3b8] text-[13px] font-bold mb-6">Select one option</p>
-              
-              <div className="space-y-4">
-                {item.variations.map((v, i) => (
-                  <div key={i}>
-                    <div 
-                      className="flex items-center justify-between py-2 group cursor-pointer"
-                      onClick={() => handleFlavorSelect(v)}
-                    >
-                      <div className="flex flex-col">
-                        <span className="text-[#334155] text-[15px] font-black">{v.name}</span>
-                        {v.price > 0 && <span className="text-[#0066b2] text-[12px] font-bold">+ AED {v.price.toFixed(2)}</span>}
-                      </div>
-                      <div className={cn(
-                        "w-6 h-6 rounded-full border-[2px] flex items-center justify-center transition-all",
-                        selectedFlavor?.name === v.name ? "border-[#0066b2] bg-white" : "border-gray-200"
-                      )}>
-                        {selectedFlavor?.name === v.name && <div className="w-3 h-3 bg-[#0066b2] rounded-full" />}
-                      </div>
-                    </div>
-                    {i !== item.variations.length - 1 && (
-                      <div className="w-full border-b border-dotted border-gray-200 mt-2" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
 
             {/* Addons Section (Multi-select with Quantity) */}
             {item.addons && item.addons.length > 0 && (
-              <div ref={addonsSectionRef} className="bg-[#f8fafc] rounded-[24px] p-6 border border-[#f1f5f9]">
+              <div ref={addonsSectionRef} className="bg-[#f8fafc] rounded-[24px] p-5 border border-[#f1f5f9]">
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[#1a1c2e] text-[18px] font-black tracking-tight">Add-ons</span>
+                    <span className="text-[#1a1c2e] text-[17px] font-black tracking-tight">Add-ons</span>
                   </div>
                 </div>
-                <p className="text-[#94a3b8] text-[13px] font-bold mb-6">Select multiple extras</p>
+                <p className="text-[#94a3b8] text-[12px] font-bold mb-5">Select multiple extras</p>
                 
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {item.addons.map((addon, i) => {
                     const qty = addonQuantities[addon.name] || 0;
                     return (
                       <div key={i}>
-                        <div className="flex items-center justify-between py-2 group">
+                        <div className="flex items-center justify-between py-1 group">
                           <div className="flex flex-col">
-                            <span className="text-[#334155] text-[15px] font-black">{addon.name}</span>
-                            <span className="text-[#0066b2] text-[12px] font-bold">AED {addon.price.toFixed(2)}</span>
+                            <span className="text-[#334155] text-[14px] font-black">{addon.name}</span>
+                            <span className="text-[#0066b2] text-[11px] font-bold">AED {addon.price.toFixed(2)}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             {qty > 0 && (
@@ -673,10 +680,10 @@ function ItemDetailSheet({
                                 onClick={() => updateAddonQty(addon.name, -1)}
                                 className="w-8 h-8 flex items-center justify-center rounded-full bg-white border border-gray-200 text-[#ef4444] active:scale-90 transition-all"
                               >
-                                {qty === 1 ? <Trash2 className="w-4 h-4" /> : <Minus className="w-4 h-4 stroke-[3.5px]" />}
+                                {qty === 1 ? <Trash2 className="w-3.5 h-3.5" /> : <Minus className="w-3.5 h-3.5 stroke-[3.5px]" />}
                               </button>
                             )}
-                            {qty > 0 && <span className="text-[14px] font-black text-[#1a1c2e] min-w-[14px] text-center">{qty}</span>}
+                            {qty > 0 && <span className="text-[13px] font-black text-[#1a1c2e] min-w-[12px] text-center">{qty}</span>}
                             <button 
                               onClick={() => updateAddonQty(addon.name, 1)}
                               className={cn(
@@ -684,7 +691,7 @@ function ItemDetailSheet({
                                 qty > 0 ? "bg-[#0066b2] text-white" : "bg-white border border-gray-200 text-[#0066b2]"
                               )}
                             >
-                              <Plus className="w-4 h-4 stroke-[3.5px]" />
+                              <Plus className="w-3.5 h-3.5 stroke-[3.5px]" />
                             </button>
                           </div>
                         </div>
@@ -698,19 +705,19 @@ function ItemDetailSheet({
               </div>
             )}
 
-            <div ref={specialRequestsRef} className="bg-[#f8fafc] rounded-[24px] p-6 border border-[#f1f5f9]">
-              <div className="flex items-center gap-2 mb-4">
-                <Pencil className="w-5 h-5 text-[#94a3b8]" />
-                <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Special requests</span>
+            <div ref={specialRequestsRef} className="bg-[#f8fafc] rounded-[24px] p-5 border border-[#f1f5f9]">
+              <div className="flex items-center gap-2 mb-3">
+                <Pencil className="w-4 h-4 text-[#94a3b8]" />
+                <span className="text-[#1a1c2e] text-[14px] font-black tracking-tight">Special requests</span>
               </div>
               <div className="relative">
                 <textarea 
                   value={specialRequests}
                   onChange={(e) => setSpecialRequests(e.target.value)}
                   placeholder="For example: less spicy, no sugar, etc."
-                  className="w-full h-32 bg-white rounded-2xl border border-[#e2e8f0] p-4 text-[14px] font-medium placeholder:text-gray-300 focus:outline-none focus:border-[#0066b2] transition-colors resize-none"
+                  className="w-full h-24 bg-white rounded-2xl border border-[#e2e8f0] p-4 text-[13px] font-medium placeholder:text-gray-300 focus:outline-none focus:border-[#0066b2] transition-colors resize-none"
                 />
-                <span className="absolute bottom-4 right-4 text-[#cbd5e1] text-[11px] font-bold">
+                <span className="absolute bottom-4 right-4 text-[#cbd5e1] text-[10px] font-bold">
                   {specialRequests.length}/150
                 </span>
               </div>
@@ -718,24 +725,23 @@ function ItemDetailSheet({
           </div>
         </div>
 
-        <div className="absolute bottom-0 inset-x-0 bg-white px-6 pt-5 pb-8 border-t border-[#f0f4f8] shadow-[0_-10px_40px_rgba(0,0,0,0.03)] flex items-center gap-4 z-30">
-          {/* High Fidelity Quantity Selector Pill */}
-          <div className="h-14 bg-white border border-[#f0f4f8] rounded-full shadow-sm flex items-center px-1.5 min-w-[120px] justify-between overflow-hidden">
+        <div className="absolute bottom-0 inset-x-0 bg-white px-6 pt-4 pb-6 border-t border-[#f0f4f8] shadow-[0_-10px_40px_rgba(0,0,0,0.03)] flex items-center gap-4 z-30">
+          <div className="h-12 bg-white border border-[#f0f4f8] rounded-full shadow-sm flex items-center px-1 min-w-[110px] justify-between overflow-hidden">
             <button 
               onClick={() => setItemQuantity(Math.max(1, itemQuantity - 1))}
               className={cn(
-                "w-11 h-11 flex items-center justify-center rounded-full transition-all active:scale-90",
+                "w-10 h-10 flex items-center justify-center rounded-full transition-all active:scale-90",
                 itemQuantity === 1 ? "bg-white text-[#ef4444]" : "bg-[#f1f5f9] text-[#1a1c2e]"
               )}
             >
-              {itemQuantity === 1 ? <Trash2 className="w-5 h-5" /> : <Minus className="w-5 h-5 stroke-[2.5px]" />}
+              {itemQuantity === 1 ? <Trash2 className="w-4 h-4" /> : <Minus className="w-4 h-4 stroke-[2.5px]" />}
             </button>
-            <span className="text-[20px] font-black text-[#1a1c2e] tabular-nums">{itemQuantity}</span>
+            <span className="text-[18px] font-black text-[#1a1c2e] tabular-nums">{itemQuantity}</span>
             <button 
               onClick={() => setItemQuantity(itemQuantity + 1)}
-              className="w-11 h-11 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-md active:scale-90 transition-all"
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-md active:scale-90 transition-all"
             >
-              <Plus className="w-5 h-5 stroke-[2.5px]" />
+              <Plus className="w-4 h-4 stroke-[2.5px]" />
             </button>
           </div>
 
@@ -748,7 +754,7 @@ function ItemDetailSheet({
               onClose();
             }}
             className={cn(
-              "flex-1 h-14 rounded-[18px] text-[17px] font-black shadow-[0_6px_20px_rgba(0,102,178,0.3)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all",
+              "flex-1 h-12 rounded-[16px] text-[16px] font-black shadow-[0_6px_20px_rgba(0,102,178,0.3)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all",
               isCustomized 
                 ? "bg-[#0066b2] hover:bg-[#005596] text-white" 
                 : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed"
