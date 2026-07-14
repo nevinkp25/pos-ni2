@@ -62,10 +62,37 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
         { name: 'Truffle Sauce', price: '3.00' }
       ],
       moreCount: 5
+    },
+    {
+      id: '4',
+      qty: '1x',
+      name: 'Calamari Fritti',
+      price: '55.00',
+      addons: [
+        { name: 'Spicy Marinara', price: '0.00' }
+      ]
+    },
+    {
+      id: '5',
+      qty: '1x',
+      name: 'Branzino al Forno',
+      price: '130.00',
+      addons: [
+        { name: 'Lemon Herb', price: '0.00' }
+      ]
+    },
+    {
+      id: '6',
+      qty: '1x',
+      name: 'Tiramisu Classico',
+      price: '48.00',
+      addons: [
+        { name: 'Cocoa dusting', price: '0.00' }
+      ]
     }
   ];
 
-  const displayedItems = isExpanded ? orderItems : orderItems.slice(0, 1);
+  const displayedItems = isExpanded ? orderItems : orderItems.slice(0, 3);
 
   return (
     <div className="flex flex-col h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
