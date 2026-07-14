@@ -32,9 +32,10 @@ interface CartScreenProps {
   onBack: () => void;
   cart: CartItem[];
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  onOrderSent: () => void;
 }
 
-export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenProps) {
+export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: CartScreenProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>(cart.map(i => i.id));
   const [isFooterExpanded, setIsFooterExpanded] = useState(true);
   const footerTouchStartY = useRef(0);
@@ -162,11 +163,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
     if (sliderX >= maxPath * 0.9) {
       setSliderX(maxPath);
       setIsOrderSent(true);
-      toast({
-        title: "Order Sent",
-        description: `Order for Table #${tableNumber} sent to kitchen.`,
-      });
-      setTimeout(() => onBack(), 2000);
+      onOrderSent();
     } else {
       setSliderX(0);
     }
