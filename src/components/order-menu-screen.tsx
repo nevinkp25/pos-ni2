@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Home, Search, ChevronDown, Check } from 'lucide-react';
+import { ChevronLeft, Home, Search, ChevronDown, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface OrderMenuScreenProps {
@@ -113,6 +113,3 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
     </div>
   );
 }
-
-// Re-importing X icon for the toast
-import { X as CloseIcon } from 'lucide-react';
