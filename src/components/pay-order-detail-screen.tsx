@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   ChevronLeft, 
   MoreVertical, 
@@ -10,10 +10,21 @@ import {
   ChevronDown, 
   ChevronUp,
   CreditCard, 
-  Split
+  Split,
+  X,
+  Check,
+  Pencil,
+  Landmark,
+  Wallet
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
 interface PayOrderDetailScreenProps {
   tableNumber: string;
@@ -29,6 +40,8 @@ const CurrencySymbol = ({ className }: { className?: string }) => (
 
 export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: PayOrderDetailScreenProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isSettlementOpen, setIsSettlementOpen] = useState(false);
+  const [selectedTip, setSelectedTip] = useState<number | null>(10);
 
   const orderItems = [
     {
@@ -93,6 +106,8 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
   ];
 
   const displayedItems = isExpanded ? orderItems : orderItems.slice(0, 3);
+  const billAmount = 75.08;
+  const grandTotal = billAmount + (selectedTip || 0);
 
   return (
     <div className="flex flex-col h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
@@ -244,7 +259,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
             </div>
             <div className="flex items-center gap-1.5 text-[#0066b2] font-black text-[38px] leading-none">
               <CurrencySymbol className="text-[34px]" />
-              <span>75.08</span>
+              <span>{billAmount.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -254,7 +269,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
       <div className="absolute bottom-0 inset-x-0 bg-white px-5 pt-4 pb-8 shadow-[0_-15px_45px_rgba(0,0,0,0.06)] flex flex-col gap-4 z-30">
         <div className="grid grid-cols-2 gap-4">
           <Button 
-            onClick={onSettle}
+            onClick={() => setIsSettlementOpen(true)}
             className="h-[60px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-[16px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_8px_25px_rgba(0,102,178,0.25)]"
           >
             <CreditCard className="w-5 h-5 text-white" />
@@ -275,6 +290,151 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
           Custom Payment
         </button>
       </div>
+
+      {/* Check Settlement Bottom Sheet */}
+      <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
+        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden max-h-[92vh] flex flex-col">
+          <div className="flex-1 overflow-y-auto pb-10">
+            {/* Header */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 bg-gray-200 rounded-full" />
+            </div>
+
+            <div className="px-6 flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-[#f0f7ff] rounded-2xl flex items-center justify-center">
+                  <CreditCard className="w-6 h-6 text-[#0066b2]" />
+                </div>
+                <div className="flex flex-col">
+                  <h2 className="text-[17px] font-black text-[#1a1c2e] leading-none">CHECK SETTLEMENT</h2>
+                  <span className="text-[11px] font-bold text-[#94a3b8] uppercase mt-1.5">Final Review</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsSettlementOpen(false)}
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-50 text-gray-400"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="w-full border-t border-gray-50 mb-8" />
+
+            <div className="px-6 space-y-6">
+              {/* Waiter & Bill Info Cards */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center">
+                  <div className="w-10 h-10 bg-[#f8fafc] rounded-full flex items-center justify-center mb-2 border border-gray-50">
+                    <User className="w-5 h-5 text-[#94a3b8]" />
+                  </div>
+                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-1">Waiter ID:</span>
+                  <span className="text-[15px] font-black text-[#1a1c2e]">#123456</span>
+                </div>
+                <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center">
+                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
+                  <div className="flex items-baseline gap-1 text-[#0066b2] font-black">
+                    <span className="text-[13px]">AED</span>
+                    <span className="text-[20px]">{billAmount.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tips Section */}
+              <div className="space-y-4">
+                <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-wide">Add tips for your waiter</span>
+                <div className="grid grid-cols-4 gap-3">
+                  {[5, 10, 20].map((amount) => (
+                    <button 
+                      key={amount}
+                      onClick={() => setSelectedTip(amount)}
+                      className={cn(
+                        "relative h-[90px] rounded-[24px] flex flex-col items-center justify-center transition-all shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50",
+                        selectedTip === amount ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white"
+                      )}
+                    >
+                      <span className="text-[10px] font-black text-[#94a3b8] uppercase">AED</span>
+                      <span className="text-[22px] font-black text-[#1a1c2e]">{amount}</span>
+                      {selectedTip === amount && (
+                        <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white">
+                          <X className="w-3 h-3 text-white stroke-[4px]" />
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                  <button className="h-[90px] bg-white rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50">
+                    <Pencil className="w-5 h-5 text-[#94a3b8] mb-1" />
+                    <span className="text-[10px] font-black text-[#94a3b8] uppercase">Custom</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Bill Summary Card */}
+              <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
+                <div className="flex justify-between items-center text-[15px] font-black">
+                  <span className="text-[#94a3b8] uppercase">Bill Amount</span>
+                  <div className="flex items-center gap-1.5 text-[#1a1c2e]">
+                    <span className="text-[12px]">AED</span>
+                    <span>{billAmount.toFixed(2)}</span>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center text-[15px] font-black">
+                  <span className="text-[#94a3b8] uppercase">Tips</span>
+                  <div className="flex items-center gap-1.5 text-[#26ab5f]">
+                    <span>+</span>
+                    <span className="text-[12px]">AED</span>
+                    <span>{(selectedTip || 0).toFixed(2)}</span>
+                  </div>
+                </div>
+                <div className="w-full border-t border-dashed border-gray-100 py-1" />
+                <div className="flex justify-between items-center">
+                  <span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span>
+                  <div className="flex items-center gap-2 text-[#0066b2] font-black">
+                    <CurrencySymbol className="text-[28px]" />
+                    <span className="text-[34px]">{grandTotal.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="px-6 mt-10 space-y-4">
+              <Button 
+                onClick={() => {
+                  setIsSettlementOpen(false);
+                  onSettle();
+                }}
+                className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)]"
+              >
+                <CreditCard className="w-5 h-5" />
+                PAY BY CARD
+              </Button>
+              <div className="grid grid-cols-2 gap-4">
+                <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2">
+                  <Landmark className="w-4 h-4 text-[#94a3b8]" />
+                  PAY BY CASH
+                </Button>
+                <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">
+                  OTHER OPTIONS
+                </Button>
+              </div>
+            </div>
+
+            {/* Payment Logos Footer */}
+            <div className="px-6 mt-8 flex justify-center gap-3">
+              {[
+                { name: 'JCB', color: 'text-[#004e9c]' },
+                { name: 'G Pay', color: 'text-gray-600' },
+                { name: 'AMEX', color: 'text-[#006fcf]' },
+                { name: ' Pay', color: 'text-black' },
+                { name: 'VISA', color: 'text-[#1a1f71]' }
+              ].map((logo) => (
+                <div key={logo.name} className="px-3 h-8 rounded-lg bg-white border border-gray-100 flex items-center justify-center shadow-sm">
+                  <span className={cn("text-[10px] font-black uppercase tracking-tight", logo.color)}>{logo.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
