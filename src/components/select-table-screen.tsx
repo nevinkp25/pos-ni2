@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, Scan, Delete, CheckCircle2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -107,23 +107,25 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
           )}
         </div>
 
-        {/* Table Status Chips */}
-        <div className="w-full max-w-sm grid grid-cols-4 gap-3 mb-8">
-          {tables.map((table) => (
-            <button
-              key={table.id}
-              onClick={() => setTableNumber(table.number)}
-              className={cn(
-                "h-12 rounded-full border-[1.5px] text-sm font-bold transition-all active:scale-95 flex items-center justify-center",
-                table.isAvailable 
-                  ? "bg-[#ecf7ef] border-[#def0e5] text-[#26ab5f]" 
-                  : "bg-[#fef2f2] border-[#fee2e2] text-[#ef4444]"
-              )}
-            >
-              {table.number}
-            </button>
-          ))}
-        </div>
+        {/* Table Status Chips - Only visible when typing */}
+        {tableNumber && (
+          <div className="w-full max-w-sm grid grid-cols-4 gap-3 mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
+            {tables.map((table) => (
+              <button
+                key={table.id}
+                onClick={() => setTableNumber(table.number)}
+                className={cn(
+                  "h-12 rounded-full border-[1.5px] text-sm font-bold transition-all active:scale-95 flex items-center justify-center",
+                  table.isAvailable 
+                    ? "bg-[#ecf7ef] border-[#def0e5] text-[#26ab5f]" 
+                    : "bg-[#fef2f2] border-[#fee2e2] text-[#ef4444]"
+                )}
+              >
+                {table.number}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Keypad Grid */}
         <div className="w-full max-w-sm grid grid-cols-3 gap-y-4 gap-x-5 mb-8">
