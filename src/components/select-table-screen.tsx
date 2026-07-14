@@ -71,16 +71,16 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
   ];
 
   return (
-    <div className="flex flex-col h-screen bg-white font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
+    <div className="flex flex-col h-screen bg-[#fcfdff] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
       {/* Header */}
-      <div className="bg-white px-6 h-16 flex items-center justify-between shrink-0 shadow-[0_4px_12px_rgba(0,0,0,0.03)] rounded-b-[24px] z-10">
+      <div className="bg-white px-6 h-16 flex items-center justify-between shrink-0 shadow-sm rounded-b-[24px] z-10">
         <button 
           onClick={onBack}
           className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 active:scale-95 transition-all"
         >
           <ChevronLeft className="w-6 h-6 text-[#0066b2] stroke-[2.5px]" />
         </button>
-        <h1 className="text-lg font-bold tracking-tight">Select a Table</h1>
+        <h1 className="text-xl font-bold tracking-tight text-[#1a1c2e]">Select a Table</h1>
         <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
           <Scan className="w-5 h-5 text-gray-700" />
         </button>
@@ -90,8 +90,8 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
       <div className="flex-1 flex flex-col items-center px-6 pt-4 overflow-y-auto pb-4">
         {/* Table Number Display Card */}
         <div className={cn(
-          "w-full max-w-sm bg-white border border-[#d1e9ff] rounded-[24px] flex items-center justify-center relative transition-all duration-300 shadow-sm mb-4 shrink-0",
-          tableNumber ? "h-24" : "h-32"
+          "w-full max-w-sm bg-white border border-[#f0f4f8] rounded-[24px] flex items-center justify-center relative transition-all duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.02)] mb-4 shrink-0",
+          tableNumber ? "h-24" : "h-48"
         )}>
           {tableNumber ? (
             <div className="flex items-center gap-1 relative">
@@ -108,9 +108,8 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
             </div>
           ) : (
             <div className="flex items-baseline gap-1">
-              <span className="text-[#94a3b8] text-[24px] font-bold tracking-tight">Table</span>
-              <span className="text-[#0066b2] text-[48px] font-bold leading-none opacity-30">
-                #
+              <span className="text-[#94a3b8] text-[36px] font-bold tracking-tight opacity-60">
+                Table #
               </span>
             </div>
           )}
@@ -139,7 +138,7 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
         )}
 
         {/* Keypad Grid */}
-        <div className="w-full max-w-sm grid grid-cols-3 gap-y-2 gap-x-3 mb-4">
+        <div className="w-full max-w-sm grid grid-cols-3 gap-y-4 gap-x-5 mb-8">
           {keypadButtons.map((btn, index) => (
             <button
               key={index}
@@ -149,15 +148,17 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
                 if (btn.type === 'backspace') handleBackspace();
               }}
               className={cn(
-                "h-12 flex items-center justify-center rounded-[18px] text-xl font-bold transition-all active:scale-[0.9] shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-gray-50",
+                "h-16 flex items-center justify-center rounded-full text-[22px] font-bold transition-all active:scale-[0.9] shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-[#f8f9fb]",
                 btn.type === 'number' && "bg-white text-[#1a1c2e] hover:bg-gray-50",
                 btn.type === 'clear' && "bg-white text-[#ef4444] hover:bg-red-50",
-                btn.type === 'backspace' && "bg-white text-gray-400 hover:bg-gray-50"
+                btn.type === 'backspace' && "bg-white text-[#94a3b8] hover:bg-gray-50"
               )}
             >
               {btn.type === 'backspace' ? (
-                <div className="bg-[#1a1c2e] p-1.5 rounded-lg">
-                  <Delete className="w-4 h-4 text-white" />
+                <div className="relative w-8 h-8 flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" className="w-7 h-7 fill-current opacity-40">
+                    <path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z" />
+                  </svg>
                 </div>
               ) : (
                 btn.value
@@ -168,9 +169,11 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
 
         {/* Footer Banner (hidden when bottom sheet is open) */}
         {!showBottomSheet && (
-          <div className="w-full max-w-sm bg-[#eff2ff] py-3 px-6 rounded-xl flex items-center justify-center gap-2 mt-auto shrink-0">
-            <CheckCircle2 className="w-4 h-4 text-[#5c69ff]" />
-            <span className="text-[#5c69ff] text-[12px] font-bold tracking-tight">
+          <div className="w-full max-w-sm bg-[#e8edff] py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 mt-auto shrink-0 mb-4 border border-[#dce4ff]">
+            <div className="w-5 h-5 rounded-full border-[1.5px] border-[#4b58ff] flex items-center justify-center">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#4b58ff] stroke-[3px]" />
+            </div>
+            <span className="text-[#4b58ff] text-[14px] font-bold tracking-tight">
               Tap a table number to begin
             </span>
           </div>
@@ -180,7 +183,6 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
       {/* Selected Table Bottom Sheet */}
       {showBottomSheet && (
         <div className="absolute inset-x-0 bottom-0 z-50 animate-in slide-in-from-bottom duration-300">
-          {/* Backdrop Overlay (Subtle) */}
           <div className="absolute inset-0 -top-screen bg-black/5" onClick={() => setShowBottomSheet(false)} />
           
           <div className="bg-white rounded-t-[24px] shadow-[0_-12px_40px_rgba(0,0,0,0.12)] border-t border-gray-100 flex flex-col pt-4 pb-5 relative">
@@ -194,7 +196,6 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
                 </h2>
               </div>
               
-              {/* Guest Counter */}
               <div className="flex items-center gap-3">
                 <button 
                   onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
@@ -215,7 +216,6 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
               </div>
             </div>
 
-            {/* Dashed Separator */}
             <div className="w-full border-t border-dashed border-[#d1e9ff] mb-4" />
 
             <div className="px-6">
