@@ -11,7 +11,8 @@ import {
   Edit3, 
   MessageSquare,
   FileText,
-  ChevronsRight
+  ChevronsRight,
+  ShoppingCart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CartItem } from '@/lib/types';
@@ -97,6 +98,10 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
         ) : cart.map((item) => {
           const isExpanded = expandedItems.includes(item.id);
           const hasInstructions = !!item.specialRequests;
+          
+          // Calculate item total including addons
+          const singleItemPrice = item.basePrice + item.addons.reduce((acc, addon) => acc + (addon.price * addon.quantity), 0);
+          const itemDisplayTotal = singleItemPrice * item.quantity;
 
           return (
             <div 
@@ -114,7 +119,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
                       {item.flavor && <span className="text-[#94a3b8] text-[13px] font-bold ml-2">({item.flavor})</span>}
                     </h3>
                     <p className="text-[#0066b2] text-[15px] font-black">
-                      AED {(item.basePrice * item.quantity).toFixed(2)}
+                      AED {itemDisplayTotal.toFixed(2)}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
@@ -142,10 +147,10 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
                             className="bg-[#f0f7ff] border border-[#d1e9ff] rounded-full px-3 py-1.5 flex items-center gap-2"
                           >
                             <span className="text-[#0066b2] text-[11px] font-black tracking-tight">
-                              + {addon.name}
+                              + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
                             </span>
                             <span className="text-[#0066b2]/60 text-[10px] font-black">
-                              AED {addon.price.toFixed(2)}
+                              AED {(addon.price * addon.quantity).toFixed(2)}
                             </span>
                           </div>
                         ))}
@@ -243,5 +248,3 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
     </div>
   );
 }
-
-import { ShoppingCart } from 'lucide-react';
