@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ChevronLeft, Scan, Delete, CheckCircle2, X, Minus, Plus, ArrowRight } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { ChevronLeft, Scan, X, Minus, Plus, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SelectTableScreenProps {
@@ -33,9 +33,15 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
     { id: '8', number: '2347', isAvailable: false },
   ];
 
+  const filteredTables = useMemo(() => {
+    if (!tableNumber) return [];
+    return tables.filter(t => t.number.includes(tableNumber));
+  }, [tableNumber, tables]);
+
   const handleNumberClick = (num: string) => {
     if (tableNumber.length < 4) {
-      setTableNumber(prev => prev + num);
+      const newNum = tableNumber + num;
+      setTableNumber(newNum);
       setShowBottomSheet(false);
     }
   };
@@ -115,9 +121,12 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
           )}
         </div>
 
-        {/* Table Status Chips */}
-        <div className="w-full max-w-sm grid grid-cols-4 gap-2 mb-4 shrink-0">
-          {tables.map((table) => (
+        {/* Table Status Chips - Revealed when typing */}
+        <div className={cn(
+          "w-full max-w-sm grid grid-cols-4 gap-2 mb-4 shrink-0 transition-all duration-300",
+          filteredTables.length > 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none h-0 mb-0"
+        )}>
+          {filteredTables.map((table) => (
             <button
               key={table.id}
               onClick={() => handleChipClick(table)}
