@@ -401,11 +401,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
               ) : (
                 <ChevronsRight className="w-6 h-6 text-[#0066b2] stroke-[3.5px]" />
               )}
-              
-              {/* Branding "N" Badge Overlay */}
-              <div className="absolute -top-2 -right-2 w-5 h-5 bg-[#1a1c2e] rounded-md flex items-center justify-center shadow-md">
-                <span className="text-white text-[10px] font-black italic">N</span>
-              </div>
             </div>
           </div>
 
