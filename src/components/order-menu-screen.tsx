@@ -23,6 +23,8 @@ import { cn } from '@/lib/utils';
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
 } from '@/components/ui/sheet';
 
 interface MenuItem {
@@ -207,7 +209,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           allergens: ['Dairy', 'Gluten', 'Nuts'], 
           price: '45.00',
           nutritionalInfo: { kcal: 480, protein: '10g', carbs: '52g', fat: '25g' },
-          variations: ['Pistachio', 'Chocolate Chip', 'Orange Zest', 'Standard']
+          variations: ['Pistachio', 'Chocolate chip', 'Orange Zest', 'Standard']
         },
       ] 
     },
@@ -471,6 +473,11 @@ function ItemDetailSheet({
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="bottom" className="h-[94vh] rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden">
+        {/* Accessibility Title (Visually Hidden) */}
+        <SheetHeader className="sr-only">
+          <SheetTitle>{item.name}</SheetTitle>
+        </SheetHeader>
+
         {/* Close Button Header */}
         <div className="absolute top-6 right-6 z-20">
           <button 
