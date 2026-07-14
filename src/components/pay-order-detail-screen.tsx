@@ -9,8 +9,7 @@ import {
   ReceiptText, 
   ChevronDown, 
   CreditCard, 
-  Split,
-  Circle
+  Split
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -22,12 +21,12 @@ interface PayOrderDetailScreenProps {
   onSettle: () => void;
 }
 
-// Custom Currency Icon to match design
+// Refined Currency Icon to match the stylized symbol in the design
 const CurrencyIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={cn("fill-current", className)} xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v2h-2zm0 4h2v6h-2z" opacity=".2"/>
-    <path d="M7 10h10v2H7zM7 14h10v2H7z"/>
-    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" fill="none"/>
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" opacity=".1"/>
+    <path d="M7 10h10v2H7zM7 14h10v2H7z" fill="currentColor"/>
+    <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2.5" fill="none"/>
   </svg>
 );
 
@@ -76,8 +75,8 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
             <ChevronLeft className="w-7 h-7 text-[#0066b2] stroke-[2.5px]" />
           </button>
           <div className="flex flex-col">
-            <h1 className="text-[20px] font-black leading-tight text-[#1a1c2e]">Pay Order</h1>
-            <span className="text-[#94a3b8] text-[13px] font-bold">Table # {tableNumber}</span>
+            <h1 className="text-[20px] font-bold leading-tight text-[#1a1c2e]">Pay Order</h1>
+            <span className="text-[#94a3b8] text-[13px] font-medium">Table # {tableNumber}</span>
           </div>
         </div>
         
@@ -87,64 +86,64 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 px-5 pt-5 overflow-y-auto pb-48 space-y-5">
+      <div className="flex-1 px-5 pt-5 overflow-y-auto pb-52 space-y-5">
         
         {/* Order Info Card */}
-        <div className="bg-white rounded-[24px] p-6 shadow-sm border border-gray-100 flex flex-col items-center">
-          <h2 className="text-[22px] font-black text-[#1a1c2e] mb-5">Order #2536</h2>
+        <div className="bg-white rounded-[28px] p-6 shadow-sm border border-gray-100 flex flex-col items-center">
+          <h2 className="text-[24px] font-bold text-[#1a1c2e] mb-6">Order #2536</h2>
           
-          <div className="w-full border-t border-gray-100 mb-5" />
+          <div className="w-full border-t border-gray-100 mb-6 border-dashed" />
           
-          <div className="grid grid-cols-2 w-full gap-4">
-            <div className="flex flex-col items-center border-r border-gray-100">
-              <div className="w-10 h-10 bg-[#f0f7ff] rounded-full flex items-center justify-center mb-2">
+          <div className="grid grid-cols-2 w-full gap-0">
+            <div className="flex flex-col items-center border-r border-gray-100 py-2">
+              <div className="w-11 h-11 bg-[#f0f7ff] rounded-full flex items-center justify-center mb-3">
                 <User className="w-5 h-5 text-[#0066b2]" />
               </div>
-              <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest">Staff</span>
-              <span className="text-[15px] font-black text-[#1a1c2e]">232</span>
+              <span className="text-[10px] font-bold text-[#94a3b8] uppercase mb-1">Staff</span>
+              <span className="text-[16px] font-bold text-[#1a1c2e]">232</span>
             </div>
             
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 bg-[#f0f7ff] rounded-full flex items-center justify-center mb-2">
+            <div className="flex flex-col items-center py-2">
+              <div className="w-11 h-11 bg-[#f0f7ff] rounded-full flex items-center justify-center mb-3">
                 <Clock className="w-5 h-5 text-[#0066b2]" />
               </div>
-              <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest">Date & Time</span>
-              <span className="text-[15px] font-black text-[#1a1c2e]">Jul 1, 01:19 AM</span>
+              <span className="text-[10px] font-bold text-[#94a3b8] uppercase mb-1">Date & Time</span>
+              <span className="text-[16px] font-bold text-[#1a1c2e]">Jul 1, 01:19 AM</span>
             </div>
           </div>
         </div>
 
         {/* Current Orders Section */}
-        <div className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 space-y-4">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="bg-white rounded-[28px] p-5 shadow-sm border border-gray-100 space-y-5">
+          <div className="flex items-center gap-2 px-1">
             <ReceiptText className="w-4 h-4 text-[#94a3b8]" />
-            <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.15em]">Current Orders</span>
+            <span className="text-[11px] font-bold text-[#94a3b8] uppercase">Current Orders</span>
           </div>
 
-          <div className="space-y-8">
+          <div className="space-y-8 px-1">
             {orderItems.map((item, idx) => (
               <div key={idx} className="relative">
                 <div className="flex items-start justify-between">
                   <div className="flex gap-4 flex-1">
-                    <div className="w-7 h-7 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0 mt-0.5">
-                      <span className="text-[#0066b2] text-[12px] font-black">{item.qty}x</span>
+                    <div className="w-8 h-8 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                      <span className="text-[#0066b2] text-[13px] font-bold">{item.qty}x</span>
                     </div>
-                    <div className="flex flex-col gap-2 flex-1">
-                      <h3 className="text-[15px] font-black text-[#1a1c2e]">{item.name}</h3>
+                    <div className="flex flex-col gap-3 flex-1">
+                      <h3 className="text-[16px] font-bold text-[#1a1c2e] leading-tight">{item.name}</h3>
                       
                       {/* Modifiers */}
-                      <div className="space-y-1.5 w-full">
+                      <div className="space-y-2.5 w-full">
                         {item.modifiers.map((mod, midx) => (
-                          <div key={midx} className="flex items-center justify-between group">
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-[#0066b2] text-[10px] font-bold">+</span>
-                              <span className="bg-[#f0f7ff] text-[#0066b2] px-2.5 py-0.5 rounded-md text-[11px] font-black">
+                          <div key={midx} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[#0066b2] text-[12px] font-bold">+</span>
+                              <span className="bg-[#f0f7ff] text-[#0066b2] px-3 py-1 rounded-lg text-[11px] font-bold">
                                 {mod.name}
                               </span>
                             </div>
-                            <div className="flex-1 border-b border-dotted border-gray-200 mx-2 mb-1" />
-                            <div className="flex items-center gap-0.5 text-[#94a3b8] text-[11px] font-bold">
-                              <CurrencyIcon className="w-2.5 h-2.5" />
+                            <div className="flex-1 border-b border-dotted border-gray-200 mx-3 mb-1.5" />
+                            <div className="flex items-center gap-0.5 text-[#94a3b8] text-[12px] font-bold">
+                              <CurrencyIcon className="w-3 h-3" />
                               <span>{mod.price.toFixed(2)}</span>
                             </div>
                           </div>
@@ -152,15 +151,15 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                       </div>
                       
                       {item.hasMore && (
-                        <div className="inline-flex mt-1">
-                          <span className="bg-[#fffbeb] text-[#f59e0b] px-2.5 py-0.5 rounded-md text-[10px] font-black">
+                        <div className="inline-flex">
+                          <span className="bg-[#fffbeb] text-[#f59e0b] px-3 py-1 rounded-lg text-[11px] font-bold shadow-sm">
                             +5 more
                           </span>
                         </div>
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 text-[#1a1c2e] font-black text-[18px] ml-4 shrink-0">
+                  <div className="flex items-center gap-1 text-[#1a1c2e] font-bold text-[19px] ml-4 shrink-0">
                     <CurrencyIcon className="w-4 h-4" />
                     <span>{item.price.toFixed(2)}</span>
                   </div>
@@ -169,8 +168,8 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
             ))}
           </div>
 
-          <div className="pt-4 flex justify-center">
-            <button className="flex items-center gap-2 bg-[#f0f7ff] px-6 h-10 rounded-full text-[#0066b2] text-[13px] font-black active:scale-95 transition-all">
+          <div className="pt-2 flex justify-center">
+            <button className="flex items-center gap-2 bg-[#f0f7ff] px-8 h-12 rounded-full text-[#0066b2] text-[14px] font-bold active:scale-95 transition-all shadow-sm">
               See More
               <ChevronDown className="w-4 h-4" />
             </button>
@@ -178,39 +177,39 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
         </div>
 
         {/* Totals Card */}
-        <div className="bg-white rounded-[24px] p-6 shadow-sm border-[1.5px] border-[#0066b2]/20 space-y-4">
+        <div className="bg-white rounded-[28px] p-6 shadow-sm border-[2px] border-[#0066b2] space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-[13px] font-black text-[#0066b2] uppercase tracking-widest">Subtotal</span>
-            <div className="flex items-center gap-1 text-[#0066b2] font-black text-[18px]">
-              <CurrencyIcon className="w-4 h-4" />
+            <span className="text-[14px] font-bold text-[#0066b2] uppercase">Subtotal</span>
+            <div className="flex items-center gap-1 text-[#0066b2] font-bold text-[20px]">
+              <CurrencyIcon className="w-4.5 h-4.5" />
               <span>65.00</span>
             </div>
           </div>
           
-          <div className="space-y-2">
-            <div className="flex items-center justify-between text-[11px] font-black text-gray-400">
-              <span className="uppercase tracking-widest">Extra Charges (10%)</span>
+          <div className="space-y-3 pt-1">
+            <div className="flex items-center justify-between text-[12px] font-bold text-[#94a3b8]">
+              <span className="uppercase">Extra Charges (10%)</span>
               <div className="flex items-center gap-0.5">
-                <CurrencyIcon className="w-2.5 h-2.5" />
+                <CurrencyIcon className="w-3 h-3" />
                 <span>3.58</span>
               </div>
             </div>
-            <div className="flex items-center justify-between text-[11px] font-black text-gray-400">
-              <span className="uppercase tracking-widest">Vat (5%)</span>
+            <div className="flex items-center justify-between text-[12px] font-bold text-[#94a3b8]">
+              <span className="uppercase">Vat (5%)</span>
               <div className="flex items-center gap-0.5">
-                <CurrencyIcon className="w-2.5 h-2.5" />
+                <CurrencyIcon className="w-3 h-3" />
                 <span>3.58</span>
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-gray-100 flex items-end justify-between">
+          <div className="pt-6 mt-2 border-t border-gray-100 flex items-end justify-between">
             <div className="flex flex-col">
-              <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-widest leading-none mb-1">Total Balance Due</span>
-              <span className="text-[11px] font-black text-[#0066b2] uppercase tracking-widest">Order # 2536</span>
+              <span className="text-[12px] font-bold text-[#94a3b8] uppercase leading-none mb-1.5">Total Balance Due</span>
+              <span className="text-[12px] font-bold text-[#0066b2] uppercase">Order # 2536</span>
             </div>
-            <div className="flex items-center gap-1 text-[#0066b2] font-black text-[34px] leading-none tracking-tighter">
-              <CurrencyIcon className="w-8 h-8" />
+            <div className="flex items-center gap-1 text-[#0066b2] font-bold text-[36px] leading-none">
+              <CurrencyIcon className="w-9 h-9" />
               <span>75.08</span>
             </div>
           </div>
@@ -218,18 +217,18 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
       </div>
 
       {/* Footer Actions */}
-      <div className="absolute bottom-0 inset-x-0 bg-white px-6 pt-5 pb-8 shadow-[0_-10px_40px_rgba(0,0,0,0.03)] flex flex-col gap-4 z-20 border-t border-gray-100">
+      <div className="absolute bottom-0 inset-x-0 bg-white px-6 pt-5 pb-8 shadow-[0_-12px_40px_rgba(0,0,0,0.04)] flex flex-col gap-4 z-20 border-t border-gray-100">
         <div className="grid grid-cols-2 gap-4">
           <Button 
             onClick={onSettle}
-            className="h-14 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[16px] text-[15px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_6px_20px_rgba(0,102,178,0.2)]"
+            className="h-15 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-[16px] font-bold flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_8px_20px_rgba(0,102,178,0.25)]"
           >
             <CreditCard className="w-5 h-5 text-white" />
             Pay Full
           </Button>
           <Button 
             variant="outline"
-            className="h-14 bg-[#111827] border-none hover:bg-black text-white rounded-[16px] text-[15px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+            className="h-15 bg-[#0f172a] border-none hover:bg-black text-white rounded-[18px] text-[16px] font-bold flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
           >
             <Split className="w-5 h-5 text-white" />
             Split Bill
@@ -237,7 +236,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
         </div>
         
         <button 
-          className="w-full h-14 bg-white border border-gray-200 text-[#1a1c2e] rounded-[16px] text-[13px] font-black uppercase tracking-[0.2em] active:bg-gray-50 transition-colors shadow-sm"
+          className="w-full h-15 bg-white border-2 border-gray-100 text-[#1a1c2e] rounded-[18px] text-[14px] font-bold uppercase active:bg-gray-50 transition-colors shadow-sm"
         >
           Custom Payment
         </button>
