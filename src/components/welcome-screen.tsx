@@ -12,14 +12,14 @@ interface WelcomeScreenProps {
 export function WelcomeScreen({ onStarted }: WelcomeScreenProps) {
   return (
     <div className="flex flex-col min-h-screen max-h-screen bg-white font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden">
-      {/* Top Header - More compact */}
+      {/* Top Header - Compact */}
       <div className="flex justify-end p-4 shrink-0">
         <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
           <Menu className="w-5 h-5 text-gray-500" />
         </button>
       </div>
 
-      {/* Main Content - Condensed gaps */}
+      {/* Main Content - Condensed */}
       <div className="flex-1 flex flex-col items-center justify-center px-8 pb-8 overflow-y-auto">
         <div className="w-full max-w-sm flex flex-col items-center">
           <h1 className="text-[32px] font-extrabold tracking-tight mb-1 text-center">
@@ -55,7 +55,7 @@ export function WelcomeScreen({ onStarted }: WelcomeScreenProps) {
         </div>
       </div>
 
-      {/* Footer Branding - More condensed */}
+      {/* Footer Branding - Condensed */}
       <div className="bg-[#f8fbfe] border-t border-dashed border-gray-200 py-6 px-8 shrink-0 flex flex-col items-center">
         <div className="flex flex-col items-center">
           <span className="text-[9px] font-bold text-gray-400 tracking-[0.2em] uppercase mb-0.5">

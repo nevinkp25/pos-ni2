@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 export function StaffSignInScreen() {
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] overflow-hidden select-none">
-      {/* Header Section with Deep Blue Gradient */}
+      {/* Header Section - Condensed height */}
       <div className="bg-gradient-to-b from-[#0081d3] to-[#005ea1] h-[160px] pt-10 px-6 shrink-0 flex flex-col">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -23,7 +23,7 @@ export function StaffSignInScreen() {
         </div>
       </div>
 
-      {/* Main White Card with Large Rounded Corners */}
+      {/* Main Card - Condensed spacing */}
       <div className="flex-1 -mt-10 bg-white rounded-t-[40px] px-8 pt-10 flex flex-col shadow-[0_-10px_30px_rgba(0,0,0,0.03)] overflow-y-auto">
         <div className="w-full max-w-sm mx-auto">
           <h1 className="text-[24px] font-bold mb-1 tracking-tight">Staff Sign In</h1>
@@ -52,10 +52,9 @@ export function StaffSignInScreen() {
             </Button>
           </div>
 
-          {/* Locked Status Illustration Section */}
+          {/* Status Section - Condensed */}
           <div className="flex flex-col items-center mt-2">
             <div className="relative w-36 h-36 mb-6">
-                {/* Custom SVG mimicking the 3D POS terminal in the image */}
                 <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-xl">
                   {/* Terminal Body */}
                   <rect x="25" y="25" width="50" height="65" rx="8" fill="#d1e0f3" />
@@ -71,9 +70,9 @@ export function StaffSignInScreen() {
                     <rect x="46" y="75" width="8" height="6" rx="1.5" />
                     <rect x="60" y="75" width="8" height="6" rx="1.5" />
                   </g>
-                  {/* Card Slot Top */}
+                  {/* Card Slot */}
                   <rect x="25" y="20" width="50" height="5" rx="2" fill="#94a3b8" />
-                  {/* 3D Gold Lock Overlay */}
+                  {/* Gold Lock */}
                   <g transform="translate(58, 52)">
                     <rect x="0" y="0" width="22" height="18" rx="4" fill="#f59e0b" />
                     <path d="M5 0 V-6 A6 6 0 0 1 17 -6 V0" fill="none" stroke="#f59e0b" strokeWidth="4" />
@@ -87,7 +86,7 @@ export function StaffSignInScreen() {
         </div>
       </div>
 
-      {/* Branding Footer with precise logo replication */}
+      {/* Footer Branding - Condensed */}
       <div className="bg-white py-10 flex flex-col items-center shrink-0">
         <div className="flex flex-col items-center">
           <span className="text-[10px] font-bold text-[#cbd5e1] tracking-[0.3em] uppercase mb-1">
