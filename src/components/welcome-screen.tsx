@@ -1,3 +1,4 @@
+
 'use client';
 
 import React from 'react';
@@ -5,7 +6,11 @@ import { Menu, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-export function WelcomeScreen() {
+interface WelcomeScreenProps {
+  onStarted?: () => void;
+}
+
+export function WelcomeScreen({ onStarted }: WelcomeScreenProps) {
   return (
     <div className="flex flex-col min-h-screen max-h-screen bg-white font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden">
       {/* Top Header */}
@@ -35,6 +40,7 @@ export function WelcomeScreen() {
             </div>
 
             <Button 
+              onClick={onStarted}
               className="w-full h-[72px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-2xl text-xl font-bold shadow-[0_8px_20px_rgba(0,102,178,0.3)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
             >
               <div className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
