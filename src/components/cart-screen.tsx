@@ -37,10 +37,10 @@ interface CartScreenProps {
 export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>(cart.map(i => i.id));
   const [isFooterExpanded, setIsFooterExpanded] = useState(true);
-  const touchStartY = useRef(0);
+  const footerTouchStartY = useRef(0);
   const { toast } = useToast();
   
-  // Slider State
+  // Slider State (Left to Right)
   const [sliderX, setSliderX] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
   const [isOrderSent, setIsOrderSent] = useState(false);
@@ -120,13 +120,13 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
 
   // Swipe for Footer (Up/Down)
   const handleFooterTouchStart = (e: React.TouchEvent) => {
-    touchStartY.current = e.touches[0].clientY;
+    footerTouchStartY.current = e.touches[0].clientY;
   };
 
   const handleFooterTouchEnd = (e: React.TouchEvent) => {
     const touchEndY = e.changedTouches[0].clientY;
-    const diff = touchStartY.current - touchEndY;
-    if (Math.abs(diff) > 40) {
+    const diff = footerTouchStartY.current - touchEndY;
+    if (Math.abs(diff) > 30) {
       setIsFooterExpanded(diff > 0);
     }
   };
@@ -143,8 +143,8 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
     const currentX = e.touches[0].clientX;
     const deltaX = currentX - sliderStartX.current;
     const containerWidth = sliderContainerRef.current.offsetWidth;
-    const handleWidth = 44; // w-11
-    const maxPath = containerWidth - handleWidth - 8; // Adjusting for padding
+    const handleWidth = 44; // Approx width of handle
+    const maxPath = containerWidth - handleWidth - 8;
 
     if (deltaX > 0) {
       setSliderX(Math.min(deltaX, maxPath));
@@ -160,14 +160,12 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
     const maxPath = containerWidth - handleWidth - 8;
 
     if (sliderX >= maxPath * 0.9) {
-      // Trigger order success
       setSliderX(maxPath);
       setIsOrderSent(true);
       toast({
         title: "Order Sent",
         description: `Order for Table #${tableNumber} sent to kitchen.`,
       });
-      // In a real app, navigate back after delay
       setTimeout(() => onBack(), 2000);
     } else {
       setSliderX(0);
@@ -209,7 +207,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
         ) : cart.map((item) => {
           const isExpanded = expandedItems.includes(item.id);
           const hasInstructions = !!item.specialRequests;
-          
           const singleItemPrice = item.basePrice + item.addons.reduce((acc, addon) => acc + (addon.price * addon.quantity), 0);
           const itemDisplayTotal = singleItemPrice * item.quantity;
 
@@ -317,16 +314,16 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
             </div>
           );
         })}
-        <div className="h-16" />
+        <div className="h-20" />
       </div>
 
-      {/* Cart Footer - Expandable & Swipable */}
+      {/* Cart Footer - Swipable Drawer */}
       <div 
         className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-8px_30px_rgba(0,0,0,0.06)] rounded-t-[24px] px-5 pt-2 pb-5 flex flex-col z-20 transition-all duration-300 ease-in-out"
         onTouchStart={handleFooterTouchStart}
         onTouchEnd={handleFooterTouchEnd}
       >
-        <div className="w-full flex justify-center py-1.5 mb-1.5 shrink-0 cursor-ns-resize">
+        <div className="w-full flex justify-center py-1.5 mb-1.5 shrink-0">
           <div className="w-8 h-1 bg-[#e2e8f0] rounded-full opacity-60" />
         </div>
         
@@ -341,7 +338,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
             {kitchenInstructions ? (
               <button 
                 onClick={openKitchenDialog}
-                className="w-full bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] text-left animate-in fade-in slide-in-from-bottom-1 duration-200"
+                className="w-full bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] text-left animate-in fade-in duration-200"
               >
                 <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block mb-0.5">Order Instructions</span>
                 <p className="text-[#92400e] text-[12px] font-bold leading-tight">
@@ -351,7 +348,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
             ) : (
               <button 
                 onClick={openKitchenDialog}
-                className="w-full h-9 rounded-[12px] border-[1.2px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all group shrink-0"
+                className="w-full h-9 rounded-[12px] border-[1.2px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all shrink-0"
               >
                 <FileText className="w-3 h-3" />
                 <span className="text-[12px] font-black">Kitchen instructions</span>
@@ -367,7 +364,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
             </div>
           </div>
 
-          {/* Swipeable Slide to Send Order */}
+          {/* Swipeable Horizontal Slider */}
           <div 
             ref={sliderContainerRef}
             className="relative h-[52px] w-full bg-[#0066b2] rounded-[16px] p-1 flex items-center overflow-hidden shadow-[0_6px_16px_rgba(0,102,178,0.15)] shrink-0"
@@ -381,7 +378,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
             {/* The Slidable Handle */}
             <div 
               className={cn(
-                "h-10 w-11 bg-white rounded-[12px] flex items-center justify-center shadow-lg cursor-grab active:cursor-grabbing z-10 transition-transform",
+                "h-10 w-11 bg-white rounded-[12px] flex items-center justify-center shadow-lg z-10 transition-transform relative",
                 !isSliding && "duration-300"
               )}
               style={{ 
