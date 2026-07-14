@@ -186,44 +186,44 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
           {/* Backdrop Overlay (Subtle) */}
           <div className="absolute inset-0 -top-screen bg-black/5" onClick={() => setShowBottomSheet(false)} />
           
-          <div className="bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] border-t border-gray-100 flex flex-col pt-6 pb-8 relative">
-            <div className="px-8 flex items-center justify-between mb-6">
+          <div className="bg-white rounded-t-[32px] shadow-[0_-8px_30px_rgba(0,0,0,0.08)] border-t border-gray-100 flex flex-col pt-4 pb-6 relative">
+            <div className="px-6 flex items-center justify-between mb-4">
               <div className="flex flex-col">
-                <span className="text-[#0066b2] text-[10px] font-extrabold uppercase tracking-[0.15em] mb-1">
+                <span className="text-[#0066b2] text-[10px] font-extrabold uppercase tracking-[0.15em] mb-0.5">
                   Selected
                 </span>
-                <h2 className="text-[#1a1c2e] text-[24px] font-bold leading-tight">
+                <h2 className="text-[#1a1c2e] text-[22px] font-bold leading-tight">
                   Table #{tableNumber}
                 </h2>
               </div>
               
               {/* Guest Counter */}
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <button 
                   onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                  className="w-11 h-11 flex items-center justify-center rounded-full bg-white border border-gray-100 shadow-[0_4px_12px_rgba(0,0,0,0.05)] text-[#0066b2] active:scale-90 transition-all"
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.05)] text-[#0066b2] active:scale-90 transition-all"
                 >
-                  <Minus className="w-5 h-5 stroke-[2.5px]" />
+                  <Minus className="w-4 h-4 stroke-[2.5px]" />
                 </button>
-                <div className="flex flex-col items-center min-w-[40px]">
-                  <span className="text-[#1a1c2e] text-2xl font-bold leading-none">{guestCount}</span>
-                  <span className="text-[#94a3b8] text-[9px] font-bold uppercase tracking-wider">Guest</span>
+                <div className="flex flex-col items-center min-w-[36px]">
+                  <span className="text-[#1a1c2e] text-xl font-bold leading-none">{guestCount}</span>
+                  <span className="text-[#94a3b8] text-[8px] font-bold uppercase tracking-wider">Guest</span>
                 </div>
                 <button 
                   onClick={() => setGuestCount(guestCount + 1)}
-                  className="w-11 h-11 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_4px_12px_rgba(0,102,178,0.2)] active:scale-90 transition-all"
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_2px_8px_rgba(0,102,178,0.2)] active:scale-90 transition-all"
                 >
-                  <Plus className="w-5 h-5 stroke-[2.5px]" />
+                  <Plus className="w-4 h-4 stroke-[2.5px]" />
                 </button>
               </div>
             </div>
 
             {/* Dashed Separator */}
-            <div className="w-full border-t border-dashed border-gray-200 mb-6" />
+            <div className="w-full border-t border-dashed border-gray-200 mb-4" />
 
             <div className="px-6">
               <button 
-                className="w-full h-14 bg-[#0066b2] hover:bg-[#005596] text-white rounded-2xl text-[17px] font-bold shadow-[0_4px_15px_rgba(0,102,178,0.2)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+                className="w-full h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-2xl text-[16px] font-bold shadow-[0_4px_12px_rgba(0,102,178,0.2)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
               >
                 Start Order
                 <ArrowRight className="w-5 h-5 stroke-[3px]" />
