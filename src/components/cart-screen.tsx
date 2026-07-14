@@ -9,12 +9,11 @@ import {
   Plus, 
   Minus, 
   Edit3, 
-  MessageSquare,
-  FileText,
-  ChevronsRight,
   ShoppingCart,
   MessageCircle,
-  X
+  X,
+  FileText,
+  ChevronsRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CartItem } from '@/lib/types';
@@ -130,34 +129,34 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
   return (
     <div className="flex flex-col h-screen bg-[#f3f7fb] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
       {/* Header */}
-      <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-30">
-        <div className="flex items-center gap-4">
+      <div className="bg-white px-5 h-16 flex items-center justify-between shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[24px] z-30">
+        <div className="flex items-center gap-3">
           <button 
             onClick={onBack}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 active:scale-95 transition-all"
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-50 active:scale-95 transition-all"
           >
-            <ChevronLeft className="w-7 h-7 text-[#0066b2] stroke-[2.5px]" />
+            <ChevronLeft className="w-6 h-6 text-[#0066b2] stroke-[2.5px]" />
           </button>
           <div className="flex flex-col">
-            <h1 className="text-[20px] font-black leading-tight text-[#1a1c2e]">Your Items</h1>
-            <span className="text-[#94a3b8] text-[13px] font-bold">{totalItemCount} Items · Table # {tableNumber}</span>
+            <h1 className="text-[18px] font-black leading-tight text-[#1a1c2e]">Your Items</h1>
+            <span className="text-[#94a3b8] text-[11px] font-bold">{totalItemCount} Items · Table # {tableNumber}</span>
           </div>
         </div>
         
         <button 
           onClick={handleClearCart}
-          className="w-11 h-11 flex items-center justify-center rounded-full border border-[#fee2e2] bg-white shadow-sm hover:bg-red-50 active:scale-95 transition-all group"
+          className="w-9 h-9 flex items-center justify-center rounded-full border border-[#fee2e2] bg-white shadow-sm hover:bg-red-50 active:scale-95 transition-all"
         >
-          <Trash2 className="w-5 h-5 text-[#ef4444] group-hover:scale-110 transition-transform" />
+          <Trash2 className="w-4.5 h-4.5 text-[#ef4444]" />
         </button>
       </div>
 
       {/* Cart List */}
-      <div className="flex-1 px-4 pt-6 overflow-y-auto pb-[360px] space-y-4">
+      <div className="flex-1 px-3 pt-4 overflow-y-auto pb-[280px] space-y-2.5">
         {cart.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center px-8 opacity-40">
-            <ShoppingCart className="w-16 h-16 mb-4 text-[#94a3b8]" />
-            <p className="text-lg font-bold">Your cart is empty</p>
+            <ShoppingCart className="w-12 h-12 mb-3 text-[#94a3b8]" />
+            <p className="text-base font-bold">Your cart is empty</p>
           </div>
         ) : cart.map((item) => {
           const isExpanded = expandedItems.includes(item.id);
@@ -170,58 +169,54 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
             <div 
               key={item.id} 
               className={cn(
-                "bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-white overflow-hidden transition-all duration-300 relative",
-                hasInstructions && "border-l-[6px] border-l-[#f59e0b]"
+                "bg-white rounded-[18px] shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-white overflow-hidden transition-all duration-300 relative",
+                hasInstructions && "border-l-[4px] border-l-[#f59e0b]"
               )}
             >
-              <div className="p-5">
+              <div className="p-3.5">
                 {/* Title Area */}
-                <div className="flex items-start justify-between mb-1">
-                  <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-[17px] font-black text-[#1a1c2e] leading-tight">
+                <div className="flex items-start justify-between">
+                  <div className="flex flex-col gap-0.5 min-w-0 flex-1 pr-2">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight truncate">
                         {item.name}
                       </h3>
                       {hasInstructions && (
-                        <div className="w-5 h-5 bg-[#fef3c7] rounded-full flex items-center justify-center shrink-0">
-                          <MessageCircle className="w-3 h-3 text-[#f59e0b] fill-current" />
+                        <div className="w-4 h-4 bg-[#fef3c7] rounded-full flex items-center justify-center shrink-0">
+                          <MessageCircle className="w-2.5 h-2.5 text-[#f59e0b] fill-current" />
                         </div>
                       )}
                     </div>
-                    <p className="text-[#0066b2] text-[16px] font-black">
+                    <p className="text-[#0066b2] text-[14px] font-black">
                       AED {itemDisplayTotal.toFixed(2)}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button className="flex items-center gap-1.5 text-[#0066b2] text-[13px] font-black hover:opacity-80 border-b border-dotted border-[#0066b2]">
-                      <Edit3 className="w-3.5 h-3.5" />
-                      Edit
-                    </button>
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <button 
                       onClick={() => toggleItem(item.id)}
-                      className="w-8 h-8 rounded-full bg-[#f8fafc] flex items-center justify-center text-[#94a3b8]"
+                      className="w-7 h-7 rounded-full bg-[#f8fafc] flex items-center justify-center text-[#94a3b8]"
                     >
-                      {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     </button>
                   </div>
                 </div>
 
                 {isExpanded && (
-                  <div className="mt-3 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
+                  <div className="mt-2.5 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
                     <div className="w-full border-t border-dashed border-gray-100" />
                     
                     {/* Addons List */}
                     {item.addons.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1.5">
                         {item.addons.map((addon, idx) => (
                           <div 
                             key={idx}
-                            className="bg-[#f0f7ff] border border-[#d1e9ff] rounded-full px-3 py-1.5 flex items-center gap-2"
+                            className="bg-[#f0f7ff] border border-[#d1e9ff] rounded-full px-2 py-0.5 flex items-center gap-1.5"
                           >
-                            <span className="text-[#0066b2] text-[12px] font-black tracking-tight">
+                            <span className="text-[#0066b2] text-[10px] font-black tracking-tight">
                               + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
                             </span>
-                            <span className="text-[#0066b2]/60 text-[11px] font-black">
+                            <span className="text-[#0066b2]/60 text-[9px] font-black">
                               AED {(addon.price * addon.quantity).toFixed(2)}
                             </span>
                           </div>
@@ -231,44 +226,44 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
 
                     {/* Special Instruction Box */}
                     {hasInstructions && (
-                      <div className="bg-[#fffbeb] rounded-[20px] p-4 border border-dashed border-[#f59e0b] space-y-2">
-                        <span className="text-[#92400e] text-[10px] font-black uppercase tracking-wider block">Special Instruction</span>
-                        <p className="text-[#92400e] text-[13px] font-bold leading-snug">
+                      <div className="bg-[#fffbeb] rounded-[14px] p-2.5 border border-dashed border-[#f59e0b] space-y-1">
+                        <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block">Special Instruction</span>
+                        <p className="text-[#92400e] text-[12px] font-bold leading-tight">
                           {item.specialRequests}
                         </p>
                       </div>
                     )}
 
                     {/* Bottom Action Row */}
-                    <div className="flex items-center justify-between pt-2">
+                    <div className="flex items-center justify-between pt-1">
                       <button 
                         onClick={() => openInstructionDialog(item.id, item.specialRequests)}
                         className={cn(
-                          "flex items-center gap-2 px-4 h-11 rounded-full border-[1.5px] border-dotted transition-all active:scale-95",
+                          "flex items-center gap-1.5 px-3 h-9 rounded-full border-[1.2px] border-dotted transition-all active:scale-95",
                           hasInstructions 
                             ? "bg-[#fffbeb] border-[#f59e0b]/40 text-[#f59e0b]" 
                             : "bg-white border-[#0066b2]/20 text-[#0066b2]"
                         )}
                       >
-                        <MessageCircle className={cn("w-4 h-4", hasInstructions ? "fill-current" : "")} />
-                        <span className="text-[13px] font-black">
-                          {hasInstructions ? "Edit Instruction" : "Add Instruction"}
+                        <MessageCircle className={cn("w-3.5 h-3.5", hasInstructions ? "fill-current" : "")} />
+                        <span className="text-[11px] font-black">
+                          {hasInstructions ? "Edit Note" : "Add Note"}
                         </span>
                       </button>
 
-                      <div className="flex items-center bg-white rounded-full p-1 shadow-[0_2px_10px_rgba(0,0,0,0.06)] h-[48px] min-w-[120px] justify-between border border-gray-100">
+                      <div className="flex items-center bg-white rounded-full p-0.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] h-[38px] min-w-[90px] justify-between border border-gray-100">
                         <button 
                           onClick={() => updateQty(item.id, -1)}
-                          className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all"
                         >
-                          {item.quantity === 1 ? <Trash2 className="w-4.5 h-4.5" /> : <Minus className="w-4.5 h-4.5 stroke-[3px]" />}
+                          {item.quantity === 1 ? <Trash2 className="w-3.5 h-3.5" /> : <Minus className="w-3.5 h-3.5 stroke-[2.5px]" />}
                         </button>
-                        <span className="text-[17px] font-black text-[#1a1c2e] px-2 tabular-nums">{item.quantity}</span>
+                        <span className="text-[14px] font-black text-[#1a1c2e] px-1 tabular-nums">{item.quantity}</span>
                         <button 
                           onClick={() => updateQty(item.id, 1)}
-                          className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-sm active:scale-90 transition-all"
                         >
-                          <Plus className="w-4.5 h-4.5 stroke-[3px]" />
+                          <Plus className="w-3.5 h-3.5 stroke-[2.5px]" />
                         </button>
                       </div>
                     </div>
@@ -279,80 +274,79 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
           );
         })}
         {/* Scroll Spacer */}
-        <div className="h-20" />
+        <div className="h-10" />
       </div>
 
       {/* Cart Footer - Expandable */}
       <div 
-        className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-12px_40px_rgba(0,0,0,0.08)] rounded-t-[32px] px-6 pt-3 pb-6 flex flex-col z-20 transition-all duration-300 ease-in-out"
+        className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-8px_30px_rgba(0,0,0,0.06)] rounded-t-[24px] px-5 pt-2 pb-5 flex flex-col z-20 transition-all duration-300 ease-in-out"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
         {/* Drag Handle */}
         <button 
           onClick={() => setIsFooterExpanded(!isFooterExpanded)}
-          className="w-full flex justify-center py-1 mb-2 shrink-0 group"
+          className="w-full flex justify-center py-1.5 mb-1.5 shrink-0 group"
         >
-          <div className="w-10 h-1 bg-[#e2e8f0] rounded-full opacity-60 group-hover:bg-[#cbd5e1] transition-colors" />
+          <div className="w-8 h-0.5 bg-[#e2e8f0] rounded-full opacity-60 group-hover:bg-[#cbd5e1] transition-colors" />
         </button>
         
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           {/* Kitchen Instructions Button or Box - Collapsible */}
           <div className={cn(
             "overflow-hidden transition-all duration-300 ease-in-out shrink-0",
-            isFooterExpanded ? "max-height-[200px] opacity-100" : "max-height-0 opacity-0 pointer-events-none"
+            isFooterExpanded ? "max-height-[160px] opacity-100" : "max-height-0 opacity-0 pointer-events-none"
           )}
-          style={{ maxHeight: isFooterExpanded ? '200px' : '0' }}
+          style={{ maxHeight: isFooterExpanded ? '160px' : '0' }}
           >
             {kitchenInstructions ? (
               <button 
                 onClick={openKitchenDialog}
-                className="w-full bg-[#fffbeb] rounded-[20px] p-4 border border-dashed border-[#f59e0b] space-y-1 text-left animate-in fade-in slide-in-from-bottom-2 duration-300"
+                className="w-full bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] space-y-0.5 text-left animate-in fade-in slide-in-from-bottom-1 duration-200"
               >
-                <span className="text-[#92400e] text-[10px] font-black uppercase tracking-wider block">Special Instruction</span>
-                <p className="text-[#92400e] text-[13px] font-bold leading-snug">
+                <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block">Order Instructions</span>
+                <p className="text-[#92400e] text-[12px] font-bold leading-tight">
                   {kitchenInstructions}
                 </p>
               </button>
             ) : (
               <button 
                 onClick={openKitchenDialog}
-                className="w-full h-10 rounded-[14px] border-[1.5px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all group shrink-0"
+                className="w-full h-9 rounded-[12px] border-[1.2px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all group shrink-0"
               >
-                <FileText className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-                <span className="text-[13px] font-black">Add kitchen instructions</span>
+                <FileText className="w-3 h-3" />
+                <span className="text-[12px] font-black">Kitchen instructions</span>
               </button>
             )}
           </div>
 
           <div className="flex items-center justify-between shrink-0">
-            <h2 className="text-[#1a1c2e] text-[18px] font-black tracking-tight">Subtotal</h2>
-            <div className="flex items-baseline gap-1">
-              <span className="text-[16px] font-black text-[#1a1c2e]">AED</span>
-              <span className="text-[24px] font-black text-[#1a1c2e] tabular-nums tracking-tighter">{subtotal.toFixed(2)}</span>
+            <h2 className="text-[#1a1c2e] text-[16px] font-black tracking-tight">Subtotal</h2>
+            <div className="flex items-baseline gap-0.5">
+              <span className="text-[13px] font-black text-[#1a1c2e]">AED</span>
+              <span className="text-[20px] font-black text-[#1a1c2e] tabular-nums tracking-tighter">{subtotal.toFixed(2)}</span>
             </div>
           </div>
 
-          <div className="relative h-[58px] w-full bg-[#0066b2] rounded-[20px] p-1.5 flex items-center overflow-hidden shadow-[0_8px_24px_rgba(0,102,178,0.2)] shrink-0">
+          <div className="relative h-[52px] w-full bg-[#0066b2] rounded-[16px] p-1 flex items-center overflow-hidden shadow-[0_6px_16px_rgba(0,102,178,0.15)] shrink-0">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="text-white text-[15px] font-black tracking-tight">Slide to Send Order</span>
+              <span className="text-white text-[14px] font-black tracking-tight">Slide to Send Order</span>
             </div>
             <div 
-              className="w-11 h-11 bg-white rounded-[16px] flex items-center justify-center shadow-lg cursor-pointer active:scale-95 transition-transform"
-              style={{ width: '46px', height: '46px' }}
+              className="w-10 h-10 bg-white rounded-[12px] flex items-center justify-center shadow-lg cursor-pointer active:scale-95 transition-transform"
             >
-              <ChevronsRight className="w-6 h-6 text-[#0066b2] stroke-[3.5px]" />
+              <ChevronsRight className="w-5 h-5 text-[#0066b2] stroke-[3px]" />
             </div>
           </div>
 
           <div className={cn(
             "transition-all duration-300 overflow-hidden shrink-0",
-            isFooterExpanded ? "max-height-[40px] opacity-70" : "max-height-0 opacity-0"
+            isFooterExpanded ? "max-height-[30px] opacity-70" : "max-height-0 opacity-0"
           )}
-          style={{ maxHeight: isFooterExpanded ? '40px' : '0' }}
+          style={{ maxHeight: isFooterExpanded ? '30px' : '0' }}
           >
-            <p className="text-center text-[#94a3b8] text-[10px] font-bold leading-tight px-4 mt-1">
-              Final amount may include applicable taxes and service charges.
+            <p className="text-center text-[#94a3b8] text-[9px] font-bold leading-tight px-4">
+              Includes applicable taxes and service charges.
             </p>
           </div>
         </div>
@@ -360,39 +354,39 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
 
       {/* Item Instruction Dialog */}
       <Dialog open={isInstructionDialogOpen} onOpenChange={setIsInstructionDialogOpen}>
-        <DialogContent className="rounded-[32px] sm:max-w-[400px] p-0 overflow-hidden border-none shadow-2xl">
-          <DialogHeader className="px-6 pt-6 pb-2 flex flex-row items-center justify-between">
-            <DialogTitle className="text-xl font-black text-[#1a1c2e]">Item Instruction</DialogTitle>
+        <DialogContent className="rounded-[24px] sm:max-w-[360px] p-0 overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="px-5 pt-5 pb-1.5 flex flex-row items-center justify-between">
+            <DialogTitle className="text-lg font-black text-[#1a1c2e]">Item Note</DialogTitle>
             <button 
               onClick={() => setIsInstructionDialogOpen(false)}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:text-gray-600 transition-colors"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-gray-50 text-gray-400"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </DialogHeader>
-          <div className="px-6 py-4 space-y-4">
-            <p className="text-[13px] font-bold text-[#94a3b8] leading-tight">
-              Add any specific requests for this item. Our kitchen staff will do their best to accommodate you.
+          <div className="px-5 py-3 space-y-3">
+            <p className="text-[12px] font-bold text-[#94a3b8] leading-tight">
+              Add any specific requests for this item.
             </p>
             <div className="relative">
               <Textarea 
                 value={tempInstruction}
                 onChange={(e) => setTempInstruction(e.target.value)}
-                placeholder="e.g. Less ice please, no sugar, extra sauce..."
-                className="h-32 rounded-2xl border-2 border-gray-100 focus:border-[#0066b2] focus:ring-0 transition-all text-sm font-bold p-4 resize-none placeholder:text-gray-300"
+                placeholder="e.g. Less ice please, no sugar..."
+                className="h-28 rounded-xl border-2 border-gray-100 focus:border-[#0066b2] focus:ring-0 transition-all text-sm font-bold p-3 resize-none"
                 maxLength={150}
               />
-              <span className="absolute bottom-4 right-4 text-[10px] font-black text-gray-300">
+              <span className="absolute bottom-3 right-3 text-[9px] font-black text-gray-300">
                 {tempInstruction.length}/150
               </span>
             </div>
           </div>
-          <div className="px-6 pb-6 pt-2">
+          <div className="px-5 pb-5 pt-1">
             <Button 
               onClick={saveInstruction}
-              className="w-full h-14 bg-[#0066b2] hover:bg-[#005ea1] text-white rounded-[20px] text-base font-black shadow-[0_8px_24px_rgba(0,102,178,0.2)] active:scale-[0.98] transition-all"
+              className="w-full h-12 bg-[#0066b2] hover:bg-[#005ea1] text-white rounded-[16px] text-sm font-black shadow-md"
             >
-              Save Instruction
+              Save Note
             </Button>
           </div>
         </DialogContent>
@@ -400,39 +394,39 @@ export function CartScreen({ tableNumber, onBack, cart, setCart }: CartScreenPro
 
       {/* Kitchen Instruction Dialog */}
       <Dialog open={isKitchenDialogOpen} onOpenChange={setIsKitchenDialogOpen}>
-        <DialogContent className="rounded-[32px] sm:max-w-[400px] p-0 overflow-hidden border-none shadow-2xl">
-          <DialogHeader className="px-6 pt-6 pb-2 flex flex-row items-center justify-between">
-            <DialogTitle className="text-xl font-black text-[#1a1c2e]">Kitchen Instruction</DialogTitle>
+        <DialogContent className="rounded-[24px] sm:max-w-[360px] p-0 overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="px-5 pt-5 pb-1.5 flex flex-row items-center justify-between">
+            <DialogTitle className="text-lg font-black text-[#1a1c2e]">Order Note</DialogTitle>
             <button 
               onClick={() => setIsKitchenDialogOpen(false)}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:text-gray-600 transition-colors"
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-gray-50 text-gray-400"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </DialogHeader>
-          <div className="px-6 py-4 space-y-4">
-            <p className="text-[13px] font-bold text-[#94a3b8] leading-tight">
-              Add general instructions for the entire order that the kitchen should be aware of.
+          <div className="px-5 py-3 space-y-3">
+            <p className="text-[12px] font-bold text-[#94a3b8] leading-tight">
+              Add general instructions for the entire kitchen staff.
             </p>
             <div className="relative">
               <Textarea 
                 value={tempKitchenInstruction}
                 onChange={(e) => setTempKitchenInstruction(e.target.value)}
-                placeholder="e.g. Serve all items together, allergen alerts, etc..."
-                className="h-32 rounded-2xl border-2 border-gray-100 focus:border-[#0066b2] focus:ring-0 transition-all text-sm font-bold p-4 resize-none placeholder:text-gray-300"
+                placeholder="e.g. Serve all items together..."
+                className="h-28 rounded-xl border-2 border-gray-100 focus:border-[#0066b2] focus:ring-0 transition-all text-sm font-bold p-3 resize-none"
                 maxLength={200}
               />
-              <span className="absolute bottom-4 right-4 text-[10px] font-black text-gray-300">
+              <span className="absolute bottom-3 right-3 text-[9px] font-black text-gray-300">
                 {tempKitchenInstruction.length}/200
               </span>
             </div>
           </div>
-          <div className="px-6 pb-6 pt-2">
+          <div className="px-5 pb-5 pt-1">
             <Button 
               onClick={saveKitchenInstruction}
-              className="w-full h-14 bg-[#0066b2] hover:bg-[#005ea1] text-white rounded-[20px] text-base font-black shadow-[0_8px_24px_rgba(0,102,178,0.2)] active:scale-[0.98] transition-all"
+              className="w-full h-12 bg-[#0066b2] hover:bg-[#005ea1] text-white rounded-[16px] text-sm font-black shadow-md"
             >
-              Save Kitchen Instruction
+              Save Note
             </Button>
           </div>
         </DialogContent>
