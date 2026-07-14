@@ -6,7 +6,8 @@ import { cn } from '@/lib/utils';
 
 interface SelectTableScreenProps {
   onBack?: () => void;
-  onStartOrder?: (tableNumber: string) => void;
+  onConfirmSelection?: (tableNumber: string) => void;
+  mode?: 'order' | 'pay';
 }
 
 interface TableStatus {
@@ -15,7 +16,7 @@ interface TableStatus {
   isAvailable: boolean;
 }
 
-export function SelectTableScreen({ onBack, onStartOrder }: SelectTableScreenProps) {
+export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }: SelectTableScreenProps) {
   const [tableNumber, setTableNumber] = useState<string>('');
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [guestCount, setGuestCount] = useState(1);
@@ -51,9 +52,7 @@ export function SelectTableScreen({ onBack, onStartOrder }: SelectTableScreenPro
 
   const handleChipClick = (table: TableStatus) => {
     setTableNumber(table.number);
-    if (table.isAvailable) {
-      setShowBottomSheet(true);
-    }
+    setShowBottomSheet(true);
   };
 
   const keypadButtons = [
@@ -92,7 +91,7 @@ export function SelectTableScreen({ onBack, onStartOrder }: SelectTableScreenPro
         {/* Table Number Display Card */}
         <div className={cn(
           "w-full max-w-sm bg-white border border-[#f0f4f8] rounded-[24px] flex items-center justify-center relative transition-all duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.02)] mb-4 shrink-0",
-          tableNumber ? "h-24" : "h-48"
+          tableNumber ? "h-24" : "h-40"
         )}>
           {tableNumber ? (
             <div className="flex items-center gap-1 relative">
@@ -116,30 +115,28 @@ export function SelectTableScreen({ onBack, onStartOrder }: SelectTableScreenPro
           )}
         </div>
 
-        {/* Table Status Chips - Only visible when typing */}
-        {tableNumber && (
-          <div className="w-full max-w-sm grid grid-cols-4 gap-2 mb-4 animate-in fade-in slide-in-from-top-2 duration-300 shrink-0">
-            {tables.map((table) => (
-              <button
-                key={table.id}
-                onClick={() => handleChipClick(table)}
-                className={cn(
-                  "h-10 rounded-full border-[1.5px] text-xs font-bold transition-all active:scale-95 flex items-center justify-center",
-                  tableNumber === table.number 
-                    ? "bg-[#0066b2]/10 border-[#0066b2] text-[#0066b2]"
-                    : table.isAvailable 
-                      ? "bg-[#ecf7ef] border-[#def0e5] text-[#26ab5f]" 
-                      : "bg-[#fef2f2] border-[#fee2e2] text-[#ef4444]"
-                )}
-              >
-                {table.number}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Table Status Chips */}
+        <div className="w-full max-w-sm grid grid-cols-4 gap-2 mb-4 shrink-0">
+          {tables.map((table) => (
+            <button
+              key={table.id}
+              onClick={() => handleChipClick(table)}
+              className={cn(
+                "h-10 rounded-full border-[1.5px] text-xs font-bold transition-all active:scale-95 flex items-center justify-center",
+                tableNumber === table.number 
+                  ? "bg-[#0066b2]/10 border-[#0066b2] text-[#0066b2]"
+                  : table.isAvailable 
+                    ? "bg-[#ecf7ef] border-[#def0e5] text-[#26ab5f]" 
+                    : "bg-[#fef2f2] border-[#fee2e2] text-[#ef4444]"
+              )}
+            >
+              {table.number}
+            </button>
+          ))}
+        </div>
 
         {/* Keypad Grid */}
-        <div className="w-full max-w-sm grid grid-cols-3 gap-y-4 gap-x-5 mb-8">
+        <div className="w-full max-w-sm grid grid-cols-3 gap-y-3 gap-x-5 mb-8">
           {keypadButtons.map((btn, index) => (
             <button
               key={index}
@@ -167,18 +164,6 @@ export function SelectTableScreen({ onBack, onStartOrder }: SelectTableScreenPro
             </button>
           ))}
         </div>
-
-        {/* Footer Banner (hidden when bottom sheet is open) */}
-        {!showBottomSheet && (
-          <div className="w-full max-w-sm bg-[#e8edff] py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 mt-auto shrink-0 mb-4 border border-[#dce4ff]">
-            <div className="w-5 h-5 rounded-full border-[1.5px] border-[#4b58ff] flex items-center justify-center">
-              <CheckCircle2 className="w-3.5 h-3.5 text-[#4b58ff] stroke-[3px]" />
-            </div>
-            <span className="text-[#4b58ff] text-[14px] font-bold tracking-tight">
-              Tap a table number to begin
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Selected Table Bottom Sheet */}
@@ -197,34 +182,36 @@ export function SelectTableScreen({ onBack, onStartOrder }: SelectTableScreenPro
                 </h2>
               </div>
               
-              <div className="flex items-center gap-3">
-                <button 
-                  onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-[#d1e9ff] shadow-sm text-[#0066b2] active:scale-90 transition-all"
-                >
-                  <Minus className="w-4 h-4 stroke-[3px]" />
-                </button>
-                <div className="flex flex-col items-center min-w-[28px]">
-                  <span className="text-[#1a1c2e] text-xl font-black leading-none">{guestCount}</span>
-                  <span className="text-[#0066b2]/60 text-[9px] font-black uppercase tracking-wider mt-0.5">GUEST</span>
+              {mode === 'order' && (
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-[#d1e9ff] shadow-sm text-[#0066b2] active:scale-90 transition-all"
+                  >
+                    <Minus className="w-4 h-4 stroke-[3px]" />
+                  </button>
+                  <div className="flex flex-col items-center min-w-[28px]">
+                    <span className="text-[#1a1c2e] text-xl font-black leading-none">{guestCount}</span>
+                    <span className="text-[#0066b2]/60 text-[9px] font-black uppercase tracking-wider mt-0.5">GUEST</span>
+                  </div>
+                  <button 
+                    onClick={() => setGuestCount(guestCount + 1)}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
+                  >
+                    <Plus className="w-4 h-4 stroke-[3px]" />
+                  </button>
                 </div>
-                <button 
-                  onClick={() => setGuestCount(guestCount + 1)}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
-                >
-                  <Plus className="w-4 h-4 stroke-[3px]" />
-                </button>
-              </div>
+              )}
             </div>
 
             <div className="w-full border-t border-dashed border-[#d1e9ff] mb-4" />
 
             <div className="px-6">
               <button 
-                onClick={() => onStartOrder?.(tableNumber)}
+                onClick={() => onConfirmSelection?.(tableNumber)}
                 className="w-full h-[52px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[16px] text-[16px] font-black shadow-[0_6px_20px_rgba(0,102,178,0.25)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
               >
-                Start Order
+                {mode === 'order' ? 'Start Order' : 'Go to Order'}
                 <ArrowRight className="w-5 h-5 stroke-[3.5px]" />
               </button>
             </div>

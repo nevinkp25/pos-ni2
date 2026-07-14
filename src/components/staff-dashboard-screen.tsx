@@ -8,9 +8,10 @@ import { cn } from '@/lib/utils';
 interface StaffDashboardScreenProps {
   onLogout?: () => void;
   onOrderMenu?: () => void;
+  onPayOrder?: () => void;
 }
 
-export function StaffDashboardScreen({ onLogout, onOrderMenu }: StaffDashboardScreenProps) {
+export function StaffDashboardScreen({ onLogout, onOrderMenu, onPayOrder }: StaffDashboardScreenProps) {
   const actions = [
     {
       title: 'Order Menu',
@@ -24,6 +25,7 @@ export function StaffDashboardScreen({ onLogout, onOrderMenu }: StaffDashboardSc
       description: 'Settle an open table',
       icon: <CreditCard className="w-6 h-6 text-[#0066b2]" />,
       bgColor: 'bg-[#f0f7ff]',
+      onClick: onPayOrder,
     },
     {
       title: 'Scan QR',

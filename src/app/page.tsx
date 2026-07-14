@@ -9,11 +9,12 @@ import { OrderMenuScreen } from '@/components/order-menu-screen';
 import { CartScreen } from '@/components/cart-screen';
 import { ProcessingScreen } from '@/components/processing-screen';
 import { OrderSuccessScreen } from '@/components/order-success-screen';
+import { PayOrderDetailScreen } from '@/components/pay-order-detail-screen';
 import { useToast } from '@/hooks/use-toast';
 import { CartItem } from '@/lib/types';
 
 export default function Page() {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success'>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail'>('welcome');
   const [selectedTable, setSelectedTable] = useState<string>('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const { toast } = useToast();
@@ -39,6 +40,10 @@ export default function Page() {
     setCurrentScreen('select-table');
   };
 
+  const handlePayOrder = () => {
+    setCurrentScreen('select-table-pay');
+  };
+
   const handleBackToDashboard = () => {
     setCurrentScreen('staff-dashboard');
   };
@@ -48,8 +53,17 @@ export default function Page() {
     setCurrentScreen('order-menu');
   };
 
+  const handleGoToOrderPay = (tableNumber: string) => {
+    setSelectedTable(tableNumber);
+    setCurrentScreen('pay-order-detail');
+  };
+
   const handleBackToSelectTable = () => {
     setCurrentScreen('select-table');
+  };
+
+  const handleBackToSelectTablePay = () => {
+    setCurrentScreen('select-table-pay');
   };
 
   const handleOpenCart = () => {
@@ -82,10 +96,25 @@ export default function Page() {
         <StaffSignInScreen onLogin={handleLogin} />
       )}
       {currentScreen === 'staff-dashboard' && (
-        <StaffDashboardScreen onLogout={handleLogout} onOrderMenu={handleOrderMenu} />
+        <StaffDashboardScreen 
+          onLogout={handleLogout} 
+          onOrderMenu={handleOrderMenu} 
+          onPayOrder={handlePayOrder}
+        />
       )}
       {currentScreen === 'select-table' && (
-        <SelectTableScreen onBack={handleBackToDashboard} onStartOrder={handleStartOrder} />
+        <SelectTableScreen 
+          mode="order"
+          onBack={handleBackToDashboard} 
+          onConfirmSelection={handleStartOrder} 
+        />
+      )}
+      {currentScreen === 'select-table-pay' && (
+        <SelectTableScreen 
+          mode="pay"
+          onBack={handleBackToDashboard} 
+          onConfirmSelection={handleGoToOrderPay} 
+        />
       )}
       {currentScreen === 'order-menu' && (
         <OrderMenuScreen 
@@ -104,6 +133,14 @@ export default function Page() {
           cart={cart}
           setCart={setCart}
           onOrderSent={handleOrderSent}
+        />
+      )}
+      {currentScreen === 'pay-order-detail' && (
+        <PayOrderDetailScreen 
+          tableNumber={selectedTable}
+          onBack={handleBackToSelectTablePay}
+          onHome={handleBackToDashboard}
+          onSettle={() => handleFinishOrder()}
         />
       )}
       {currentScreen === 'processing' && (
