@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -294,6 +295,9 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
       {/* Check Settlement Bottom Sheet */}
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden max-h-[92vh] flex flex-col">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Check Settlement</SheetTitle>
+          </SheetHeader>
           <div className="flex-1 overflow-y-auto pb-10">
             {/* Header */}
             <div className="flex justify-center pt-3 pb-1">
