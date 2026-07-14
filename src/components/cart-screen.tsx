@@ -196,7 +196,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
       </div>
 
       {/* Cart List */}
-      <div className="flex-1 px-3 pt-4 overflow-y-auto pb-[320px] space-y-2">
+      <div className="flex-1 px-3 pt-4 overflow-y-auto pb-[320px] space-y-3">
         {cart.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center px-8 opacity-40">
             <ShoppingCart className="w-12 h-12 mb-3 text-[#94a3b8]" />
@@ -212,58 +212,61 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
             <div 
               key={item.id} 
               className={cn(
-                "bg-white rounded-[18px] shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-white overflow-hidden transition-all duration-300 relative",
-                hasInstructions && "border-l-[4px] border-l-[#f59e0b]"
+                "bg-white rounded-[20px] shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-white overflow-hidden transition-all duration-300 relative",
+                hasInstructions && "border-l-[5px] border-l-[#f59e0b]"
               )}
             >
-              <div className="p-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex flex-col gap-0.5 min-w-0 flex-1 pr-2">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                      <h3 className="text-[14px] font-black text-[#1a1c2e] leading-tight truncate">
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex flex-col gap-1 min-w-0 flex-1">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight truncate">
                         {item.name}
                       </h3>
                       {hasInstructions && (
-                        <div className="w-3.5 h-3.5 bg-[#fef3c7] rounded-full flex items-center justify-center shrink-0">
+                        <div className="w-4 h-4 bg-[#fef3c7] rounded-full flex items-center justify-center shrink-0">
                           <MessageCircle className="w-2.5 h-2.5 text-[#f59e0b] fill-current" />
                         </div>
                       )}
                     </div>
-                    <p className="text-[#0066b2] text-[13px] font-black">
+                    <p className="text-[#0066b2] text-[14px] font-black">
                       AED {itemDisplayTotal.toFixed(2)}
                     </p>
                   </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
+                  <div className="flex items-center gap-2 shrink-0">
                     <button 
-                      className="flex items-center gap-1 px-2 h-7 rounded-full bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all"
+                      className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all"
                     >
-                      <Pencil className="w-3 h-3" />
-                      <span className="text-[10px] font-black uppercase tracking-tight">Edit</span>
+                      <Pencil className="w-3.5 h-3.5" />
+                      <span className="text-[11px] font-black uppercase tracking-tight">Edit</span>
                     </button>
                     <button 
                       onClick={() => toggleItem(item.id)}
-                      className="w-7 h-7 rounded-full bg-[#f8fafc] flex items-center justify-center text-[#94a3b8]"
+                      className={cn(
+                        "w-8 h-8 rounded-full bg-[#f8fafc] flex items-center justify-center text-[#94a3b8] transition-transform",
+                        isExpanded ? "rotate-0" : ""
+                      )}
                     >
-                      {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
 
                 {isExpanded && (
-                  <div className="mt-2 space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                  <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="w-full border-t border-dashed border-gray-100" />
                     
                     {item.addons.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-2">
                         {item.addons.map((addon, idx) => (
                           <div 
                             key={idx}
-                            className="bg-[#f0f7ff] border border-[#d1e9ff] rounded-full px-2 py-0.5 flex items-center gap-1.5"
+                            className="bg-[#f0f7ff] border border-[#d1e9ff] rounded-full px-3 py-1 flex items-center gap-2"
                           >
-                            <span className="text-[#0066b2] text-[9px] font-black tracking-tight">
+                            <span className="text-[#0066b2] text-[10px] font-black tracking-tight">
                               + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
                             </span>
-                            <span className="text-[#0066b2]/60 text-[8px] font-black">
+                            <span className="text-[#0066b2]/60 text-[9px] font-black">
                               AED {(addon.price * addon.quantity).toFixed(2)}
                             </span>
                           </div>
@@ -272,43 +275,43 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                     )}
 
                     {hasInstructions && (
-                      <div className="bg-[#fffbeb] rounded-[14px] p-2 border border-dashed border-[#f59e0b] space-y-0.5">
-                        <span className="text-[#92400e] text-[8px] font-black uppercase tracking-wider block">Special Instruction</span>
-                        <p className="text-[#92400e] text-[11px] font-bold leading-tight">
+                      <div className="bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] space-y-1">
+                        <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block">Special Instruction</span>
+                        <p className="text-[#92400e] text-[12px] font-bold leading-tight">
                           {item.specialRequests}
                         </p>
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between pt-1">
+                    <div className="flex items-center justify-between pt-2">
                       <button 
                         onClick={() => openInstructionDialog(item.id, item.specialRequests)}
                         className={cn(
-                          "flex items-center gap-1.5 px-2.5 h-8 rounded-full border-[1.2px] border-dotted transition-all active:scale-95",
+                          "flex items-center gap-2 px-3.5 h-10 rounded-full border-[1.5px] border-dotted transition-all active:scale-95",
                           hasInstructions 
                             ? "bg-[#fffbeb] border-[#f59e0b]/40 text-[#f59e0b]" 
                             : "bg-white border-[#0066b2]/20 text-[#0066b2]"
                         )}
                       >
-                        <MessageCircle className={cn("w-3 h-3", hasInstructions ? "fill-current" : "")} />
-                        <span className="text-[10px] font-black">
+                        <MessageCircle className={cn("w-4 h-4", hasInstructions ? "fill-current" : "")} />
+                        <span className="text-[11px] font-black">
                           {hasInstructions ? "Edit Note" : "Add Note"}
                         </span>
                       </button>
 
-                      <div className="flex items-center bg-white rounded-full p-0.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] h-[38px] min-w-[90px] justify-between border border-gray-100">
+                      <div className="flex items-center bg-white rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.06)] h-[44px] min-w-[100px] justify-between border border-gray-100">
                         <button 
                           onClick={() => updateQty(item.id, -1)}
                           className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all"
                         >
-                          {item.quantity === 1 ? <Trash2 className="w-3.5 h-3.5" /> : <Minus className="w-3.5 h-3.5 stroke-[3px]" />}
+                          {item.quantity === 1 ? <Trash2 className="w-4 h-4" /> : <Minus className="w-4 h-4 stroke-[3px]" />}
                         </button>
-                        <span className="text-[14px] font-black text-[#1a1c2e] px-1 tabular-nums">{item.quantity}</span>
+                        <span className="text-[16px] font-black text-[#1a1c2e] px-2 tabular-nums">{item.quantity}</span>
                         <button 
                           onClick={() => updateQty(item.id, 1)}
                           className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-sm active:scale-90 transition-all"
                         >
-                          <Plus className="w-3.5 h-3.5 stroke-[3px]" />
+                          <Plus className="w-4 h-4 stroke-[3px]" />
                         </button>
                       </div>
                     </div>
@@ -331,7 +334,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
           <div className="w-8 h-1 bg-[#e2e8f0] rounded-full opacity-60" />
         </div>
         
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           <div 
             className={cn(
               "overflow-hidden transition-all duration-300 ease-in-out shrink-0",
@@ -352,29 +355,29 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
             ) : (
               <button 
                 onClick={openKitchenDialog}
-                className="w-full h-9 rounded-[12px] border-[1.2px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all shrink-0"
+                className="w-full h-10 rounded-[14px] border-[1.5px] border-dashed border-[#0066b2]/20 bg-[#f0f7ff] text-[#0066b2] flex items-center justify-center gap-2 active:scale-[0.98] transition-all shrink-0"
               >
-                <FileText className="w-3 h-3" />
-                <span className="text-[12px] font-black">Kitchen instructions</span>
+                <FileText className="w-4 h-4" />
+                <span className="text-[13px] font-black">Kitchen instructions</span>
               </button>
             )}
           </div>
 
-          <div className="flex items-center justify-between shrink-0">
-            <h2 className="text-[#1a1c2e] text-[16px] font-black tracking-tight">Subtotal</h2>
-            <div className="flex items-baseline gap-0.5">
-              <span className="text-[13px] font-black text-[#1a1c2e]">AED</span>
-              <span className="text-[20px] font-black text-[#1a1c2e] tabular-nums tracking-tighter">{subtotal.toFixed(2)}</span>
+          <div className="flex items-center justify-between shrink-0 px-1">
+            <h2 className="text-[#1a1c2e] text-[17px] font-black tracking-tight">Subtotal</h2>
+            <div className="flex items-baseline gap-1">
+              <span className="text-[14px] font-black text-[#1a1c2e]">AED</span>
+              <span className="text-[22px] font-black text-[#1a1c2e] tabular-nums tracking-tighter">{subtotal.toFixed(2)}</span>
             </div>
           </div>
 
           {/* Swipeable Horizontal Slider */}
           <div 
             ref={sliderContainerRef}
-            className="relative h-[52px] w-full bg-[#0066b2] rounded-[16px] p-1 flex items-center overflow-hidden shadow-[0_6px_16px_rgba(0,102,178,0.15)] shrink-0"
+            className="relative h-[56px] w-full bg-[#0066b2] rounded-[18px] p-1 flex items-center overflow-hidden shadow-[0_6px_20px_rgba(0,102,178,0.18)] shrink-0"
           >
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="text-white text-[14px] font-black tracking-tight opacity-80">
+              <span className="text-white text-[15px] font-black tracking-tight opacity-80">
                 {isOrderSent ? 'Order Processing...' : 'Slide to Send Order'}
               </span>
             </div>
@@ -382,7 +385,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
             {/* The Slidable Handle */}
             <div 
               className={cn(
-                "h-10 w-11 bg-white rounded-[12px] flex items-center justify-center shadow-lg z-10 transition-transform relative",
+                "h-11 w-12 bg-white rounded-[14px] flex items-center justify-center shadow-lg z-10 transition-transform relative",
                 !isSliding && "duration-300"
               )}
               style={{ 
@@ -394,14 +397,14 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
               onTouchEnd={handleSliderTouchEnd}
             >
               {isOrderSent ? (
-                <Check className="w-5 h-5 text-[#26ab5f] stroke-[4px]" />
+                <Check className="w-6 h-6 text-[#26ab5f] stroke-[4px]" />
               ) : (
-                <ChevronsRight className="w-5 h-5 text-[#0066b2] stroke-[3.5px]" />
+                <ChevronsRight className="w-6 h-6 text-[#0066b2] stroke-[3.5px]" />
               )}
               
               {/* Branding "N" Badge Overlay */}
-              <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#1a1c2e] rounded-sm flex items-center justify-center shadow-sm">
-                <span className="text-white text-[9px] font-black italic">N</span>
+              <div className="absolute -top-2 -right-2 w-5 h-5 bg-[#1a1c2e] rounded-md flex items-center justify-center shadow-md">
+                <span className="text-white text-[10px] font-black italic">N</span>
               </div>
             </div>
           </div>
@@ -413,7 +416,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
             )}
             style={{ maxHeight: isFooterExpanded ? '30px' : '0' }}
           >
-            <p className="text-center text-[#94a3b8] text-[9px] font-bold leading-tight px-4">
+            <p className="text-center text-[#94a3b8] text-[10px] font-bold leading-tight px-4">
               Final amount may include applicable taxes and service charges depending on payment method.
             </p>
           </div>
