@@ -5,10 +5,14 @@ import { Menu, User, ArrowRight, Lock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
-export function StaffSignInScreen() {
+interface StaffSignInScreenProps {
+  onLogin?: () => void;
+}
+
+export function StaffSignInScreen({ onLogin }: StaffSignInScreenProps) {
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] overflow-y-auto safe-top safe-bottom">
-      {/* Header Section - More condensed */}
+      {/* Header Section */}
       <div className="bg-gradient-to-b from-[#0081d3] to-[#005ea1] h-[120px] pt-8 px-6 shrink-0 flex flex-col">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -23,7 +27,7 @@ export function StaffSignInScreen() {
         </div>
       </div>
 
-      {/* Main Card - More condensed padding and margins */}
+      {/* Main Card */}
       <div className="flex-1 -mt-8 bg-white rounded-t-[32px] px-6 pt-8 flex flex-col shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
         <div className="w-full max-w-sm mx-auto flex flex-col h-full">
           <h1 className="text-[22px] font-bold mb-1 tracking-tight">Staff Sign In</h1>
@@ -41,7 +45,10 @@ export function StaffSignInScreen() {
               />
             </div>
 
-            <Button className="w-full h-12 bg-[#adc9e2] hover:bg-[#adc9e2] text-white rounded-xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98]">
+            <Button 
+              onClick={onLogin}
+              className="w-full h-12 bg-[#0081d3] hover:bg-[#005ea1] text-white rounded-xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98]"
+            >
               Sign in
               <ArrowRight className="w-5 h-5 stroke-[3px]" />
             </Button>
@@ -52,16 +59,13 @@ export function StaffSignInScreen() {
             </Button>
           </div>
 
-          {/* Status Section - Condensed illustration and text */}
+          {/* Status Section */}
           <div className="flex flex-col items-center mb-6">
             <div className="relative w-28 h-28 mb-3">
                 <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-lg">
-                  {/* Terminal Body */}
                   <rect x="25" y="25" width="50" height="65" rx="8" fill="#d1e0f3" />
                   <rect x="25" y="25" width="50" height="35" rx="8" fill="#eff6ff" />
-                  {/* Screen */}
                   <rect x="30" y="30" width="40" height="25" rx="4" fill="#bfdbfe" />
-                  {/* Keypad */}
                   <g fill="#94a3b8">
                     <rect x="32" y="65" width="8" height="6" rx="1.5" />
                     <rect x="46" y="65" width="8" height="6" rx="1.5" />
@@ -70,9 +74,7 @@ export function StaffSignInScreen() {
                     <rect x="46" y="75" width="8" height="6" rx="1.5" />
                     <rect x="60" y="75" width="8" height="6" rx="1.5" />
                   </g>
-                  {/* Card Slot */}
                   <rect x="25" y="20" width="50" height="5" rx="2" fill="#94a3b8" />
-                  {/* Gold Lock */}
                   <g transform="translate(58, 52)">
                     <rect x="0" y="0" width="22" height="18" rx="4" fill="#f59e0b" />
                     <path d="M5 0 V-6 A6 6 0 0 1 17 -6 V0" fill="none" stroke="#f59e0b" strokeWidth="4" />
@@ -86,7 +88,7 @@ export function StaffSignInScreen() {
         </div>
       </div>
 
-      {/* Footer Branding - Condensed */}
+      {/* Footer Branding */}
       <div className="bg-white py-6 flex flex-col items-center shrink-0">
         <div className="flex flex-col items-center">
           <span className="text-[8px] font-bold text-[#cbd5e1] tracking-[0.3em] uppercase mb-0.5">
