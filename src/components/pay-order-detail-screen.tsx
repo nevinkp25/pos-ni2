@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   ChevronLeft, 
   MoreVertical, 
@@ -8,6 +8,7 @@ import {
   Clock, 
   ReceiptText, 
   ChevronDown, 
+  ChevronUp,
   CreditCard, 
   Split
 } from 'lucide-react';
@@ -27,6 +28,45 @@ const CurrencySymbol = ({ className }: { className?: string }) => (
 );
 
 export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: PayOrderDetailScreenProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const orderItems = [
+    {
+      id: '1',
+      qty: '1x',
+      name: 'Buffalo Margherita',
+      price: '15.00',
+      addons: [
+        { name: 'Regular', price: '0.00' },
+        { name: 'Cheese', price: '1.50' }
+      ]
+    },
+    {
+      id: '2',
+      qty: '2x',
+      name: 'Bruschetta Classica',
+      price: '16.00',
+      addons: [
+        { name: 'Garlic', price: '0.50' },
+        { name: 'Tomato Basil', price: '1.00' }
+      ],
+      moreCount: 5
+    },
+    {
+      id: '3',
+      qty: '2x',
+      name: 'The Wagyu Signature',
+      price: '16.00',
+      addons: [
+        { name: 'Med-Rare', price: '0.00' },
+        { name: 'Truffle Sauce', price: '3.00' }
+      ],
+      moreCount: 5
+    }
+  ];
+
+  const displayedItems = isExpanded ? orderItems : orderItems.slice(0, 1);
+
   return (
     <div className="flex flex-col h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
       {/* Header */}
@@ -87,140 +127,54 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
             <span className="text-[11px] font-black text-[#94a3b8] uppercase">Current Orders</span>
           </div>
 
-          {/* Item 1 */}
-          <div className="space-y-4">
-            <div className="flex items-start justify-between">
-              <div className="flex gap-3 flex-1">
-                <div className="w-8 h-8 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0">
-                  <span className="text-[#0066b2] text-[13px] font-black">1x</span>
-                </div>
-                <div className="flex flex-col gap-2.5 flex-1">
-                  <div className="flex justify-between items-center pr-1">
-                    <h3 className="text-[15px] font-black text-[#1a1c2e]">Buffalo Margherita</h3>
-                    <div className="flex items-center gap-1.5 text-[#1a1c2e] font-black text-[16px]">
-                      <CurrencySymbol className="text-[14px]" />
-                      <span>15.00</span>
-                    </div>
+          {displayedItems.map((item) => (
+            <div key={item.id} className="space-y-4">
+              <div className="flex items-start justify-between">
+                <div className="flex gap-3 flex-1">
+                  <div className="w-8 h-8 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0">
+                    <span className="text-[#0066b2] text-[13px] font-black">{item.qty}</span>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
-                      <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">Regular</span>
-                      <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[12px] font-bold">
-                        <CurrencySymbol className="text-[10px]" />
-                        <span>0.00</span>
+                  <div className="flex flex-col gap-2.5 flex-1">
+                    <div className="flex justify-between items-center pr-1">
+                      <h3 className="text-[15px] font-black text-[#1a1c2e]">{item.name}</h3>
+                      <div className="flex items-center gap-1.5 text-[#1a1c2e] font-black text-[16px]">
+                        <CurrencySymbol className="text-[14px]" />
+                        <span>{item.price}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
-                      <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">Cheese</span>
-                      <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[12px] font-bold">
-                        <CurrencySymbol className="text-[10px]" />
-                        <span>1.50</span>
+                    <div className="space-y-2">
+                      {item.addons.map((addon, idx) => (
+                        <div key={idx} className="flex items-center gap-3">
+                          <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
+                          <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">{addon.name}</span>
+                          <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
+                          <div className="flex items-center gap-1 text-[#94a3b8] text-[12px] font-bold">
+                            <CurrencySymbol className="text-[10px]" />
+                            <span>{addon.price}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {item.moreCount && (
+                      <div>
+                        <span className="bg-[#fffbeb] text-[#f59e0b] px-2.5 py-1 rounded-lg text-[11px] font-black">
+                          +{item.moreCount} more
+                        </span>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Item 2 */}
-          <div className="space-y-4">
-            <div className="flex items-start justify-between">
-              <div className="flex gap-3 flex-1">
-                <div className="w-8 h-8 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0">
-                  <span className="text-[#0066b2] text-[13px] font-black">2x</span>
-                </div>
-                <div className="flex flex-col gap-2.5 flex-1">
-                  <div className="flex justify-between items-center pr-1">
-                    <h3 className="text-[15px] font-black text-[#1a1c2e]">Bruschetta Classica</h3>
-                    <div className="flex items-center gap-1.5 text-[#1a1c2e] font-black text-[16px]">
-                      <CurrencySymbol className="text-[14px]" />
-                      <span>16.00</span>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
-                      <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">Garlic</span>
-                      <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[12px] font-bold">
-                        <CurrencySymbol className="text-[10px]" />
-                        <span>0.50</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
-                      <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">Tomato Basil</span>
-                      <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[12px] font-bold">
-                        <CurrencySymbol className="text-[10px]" />
-                        <span>1.00</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <span className="bg-[#fffbeb] text-[#f59e0b] px-2.5 py-1 rounded-lg text-[11px] font-black">
-                      +5 more
-                    </span>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Item 3 */}
-          <div className="space-y-4">
-            <div className="flex items-start justify-between">
-              <div className="flex gap-3 flex-1">
-                <div className="w-8 h-8 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0">
-                  <span className="text-[#0066b2] text-[13px] font-black">2x</span>
-                </div>
-                <div className="flex flex-col gap-2.5 flex-1">
-                  <div className="flex justify-between items-center pr-1">
-                    <h3 className="text-[15px] font-black text-[#1a1c2e]">The Wagyu Signature</h3>
-                    <div className="flex items-center gap-1.5 text-[#1a1c2e] font-black text-[16px]">
-                      <CurrencySymbol className="text-[14px]" />
-                      <span>16.00</span>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
-                      <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">Med-Rare</span>
-                      <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[12px] font-bold">
-                        <CurrencySymbol className="text-[10px]" />
-                        <span>0.00</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
-                      <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">Truffle Sauce</span>
-                      <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
-                      <div className="flex items-center gap-1 text-[#94a3b8] text-[12px] font-bold">
-                        <CurrencySymbol className="text-[10px]" />
-                        <span>3.00</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <span className="bg-[#fffbeb] text-[#f59e0b] px-2.5 py-1 rounded-lg text-[11px] font-black">
-                      +5 more
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
 
           <div className="pt-2">
-            <button className="w-full flex items-center justify-center gap-2 bg-[#f0f7ff] h-12 rounded-full text-[#0066b2] text-[14px] font-black active:scale-95 transition-all shadow-sm">
-              See More
-              <ChevronDown className="w-4 h-4" />
+            <button 
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="w-full flex items-center justify-center gap-2 bg-[#f0f7ff] h-12 rounded-full text-[#0066b2] text-[14px] font-black active:scale-95 transition-all shadow-sm"
+            >
+              {isExpanded ? 'See Less' : 'See More'}
+              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
           </div>
         </div>
