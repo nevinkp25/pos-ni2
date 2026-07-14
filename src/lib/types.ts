@@ -24,3 +24,19 @@ export type Booking = {
   time: string; // HH:mm
   status: 'booked' | 'blocked';
 };
+
+export interface CartItemAddon {
+  name: string;
+  price: number;
+  quantity: number;
+}
+
+export interface CartItem {
+  id: string;
+  name: string;
+  basePrice: number;
+  quantity: number;
+  addons: CartItemAddon[];
+  specialRequests: string;
+  flavor?: string;
+}

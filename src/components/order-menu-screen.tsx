@@ -26,6 +26,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { CartItem, CartItemAddon } from '@/lib/types';
 
 interface MenuItemOption {
   name: string;
@@ -56,17 +57,17 @@ interface OrderMenuScreenProps {
   tableNumber: string;
   onBack?: () => void;
   onHome?: () => void;
+  onOpenCart?: () => void;
+  cart: CartItem[];
+  setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
-export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreenProps) {
+export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart, setCart }: OrderMenuScreenProps) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
   const [detailMode, setDetailMode] = useState<'full' | 'compact'>('full');
-  
-  // Cart state: Record<itemName, quantity>
-  const [cart, setCart] = useState<Record<string, number>>({});
 
   useEffect(() => {
     setShowSuccess(true);
@@ -167,21 +168,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
             { name: 'Asparagus', price: 15 }
           ]
         },
-        { 
-          name: 'Branzino al Forno', 
-          description: 'Roasted sea bass with herbs and vegetables',
-          allergens: ['Fish'], 
-          basePrice: 130,
-          nutritionalInfo: { kcal: 550, protein: '45g', carbs: '15g', fat: '32g' },
-          variations: [
-            { name: 'Lemon Butter', price: 0 },
-            { name: 'Olive Tapenade', price: 5 }
-          ],
-          addons: [
-            { name: 'Roasted Potatoes', price: 15 },
-            { name: 'Spinach', price: 12 }
-          ]
-        },
       ] 
     },
     { 
@@ -227,40 +213,18 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
   ];
 
   const totalItemsInCart = useMemo(() => {
-    return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
+    return cart.reduce((sum, item) => sum + item.quantity, 0);
   }, [cart]);
 
   const getCategoryCartCount = (category: MenuCategory) => {
-    return category.items.reduce((sum, item) => sum + (cart[item.name] || 0), 0);
+    return category.items.reduce((sum, menuItem) => {
+      const items = cart.filter(ci => ci.name === menuItem.name);
+      return sum + items.reduce((s, i) => s + i.quantity, 0);
+    }, 0);
   };
 
   const toggleCategory = (title: string) => {
     setExpandedCategory(expandedCategory === title ? null : title);
-  };
-
-  const addToCart = (itemName: string) => {
-    setCart(prev => ({
-      ...prev,
-      [itemName]: (prev[itemName] || 0) + 1
-    }));
-  };
-
-  const removeFromCart = (itemName: string) => {
-    setCart(prev => {
-      const newCart = { ...prev };
-      if (newCart[itemName] > 1) {
-        newCart[itemName] -= 1;
-      } else {
-        delete newCart[itemName];
-      }
-      return newCart;
-    });
-  };
-
-  const handleItemClick = (item: MenuItem) => {
-    setSelectedItem(item);
-    setDetailMode('full');
-    setIsDetailSheetOpen(true);
   };
 
   const handlePlusClick = (e: React.MouseEvent, item: MenuItem) => {
@@ -272,8 +236,66 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
       setDetailMode('compact');
       setIsDetailSheetOpen(true);
     } else {
-      addToCart(item.name);
+      setCart(prev => {
+        const existing = prev.find(ci => ci.name === item.name && !ci.flavor && ci.addons.length === 0 && !ci.specialRequests);
+        if (existing) {
+          return prev.map(ci => ci.id === existing.id ? { ...ci, quantity: ci.quantity + 1 } : ci);
+        }
+        return [...prev, {
+          id: Math.random().toString(36).substr(2, 9),
+          name: item.name,
+          basePrice: item.basePrice,
+          quantity: 1,
+          addons: [],
+          specialRequests: ''
+        }];
+      });
     }
+  };
+
+  const handleMinusClick = (e: React.MouseEvent, itemName: string) => {
+    e.stopPropagation();
+    setCart(prev => {
+      const existing = prev.find(ci => ci.name === itemName && !ci.flavor && ci.addons.length === 0 && !ci.specialRequests);
+      if (!existing) return prev;
+      if (existing.quantity > 1) {
+        return prev.map(ci => ci.id === existing.id ? { ...ci, quantity: ci.quantity - 1 } : ci);
+      }
+      return prev.filter(ci => ci.id !== existing.id);
+    });
+  };
+
+  const handleItemClick = (item: MenuItem) => {
+    setSelectedItem(item);
+    setDetailMode('full');
+    setIsDetailSheetOpen(true);
+  };
+
+  const getBasicItemQty = (itemName: string) => {
+    const item = cart.find(ci => ci.name === itemName && !ci.flavor && ci.addons.length === 0 && !ci.specialRequests);
+    return item?.quantity || 0;
+  };
+
+  const handleAddToCart = (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => {
+    setCart(prev => {
+      // For items with options, we usually want to add a new unique entry unless it's identical
+      const isIdentical = (ci: CartItem) => ci.name === item.name && ci.flavor === flavor && JSON.stringify(ci.addons) === JSON.stringify(addons) && ci.specialRequests === requests;
+      const existing = prev.find(isIdentical);
+      
+      if (existing) {
+        return prev.map(ci => ci.id === existing.id ? { ...ci, quantity: ci.quantity + qty } : ci);
+      }
+      
+      return [...prev, {
+        id: Math.random().toString(36).substr(2, 9),
+        name: item.name,
+        basePrice: item.basePrice,
+        quantity: qty,
+        addons,
+        specialRequests: requests,
+        flavor
+      }];
+    });
   };
 
   return (
@@ -306,7 +328,10 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
           
           {totalItemsInCart > 0 && (
             <div className="relative animate-in zoom-in duration-300">
-              <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
+              <button 
+                onClick={onOpenCart}
+                className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
+              >
                 <ShoppingCart className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
               </button>
               <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#ef4444] rounded-full border-2 border-white flex items-center justify-center">
@@ -358,7 +383,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                 {isExpanded && category.items.length > 0 && (
                   <div className="bg-[#f8fbff] animate-in fade-in slide-in-from-top-2 duration-300">
                     {category.items.map((item, itemIndex) => {
-                      const quantity = cart[item.name] || 0;
+                      const quantity = getBasicItemQty(item.name);
                       return (
                         <div 
                           key={itemIndex} 
@@ -399,7 +424,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
                                 </button>
                                 <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-sm h-11 min-w-[100px] justify-between">
                                   <button 
-                                    onClick={(e) => { e.stopPropagation(); removeFromCart(item.name); }}
+                                    onClick={(e) => handleMinusClick(e, item.name)}
                                     className="w-9 h-9 flex items-center justify-center rounded-full bg-[#f1f5f9] text-[#ef4444] active:scale-90 transition-all"
                                   >
                                     {quantity === 1 ? (
@@ -469,7 +494,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome }: OrderMenuScreen
         onClose={() => setIsDetailSheetOpen(false)}
         item={selectedItem}
         mode={detailMode}
-        onAdd={() => selectedItem && addToCart(selectedItem.name)}
+        onAdd={handleAddToCart}
       />
     </div>
   );
@@ -486,7 +511,7 @@ function ItemDetailSheet({
   onClose: () => void; 
   item: MenuItem | null;
   mode: 'full' | 'compact';
-  onAdd: () => void;
+  onAdd: (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => void;
 }) {
   const [selectedFlavor, setSelectedFlavor] = useState<MenuItemOption | null>(null);
   const [addonQuantities, setAddonQuantities] = useState<Record<string, number>>({});
@@ -552,7 +577,7 @@ function ItemDetailSheet({
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="bottom" className={cn(
         "rounded-t-[40px] border-none p-0 flex flex-col outline-none overflow-hidden",
-        isCompact ? "h-[70vh]" : "h-[85vh]"
+        isCompact ? "h-[75vh]" : "h-[85vh]"
       )}>
         <SheetHeader className="sr-only">
           <SheetTitle>{item.name}</SheetTitle>
@@ -768,9 +793,15 @@ function ItemDetailSheet({
           <button 
             disabled={!isCustomized}
             onClick={() => {
-              for (let i = 0; i < itemQuantity; i++) {
-                onAdd();
-              }
+              const addons = Object.entries(addonQuantities)
+                .filter(([_, q]) => q > 0)
+                .map(([name, q]) => ({
+                  name,
+                  quantity: q,
+                  price: item.addons?.find(a => a.name === name)?.price || 0
+                }));
+              
+              onAdd(item, selectedFlavor?.name, addons, specialRequests, itemQuantity);
               onClose();
             }}
             className={cn(

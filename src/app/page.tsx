@@ -6,11 +6,14 @@ import { StaffSignInScreen } from '@/components/staff-signin-screen';
 import { StaffDashboardScreen } from '@/components/staff-dashboard-screen';
 import { SelectTableScreen } from '@/components/select-table-screen';
 import { OrderMenuScreen } from '@/components/order-menu-screen';
+import { CartScreen } from '@/components/cart-screen';
 import { useToast } from '@/hooks/use-toast';
+import { CartItem } from '@/lib/types';
 
 export default function Page() {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu'>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart'>('welcome');
   const [selectedTable, setSelectedTable] = useState<string>('');
+  const [cart, setCart] = useState<CartItem[]>([]);
   const { toast } = useToast();
 
   const handleStarted = () => {
@@ -47,6 +50,14 @@ export default function Page() {
     setCurrentScreen('select-table');
   };
 
+  const handleOpenCart = () => {
+    setCurrentScreen('cart');
+  };
+
+  const handleBackToMenu = () => {
+    setCurrentScreen('order-menu');
+  };
+
   return (
     <main>
       {currentScreen === 'welcome' && (
@@ -62,7 +73,22 @@ export default function Page() {
         <SelectTableScreen onBack={handleBackToDashboard} onStartOrder={handleStartOrder} />
       )}
       {currentScreen === 'order-menu' && (
-        <OrderMenuScreen tableNumber={selectedTable} onBack={handleBackToSelectTable} onHome={handleBackToDashboard} />
+        <OrderMenuScreen 
+          tableNumber={selectedTable} 
+          onBack={handleBackToSelectTable} 
+          onHome={handleBackToDashboard} 
+          onOpenCart={handleOpenCart}
+          cart={cart}
+          setCart={setCart}
+        />
+      )}
+      {currentScreen === 'cart' && (
+        <CartScreen 
+          tableNumber={selectedTable} 
+          onBack={handleBackToMenu} 
+          cart={cart}
+          setCart={setCart}
+        />
       )}
     </main>
   );
