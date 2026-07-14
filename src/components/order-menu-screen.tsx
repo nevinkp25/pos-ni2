@@ -496,13 +496,11 @@ function ItemDetailSheet({
     }
   }, [isOpen]);
 
-  if (!item) return null;
-
   const handleFlavorSelect = (flavor: MenuItemOption) => {
     setSelectedFlavor(flavor);
     // Auto scroll to addons or special requests
     setTimeout(() => {
-      if (item.addons && item.addons.length > 0) {
+      if (item?.addons && item.addons.length > 0) {
         addonsSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else {
         specialRequestsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -520,6 +518,7 @@ function ItemDetailSheet({
   const isCustomized = selectedFlavor !== null;
 
   const totalPrice = useMemo(() => {
+    if (!item) return 0;
     let price = item.basePrice;
     if (selectedFlavor) price += selectedFlavor.price;
     
@@ -532,6 +531,8 @@ function ItemDetailSheet({
     
     return price * itemQuantity;
   }, [item, selectedFlavor, addonQuantities, itemQuantity]);
+
+  if (!item) return null;
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
