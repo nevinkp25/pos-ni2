@@ -62,9 +62,17 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
         <div className="w-full aspect-[4/3] max-w-sm bg-[#f0f7ff] border border-[#d1e9ff] rounded-[32px] flex items-center justify-center mb-10 shadow-sm">
           <div className="flex items-baseline gap-1">
             <span className="text-[#94a3b8] text-[40px] font-bold tracking-tight">Table</span>
-            <span className="text-[#0066b2] text-[64px] font-bold leading-none -mb-1">
-              {tableNumber || '#'}
-            </span>
+            <div className="flex items-center min-w-[40px] justify-center">
+              {tableNumber ? (
+                <span className="text-[#0066b2] text-[64px] font-bold leading-none -mb-1 transition-all duration-200 animate-in fade-in zoom-in-95">
+                  {tableNumber}
+                </span>
+              ) : (
+                <span className="text-[#0066b2] text-[64px] font-bold leading-none -mb-1 opacity-30">
+                  #
+                </span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -80,9 +88,9 @@ export function SelectTableScreen({ onBack }: SelectTableScreenProps) {
               }}
               className={cn(
                 "h-16 flex items-center justify-center rounded-[24px] text-2xl font-bold transition-all active:scale-[0.9] shadow-[0_4px_15px_rgba(0,0,0,0.03)] border border-gray-50",
-                btn.type === 'number' && "bg-white text-[#1a1c2e]",
-                btn.type === 'clear' && "bg-white text-[#ef4444]",
-                btn.type === 'backspace' && "bg-white text-gray-400"
+                btn.type === 'number' && "bg-white text-[#1a1c2e] hover:bg-gray-50",
+                btn.type === 'clear' && "bg-white text-[#ef4444] hover:bg-red-50",
+                btn.type === 'backspace' && "bg-white text-gray-400 hover:bg-gray-50"
               )}
             >
               {btn.type === 'backspace' ? (
