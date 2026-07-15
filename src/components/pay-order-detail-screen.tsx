@@ -336,7 +336,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
                   <div className="flex items-baseline gap-1 text-[#0066b2] font-black">
-                    <span className="text-[24px]">AED</span>
+                    <span className="text-[24px] font-bold">AED</span>
                     <span className="text-[24px]">{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -349,7 +349,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   {[5, 10, 20].map((amount) => (
                     <button 
                       key={amount}
-                      onClick={() => setSelectedTip(amount)}
+                      onClick={() => setSelectedTip(selectedTip === amount ? null : amount)}
                       className={cn(
                         "relative h-[90px] rounded-[24px] flex flex-col items-center justify-center transition-all shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50",
                         selectedTip === amount ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white"
@@ -376,7 +376,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Bill Amount</span>
                   <div className="flex items-center gap-1.5 text-[#1a1c2e]">
-                    <span className="text-[15px]">AED</span>
+                    <span className="text-[15px] font-bold">AED</span>
                     <span>{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -384,7 +384,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   <span className="text-[#94a3b8] uppercase">Tips</span>
                   <div className="flex items-center gap-1.5 text-[#26ab5f]">
                     <span>+</span>
-                    <span className="text-[15px]">AED</span>
+                    <span className="text-[15px] font-bold">AED</span>
                     <span>{(selectedTip || 0).toFixed(2)}</span>
                   </div>
                 </div>
