@@ -100,18 +100,20 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
           tableNumber ? "h-24" : "h-40"
         )}>
           {tableNumber ? (
-            <div className="flex items-center gap-1 relative">
-              <span className="text-[#1E293B] text-[48px] font-bold leading-none animate-in fade-in zoom-in-95">
-                {tableNumber}
-              </span>
-              <div className="w-[3px] h-10 bg-[#0066b2] ml-1 rounded-full animate-pulse" />
+            <>
+              <div className="flex items-center gap-1">
+                <span className="text-[#1E293B] text-[48px] font-bold leading-none animate-in fade-in zoom-in-95">
+                  {tableNumber}
+                </span>
+                <div className="w-[3px] h-10 bg-[#0066b2] ml-1 rounded-full animate-pulse" />
+              </div>
               <button 
                 onClick={handleClear}
-                className="absolute -right-12 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-[#f0f7ff] text-[#1E293B]/60 hover:bg-[#d1e9ff] transition-colors"
+                className="absolute right-6 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-[#f0f7ff] text-[#1E293B]/60 hover:bg-[#d1e9ff] transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
-            </div>
+            </>
           ) : (
             <div className="flex items-baseline gap-1">
               <span className="text-[#94a3b8] text-[36px] font-bold tracking-tight opacity-60">
