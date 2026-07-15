@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -327,18 +326,20 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
             <div className="px-6 space-y-6">
               {/* Waiter & Bill Info Cards */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center">
+                <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
                   <div className="w-10 h-10 bg-[#f8fafc] rounded-full flex items-center justify-center mb-2 border border-gray-50">
                     <User className="w-5 h-5 text-[#94a3b8]" />
                   </div>
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-1">Waiter ID:</span>
                   <span className="text-[15px] font-black text-[#1a1c2e]">#123456</span>
                 </div>
-                <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center">
+                <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
+                  {/* Invisible spacer to align labels horizontally with the left card */}
+                  <div className="w-10 h-10 mb-2 invisible" />
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
                   <div className="flex items-baseline gap-1 text-[#0066b2] font-black">
                     <span className="text-[13px]">AED</span>
-                    <span className="text-[20px]">{billAmount.toFixed(2)}</span>
+                    <span className="text-[24px]">{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
