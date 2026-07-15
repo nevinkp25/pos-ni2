@@ -19,7 +19,8 @@ import {
   Pencil,
   Circle,
   SquarePen,
-  MessageCircle
+  MessageCircle,
+  FilterX
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -74,10 +75,8 @@ interface OrderMenuScreenProps {
   onCancelEdit?: () => void;
 }
 
-/**
- * Shared Currency Symbol component that uses the custom local font.
- * This ensures the Dirham symbol renders identically across all devices.
- */
+const ALLERGENS_LIST = ['Dairy', 'Gluten', 'Shellfish', 'Fish', 'Eggs', 'Nuts'];
+
 const CurrencySymbol = ({ className }: { className?: string }) => (
   <span className={cn("currency-symbol leading-none inline-flex items-center justify-center", className)}>
     ⃃
@@ -92,16 +91,23 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   const [detailMode, setDetailMode] = useState<'full' | 'compact'>('full');
   const [internalEditingItem, setInternalEditingItem] = useState<CartItem | null>(null);
 
+  // Search & Filter State
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
+
   // Instruction Dialog State
   const [isInstructionDialogOpen, setIsInstructionDialogOpen] = useState(false);
   const [activeInstructionItem, setActiveInstructionItem] = useState<MenuItem | null>(null);
   const [tempInstruction, setTempInstruction] = useState('');
 
   useEffect(() => {
-    setShowSuccess(true);
-    const timer = setTimeout(() => setShowSuccess(false), 4000);
-    return () => clearTimeout(timer);
-  }, []);
+    if (!isSearching) {
+      setShowSuccess(true);
+      const timer = setTimeout(() => setShowSuccess(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSearching]);
 
   const menuData: MenuCategory[] = [
     { 
@@ -270,6 +276,40 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
     },
   ];
 
+  const filteredMenuData = useMemo(() => {
+    let result = menuData;
+
+    if (searchQuery) {
+      result = result.map(cat => ({
+        ...cat,
+        items: cat.items.filter(item => 
+          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.description.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      })).filter(cat => cat.items.length > 0);
+    }
+
+    if (selectedAllergens.length > 0) {
+      result = result.map(cat => ({
+        ...cat,
+        items: cat.items.filter(item => 
+          !item.allergens.some(a => selectedAllergens.includes(a))
+        )
+      })).filter(cat => cat.items.length > 0);
+    }
+
+    return result;
+  }, [searchQuery, selectedAllergens, menuData]);
+
+  // Automatically expand categories when searching
+  useEffect(() => {
+    if (searchQuery || selectedAllergens.length > 0) {
+      if (filteredMenuData.length > 0 && !expandedCategory) {
+        setExpandedCategory(filteredMenuData[0].title);
+      }
+    }
+  }, [filteredMenuData, searchQuery, selectedAllergens]);
+
   useEffect(() => {
     if (editingItem) {
       let found: MenuItem | null = null;
@@ -286,7 +326,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         setIsDetailSheetOpen(true);
       }
     }
-  }, [editingItem]);
+  }, [editingItem, menuData]);
 
   const totalItemsInCart = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -343,7 +383,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   };
 
   const handleItemClick = (item: MenuItem) => {
-    // Check if item is already in cart to edit it
     const existingInCart = cart.find(ci => ci.name === item.name);
     if (existingInCart) {
       setInternalEditingItem(existingInCart);
@@ -431,175 +470,240 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   return (
     <div className="flex flex-col h-screen bg-[#fcfdff] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
       {/* Header */}
-      <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-10">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={onBack}
-            className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 active:scale-95 transition-all"
-          >
-            <ChevronLeft className="w-7 h-7 text-[#0066b2] stroke-[2.5px]" />
-          </button>
-          <div className="flex flex-col">
-            <h1 className="text-[20px] font-black leading-tight text-[#1a1c2e]">Menu</h1>
-            <span className="text-[#94a3b8] text-[13px] font-bold">Table # {tableNumber}</span>
+      {!isSearching ? (
+        <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-10">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={onBack}
+              className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 active:scale-95 transition-all"
+            >
+              <ChevronLeft className="w-7 h-7 text-[#0066b2] stroke-[2.5px]" />
+            </button>
+            <div className="flex flex-col">
+              <h1 className="text-[20px] font-black leading-tight text-[#1a1c2e]">Menu</h1>
+              <span className="text-[#94a3b8] text-[13px] font-bold">Table # {tableNumber}</span>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={onHome}
+              className="w-10 h-10 flex items-center justify-center rounded-full border border-[#eef2f8] bg-white shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
+            >
+              <Home className="w-5 h-5 text-[#0066b2] stroke-[2.5px]" />
+            </button>
+            <button 
+              onClick={() => setIsSearching(true)}
+              className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
+            >
+              <Search className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
+            </button>
+            
+            {totalItemsInCart > 0 && (
+              <div className="relative animate-in zoom-in duration-300">
+                <button 
+                  onClick={onOpenCart}
+                  className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
+                >
+                  <ShoppingCart className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
+                </button>
+                <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#ef4444] rounded-full border-2 border-white flex items-center justify-center">
+                  <span className="text-white text-[10px] font-black">{totalItemsInCart}</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-        
-        <div className="flex items-center gap-3">
+      ) : (
+        <div className="bg-white px-6 h-20 flex items-center gap-4 shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-20 transition-all animate-in slide-in-from-top-2 duration-300">
+          <div className="flex-1 relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94a3b8]" />
+            <input 
+              autoFocus
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search items..."
+              className="w-full h-12 bg-[#f8fbff] rounded-2xl pl-11 pr-4 text-[15px] font-bold text-[#1a1c2e] focus:outline-none border-2 border-transparent focus:border-[#0066b2]/10 transition-all"
+            />
+          </div>
           <button 
-            onClick={onHome}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-[#eef2f8] bg-white shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
+            onClick={() => {
+              setIsSearching(false);
+              setSearchQuery('');
+              setSelectedAllergens([]);
+            }}
+            className="text-[#ef4444] text-[14px] font-black uppercase tracking-tight active:scale-95 transition-transform"
           >
-            <Home className="w-5 h-5 text-[#0066b2] stroke-[2.5px]" />
+            Cancel
           </button>
-          <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
-            <Search className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
-          </button>
-          
-          {totalItemsInCart > 0 && (
-            <div className="relative animate-in zoom-in duration-300">
-              <button 
-                onClick={onOpenCart}
-                className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
-              >
-                <ShoppingCart className="w-5 h-5 text-gray-700 stroke-[2.5px]" />
-              </button>
-              <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#ef4444] rounded-full border-2 border-white flex items-center justify-center">
-                <span className="text-white text-[10px] font-black">{totalItemsInCart}</span>
-              </div>
-            </div>
-          )}
         </div>
-      </div>
+      )}
 
-      {/* Main Content Area */}
-      <div className="flex-1 px-6 pt-6 overflow-y-auto pb-24">
-        <div className="bg-white rounded-[24px] shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-[#f0f4f8] overflow-hidden">
-          {menuData.map((category, index) => {
-            const isExpanded = expandedCategory === category.title;
-            const categoryItemsInCart = getCategoryCartCount(category);
-
+      {/* Allergen Filters (Visible during Search) */}
+      {isSearching && (
+        <div className="px-6 py-3 bg-[#fcfdff] overflow-x-auto flex gap-2 no-scrollbar border-b border-gray-50 shrink-0">
+          {ALLERGENS_LIST.map((allergen) => {
+            const isSelected = selectedAllergens.includes(allergen);
             return (
-              <div key={index} className={cn(index !== menuData.length - 1 && "border-b border-[#f0f4f8]")}>
-                <button 
-                  onClick={() => toggleCategory(category.title)}
-                  className={cn(
-                    "w-full h-16 px-6 flex items-center justify-between transition-colors active:bg-gray-50",
-                    isExpanded && "bg-[#fcfdff]"
-                  )}
-                >
-                  <span className="text-[14px] font-black text-[#334155] tracking-wide">
-                    {category.title}
-                  </span>
-                  <div className="flex items-center gap-3">
-                    {categoryItemsInCart > 0 && (
-                      <div className="w-6 h-6 bg-[#ef4444] rounded-full flex items-center justify-center shadow-sm">
-                        <span className="text-white text-[11px] font-black">{categoryItemsInCart}</span>
-                      </div>
-                    )}
-                    <div className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
-                      isExpanded ? "bg-[#e8edff]" : "bg-[#f0f7ff]"
-                    )}>
-                      {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
-                      )}
-                    </div>
-                  </div>
-                </button>
-
-                {isExpanded && category.items.length > 0 && (
-                  <div className="bg-[#f8fbff] animate-in fade-in slide-in-from-top-2 duration-300">
-                    {category.items.map((item, itemIndex) => {
-                      const quantity = getItemQty(item.name);
-                      const hasInstruction = getItemHasInstruction(item.name);
-
-                      return (
-                        <div 
-                          key={itemIndex} 
-                          className={cn(
-                            "px-6 py-5 flex items-center justify-between gap-4 transition-colors active:bg-blue-50/30 cursor-pointer",
-                            itemIndex !== category.items.length - 1 && "border-b border-[#eef2f8]"
-                          )}
-                          onClick={() => handleItemClick(item)}
-                        >
-                          <div className="flex flex-col gap-1 flex-1 min-w-0">
-                            <h3 className="text-[17px] font-black text-[#1a1c2e] leading-tight truncate">
-                              {item.name}
-                            </h3>
-                            {item.allergens.length > 0 && (
-                              <span className="text-[#6E6E6E] text-[11px] font-black tracking-tight uppercase">
-                                Allergen: {item.allergens.join(', ')}
-                              </span>
-                            )}
-                            <div className="flex items-center gap-1 text-[#0066b2] mt-1">
-                              <CurrencySymbol className="text-[14px]" />
-                              <span className="text-[18px] font-black">{item.basePrice.toFixed(2)}</span>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-col items-end gap-1 shrink-0">
-                            {quantity > 0 ? (
-                              <>
-                                <button 
-                                  className={cn(
-                                    "flex items-center gap-1.5 text-[12px] font-black tracking-tight mb-2 whitespace-nowrap transition-all relative",
-                                    hasInstruction ? "text-[#f59e0b]" : "text-[#0066b2]"
-                                  )}
-                                  onClick={(e) => handleInstructionClick(e, item)}
-                                >
-                                  {hasInstruction ? (
-                                    <MessageCircle className="w-3.5 h-3.5 fill-current" />
-                                  ) : (
-                                    <SquarePen className="w-3.5 h-3.5" />
-                                  )}
-                                  <span className={cn(
-                                    "border-b border-dotted",
-                                    hasInstruction ? "border-[#f59e0b]" : "border-[#0066b2]"
-                                  )}>
-                                    {hasInstruction ? "Instruction Saved" : "Instruction"}
-                                  </span>
-                                </button>
-                                <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between">
-                                  <button 
-                                    onClick={(e) => handleMinusClick(e, item.name)}
-                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-900 active:scale-90 transition-all"
-                                  >
-                                    {quantity === 1 ? (
-                                      <Trash2 className="w-4.5 h-4.5 text-[#ef4444]" />
-                                    ) : (
-                                      <Minus className="w-4.5 h-4.5 stroke-[3.5px] text-gray-900" />
-                                    )}
-                                  </button>
-                                  <span className="text-[18px] font-black text-[#1a1c2e] px-2 tabular-nums">{quantity}</span>
-                                  <button 
-                                    onClick={(e) => handlePlusClick(e, item)}
-                                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white active:scale-90 transition-all shadow-md"
-                                  >
-                                    <Plus className="w-4.5 h-4.5 stroke-[3.5px]" />
-                                  </button>
-                                </div>
-                              </>
-                            ) : (
-                              <button 
-                                onClick={(e) => handlePlusClick(e, item)}
-                                className="w-14 h-14 bg-[#0066b2] rounded-full flex items-center justify-center text-white shadow-[0_6px_20px_rgba(0,102,178,0.25)] active:scale-90 transition-all"
-                              >
-                                <Plus className="w-7 h-7 stroke-[3.5px]" />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+              <button
+                key={allergen}
+                onClick={() => {
+                  setSelectedAllergens(prev => 
+                    isSelected ? prev.filter(a => a !== allergen) : [...prev, allergen]
+                  );
+                }}
+                className={cn(
+                  "px-4 py-2 rounded-xl text-[10px] font-black uppercase whitespace-nowrap transition-all border shrink-0 flex items-center gap-1.5",
+                  isSelected 
+                    ? "bg-[#ef4444] border-[#ef4444] text-white shadow-sm" 
+                    : "bg-white border-gray-100 text-[#94a3b8]"
                 )}
-              </div>
+              >
+                {isSelected && <FilterX className="w-3 h-3" />}
+                No {allergen}
+              </button>
             );
           })}
         </div>
+      )}
+
+      {/* Main Content Area */}
+      <div className="flex-1 px-6 pt-6 overflow-y-auto pb-24">
+        {filteredMenuData.length > 0 ? (
+          <div className="bg-white rounded-[24px] shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-[#f0f4f8] overflow-hidden">
+            {filteredMenuData.map((category, index) => {
+              const isExpanded = expandedCategory === category.title;
+              const categoryItemsInCart = getCategoryCartCount(category);
+
+              return (
+                <div key={index} className={cn(index !== filteredMenuData.length - 1 && "border-b border-[#f0f4f8]")}>
+                  <button 
+                    onClick={() => toggleCategory(category.title)}
+                    className={cn(
+                      "w-full h-16 px-6 flex items-center justify-between transition-colors active:bg-gray-50",
+                      isExpanded && "bg-[#fcfdff]"
+                    )}
+                  >
+                    <span className="text-[14px] font-black text-[#334155] tracking-wide">
+                      {category.title}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      {categoryItemsInCart > 0 && (
+                        <div className="w-6 h-6 bg-[#ef4444] rounded-full flex items-center justify-center shadow-sm">
+                          <span className="text-white text-[11px] font-black">{categoryItemsInCart}</span>
+                        </div>
+                      )}
+                      <div className={cn(
+                        "w-8 h-8 rounded-full flex items-center justify-center transition-colors",
+                        isExpanded ? "bg-[#e8edff]" : "bg-[#f0f7ff]"
+                      )}>
+                        {isExpanded ? (
+                          <ChevronUp className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-[#0066b2] stroke-[3px]" />
+                        )}
+                      </div>
+                    </div>
+                  </button>
+
+                  {isExpanded && category.items.length > 0 && (
+                    <div className="bg-[#f8fbff] animate-in fade-in slide-in-from-top-2 duration-300">
+                      {category.items.map((item, itemIndex) => {
+                        const quantity = getItemQty(item.name);
+                        const hasInstruction = getItemHasInstruction(item.name);
+
+                        return (
+                          <div 
+                            key={itemIndex} 
+                            className={cn(
+                              "px-6 py-5 flex items-center justify-between gap-4 transition-colors active:bg-blue-50/30 cursor-pointer",
+                              itemIndex !== category.items.length - 1 && "border-b border-[#eef2f8]"
+                            )}
+                            onClick={() => handleItemClick(item)}
+                          >
+                            <div className="flex flex-col gap-1 flex-1 min-w-0">
+                              <h3 className="text-[17px] font-black text-[#1a1c2e] leading-tight truncate">
+                                {item.name}
+                              </h3>
+                              {item.allergens.length > 0 && (
+                                <span className="text-[#6E6E6E] text-[11px] font-black tracking-tight uppercase">
+                                  Allergen: {item.allergens.join(', ')}
+                                </span>
+                              )}
+                              <div className="flex items-center gap-1 text-[#0066b2] mt-1">
+                                <CurrencySymbol className="text-[14px]" />
+                                <span className="text-[18px] font-black">{item.basePrice.toFixed(2)}</span>
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col items-end gap-1 shrink-0">
+                              {quantity > 0 ? (
+                                <>
+                                  <button 
+                                    className={cn(
+                                      "flex items-center gap-1.5 text-[12px] font-black tracking-tight mb-2 whitespace-nowrap transition-all relative",
+                                      hasInstruction ? "text-[#f59e0b]" : "text-[#0066b2]"
+                                    )}
+                                    onClick={(e) => handleInstructionClick(e, item)}
+                                  >
+                                    {hasInstruction ? (
+                                      <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                                    ) : (
+                                      <SquarePen className="w-3.5 h-3.5" />
+                                    )}
+                                    <span className={cn(
+                                      "border-b border-dotted",
+                                      hasInstruction ? "border-[#f59e0b]" : "border-[#0066b2]"
+                                    )}>
+                                      {hasInstruction ? "Instruction Saved" : "Instruction"}
+                                    </span>
+                                  </button>
+                                  <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between">
+                                    <button 
+                                      onClick={(e) => handleMinusClick(e, item.name)}
+                                      className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-900 active:scale-90 transition-all"
+                                    >
+                                      {quantity === 1 ? (
+                                        <Trash2 className="w-4.5 h-4.5 text-[#ef4444]" />
+                                      ) : (
+                                        <Minus className="w-4.5 h-4.5 stroke-[3.5px] text-gray-900" />
+                                      )}
+                                    </button>
+                                    <span className="text-[18px] font-black text-[#1a1c2e] px-2 tabular-nums">{quantity}</span>
+                                    <button 
+                                      onClick={(e) => handlePlusClick(e, item)}
+                                      className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white active:scale-90 transition-all shadow-md"
+                                    >
+                                      <Plus className="w-4.5 h-4.5 stroke-[3.5px]" />
+                                    </button>
+                                  </div>
+                                </>
+                              ) : (
+                                <button 
+                                  onClick={(e) => handlePlusClick(e, item)}
+                                  className="w-14 h-14 bg-[#0066b2] rounded-full flex items-center justify-center text-white shadow-[0_6px_20px_rgba(0,102,178,0.25)] active:scale-90 transition-all"
+                                >
+                                  <Plus className="w-7 h-7 stroke-[3.5px]" />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="h-64 flex flex-col items-center justify-center text-center px-8 opacity-40">
+            <Search className="w-12 h-12 mb-3 text-[#94a3b8]" />
+            <p className="text-base font-bold text-[#1a1c2e]">No items match your filters</p>
+            <p className="text-sm font-medium mt-1">Try a different search term or allergen filter</p>
+          </div>
+        )}
       </div>
 
       {/* Instruction Dialog */}
@@ -652,7 +756,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
       </Dialog>
 
       {/* Success Notification */}
-      {showSuccess && !editingItem && (
+      {showSuccess && !editingItem && !isSearching && (
         <div className="absolute bottom-6 inset-x-6 z-50 animate-in slide-in-from-bottom duration-500">
           <div className="bg-white/95 backdrop-blur-md rounded-[20px] p-4 flex items-center gap-4 shadow-[0_10px_40px_rgba(0,0,0,0.08)] border-[1.5px] border-[#00d084]/20 overflow-hidden relative group">
             <div className="absolute inset-0 border-[1.5px] rounded-[20px] border-transparent bg-gradient-to-r from-transparent via-[#d1e9ff]/50 to-[#dce4ff]/50 pointer-events-none" />
@@ -716,7 +820,6 @@ function ItemDetailSheet({
   useEffect(() => {
     if (isOpen) {
       if (editingItem) {
-        // Pre-fill from editingItem
         const flavor = item?.variations.find(v => v.name === editingItem.flavor) || null;
         setSelectedFlavor(flavor);
         
