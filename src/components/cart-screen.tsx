@@ -339,17 +339,16 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
     }
   };
 
-  // Slider Logic (Left to Right)
-  const handleSliderTouchStart = (e: React.TouchEvent) => {
+  // Slider Logic (Unified for Touch and Mouse)
+  const handleSliderStart = (clientX: number) => {
     if (isOrderSent) return;
-    sliderStartX.current = e.touches[0].clientX;
+    sliderStartX.current = clientX;
     setIsSliding(true);
   };
 
-  const handleSliderTouchMove = (e: React.TouchEvent) => {
+  const handleSliderMove = (clientX: number) => {
     if (!isSliding || !sliderContainerRef.current || isOrderSent) return;
-    const currentX = e.touches[0].clientX;
-    const deltaX = currentX - sliderStartX.current;
+    const deltaX = clientX - sliderStartX.current;
     const containerWidth = sliderContainerRef.current.offsetWidth;
     const handleWidth = 44; // Approx width of handle
     const maxPath = containerWidth - handleWidth - 8;
@@ -359,7 +358,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
     }
   };
 
-  const handleSliderTouchEnd = () => {
+  const handleSliderEnd = () => {
     if (!isSliding || !sliderContainerRef.current || isOrderSent) return;
     setIsSliding(false);
     
@@ -375,6 +374,22 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
       setSliderX(0);
     }
   };
+
+  // Attach global mouse listeners when sliding starts
+  useEffect(() => {
+    if (!isSliding) return;
+
+    const onMouseMove = (e: MouseEvent) => handleSliderMove(e.clientX);
+    const onMouseUp = () => handleSliderEnd();
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+    };
+  }, [isSliding, sliderX]);
 
   return (
     <div className="flex flex-col h-screen bg-[#f3f7fb] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
@@ -581,7 +596,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
           {/* Swipeable Horizontal Slider */}
           <div 
             ref={sliderContainerRef}
-            className="relative h-[56px] w-full bg-[#0066b2] rounded-[18px] p-1 flex items-center overflow-hidden shadow-[0_6px_20px_rgba(0,102,178,0.18)] shrink-0"
+            className="relative h-[56px] w-full bg-[#0066b2] rounded-[18px] p-1 flex items-center overflow-hidden shadow-[0_6px_20px_rgba(0,102,178,0.18)] shrink-0 select-none"
           >
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <span className="text-white text-[15px] font-black tracking-tight opacity-80">
@@ -592,16 +607,17 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
             {/* The Slidable Handle */}
             <div 
               className={cn(
-                "h-11 w-12 bg-white rounded-[14px] flex items-center justify-center shadow-lg z-10 transition-transform relative",
+                "h-11 w-12 bg-white rounded-[14px] flex items-center justify-center shadow-lg z-10 transition-transform relative cursor-grab active:cursor-grabbing",
                 !isSliding && "duration-300"
               )}
               style={{ 
                 transform: `translateX(${sliderX}px)`,
                 transition: isSliding ? 'none' : 'transform 0.3s ease-out'
               }}
-              onTouchStart={handleSliderTouchStart}
-              onTouchMove={handleSliderTouchMove}
-              onTouchEnd={handleSliderTouchEnd}
+              onTouchStart={(e) => handleSliderStart(e.touches[0].clientX)}
+              onTouchMove={(e) => handleSliderMove(e.touches[0].clientX)}
+              onTouchEnd={handleSliderEnd}
+              onMouseDown={(e) => handleSliderStart(e.clientX)}
             >
               {isOrderSent ? (
                 <Check className="w-6 h-6 text-[#26ab5f] stroke-[4px]" />
