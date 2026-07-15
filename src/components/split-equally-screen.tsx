@@ -48,7 +48,7 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
   const [isPartialSuccessOpen, setIsPartialSuccessOpen] = useState(false);
   const [activePayingGuest, setActivePayingGuest] = useState<number | null>(null);
 
-  const totalBill = 112.62; // 37.54 * 3 approx
+  const totalBill = 112.62;
   const shareAmount = totalBill / guestCount;
   
   const paidCount = paidGuests.length;
@@ -60,6 +60,15 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
       setIsConfirming(false);
       setIsConfirmed(true);
     }, 1200);
+  };
+
+  const handleGuestCountChange = (newCount: number) => {
+    setGuestCount(newCount);
+    // If we've already confirmed, reset it so they have to re-confirm the new calculation
+    if (isConfirmed) {
+      setIsConfirmed(false);
+      setPaidGuests([]); // Reset paid status if the split logic changes
+    }
   };
 
   const handlePayClick = (guestId: number) => {
@@ -142,13 +151,12 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
           </p>
         </div>
 
-        {/* Guest Counter - Disabled if confirmed */}
+        {/* Guest Counter - Always active for "split again" capability */}
         <div className={cn(
-          "flex items-center justify-between bg-white rounded-[32px] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.02)] border border-gray-50 transition-all",
-          isConfirmed && "opacity-50 pointer-events-none grayscale-[0.5]"
+          "flex items-center justify-between bg-white rounded-[32px] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.02)] border border-gray-50 transition-all"
         )}>
           <button 
-            onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+            onClick={() => handleGuestCountChange(Math.max(1, guestCount - 1))}
             className="w-16 h-16 rounded-full bg-white shadow-[0_8px_20px_rgba(0,0,0,0.05)] border border-gray-50 flex items-center justify-center active:scale-90 transition-all"
           >
             <Minus className="w-6 h-6 text-[#1a1c2e] stroke-[3px]" />
@@ -160,7 +168,7 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
           </div>
 
           <button 
-            onClick={() => setGuestCount(guestCount + 1)}
+            onClick={() => handleGuestCountChange(guestCount + 1)}
             className="w-16 h-16 rounded-full bg-[#0066b2] shadow-[0_8px_25px_rgba(0,102,178,0.3)] flex items-center justify-center active:scale-90 transition-all"
           >
             <Plus className="w-6 h-6 text-white stroke-[3px]" />
