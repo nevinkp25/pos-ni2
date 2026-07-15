@@ -266,7 +266,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
 
   const openInstructionDialog = (id: string, currentInstruction: string) => {
     setActiveItemId(id);
-    setTempInstruction(currentInstruction);
+    setTempInstruction(currentInstruction || '');
     setIsInstructionDialogOpen(true);
   };
 
@@ -426,11 +426,12 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
             <div 
               key={item.id} 
               className={cn(
-                "bg-white rounded-[20px] shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-white overflow-hidden transition-all duration-300 relative",
+                "bg-white rounded-[24px] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-white overflow-hidden transition-all duration-300 relative",
                 hasInstructions && "border-l-[5px] border-l-[#f59e0b]"
               )}
             >
               <div className="p-4">
+                {/* Header Row: Always visible */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex flex-col gap-1 min-w-0 flex-1">
                     <div className="flex items-center gap-2 min-w-0">
@@ -468,6 +469,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                   </div>
                 </div>
 
+                {/* Collapsible Area: Addons and Instruction Box */}
                 {isExpanded && (
                   <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="w-full border-t border-dashed border-gray-100" />
@@ -501,41 +503,42 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                         </p>
                       </div>
                     )}
-
-                    <div className="flex items-center justify-between pt-2">
-                      <button 
-                        onClick={() => openInstructionDialog(item.id, item.specialRequests)}
-                        className={cn(
-                          "flex items-center gap-2 px-3.5 h-10 rounded-full border-[1.5px] border-dotted transition-all active:scale-95",
-                          hasInstructions 
-                            ? "bg-[#fffbeb] border-[#f59e0b]/40 text-[#f59e0b]" 
-                            : "bg-white border-[#0066b2]/20 text-[#0066b2]"
-                        )}
-                      >
-                        <MessageCircle className={cn("w-4 h-4", hasInstructions ? "fill-current" : "")} />
-                        <span className="text-[11px] font-black">
-                          {hasInstructions ? "Edit Note" : "Add Note"}
-                        </span>
-                      </button>
-
-                      <div className="flex items-center bg-white rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.06)] h-[44px] min-w-[100px] justify-between border border-gray-100">
-                        <button 
-                          onClick={() => updateQty(item.id, -1)}
-                          className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all"
-                        >
-                          {item.quantity === 1 ? <Trash2 className="w-4 h-4" /> : <Minus className="w-4 h-4 stroke-[3px]" />}
-                        </button>
-                        <span className="text-[16px] font-black text-[#1a1c2e] px-2 tabular-nums">{item.quantity}</span>
-                        <button 
-                          onClick={() => updateQty(item.id, 1)}
-                          className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-sm active:scale-90 transition-all"
-                        >
-                          <Plus className="w-4 h-4 stroke-[3px]" />
-                        </button>
-                      </div>
-                    </div>
                   </div>
                 )}
+
+                {/* Footer Controls: Always visible */}
+                <div className="flex items-center justify-between pt-4 mt-2">
+                  <button 
+                    onClick={() => openInstructionDialog(item.id, item.specialRequests)}
+                    className={cn(
+                      "flex items-center gap-2 px-3.5 h-10 rounded-full border-[1.5px] border-dotted transition-all active:scale-95",
+                      hasInstructions 
+                        ? "bg-[#fffbeb] border-[#f59e0b]/40 text-[#f59e0b]" 
+                        : "bg-white border-[#0066b2]/20 text-[#0066b2]"
+                    )}
+                  >
+                    <MessageCircle className={cn("w-4 h-4", hasInstructions ? "fill-current" : "")} />
+                    <span className="text-[11px] font-black">
+                      {hasInstructions ? "Edit Note" : "Add Note"}
+                    </span>
+                  </button>
+
+                  <div className="flex items-center bg-white rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.06)] h-[44px] min-w-[100px] justify-between border border-gray-100">
+                    <button 
+                      onClick={() => updateQty(item.id, -1)}
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#ef4444] active:scale-90 transition-all"
+                    >
+                      {item.quantity === 1 ? <Trash2 className="w-4 h-4" /> : <Minus className="w-4 h-4 stroke-[3px]" />}
+                    </button>
+                    <span className="text-[16px] font-black text-[#1a1c2e] px-2 tabular-nums">{item.quantity}</span>
+                    <button 
+                      onClick={() => updateQty(item.id, 1)}
+                      className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-sm active:scale-90 transition-all"
+                    >
+                      <Plus className="w-4 h-4 stroke-[3px]" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           );
@@ -828,7 +831,6 @@ function ItemDetailSheet({
               </div>
             </div>
 
-            {/* Other sections... */}
             <div className="bg-[#f8fbff] rounded-[24px] p-5 border border-[#f0f4f8]">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
