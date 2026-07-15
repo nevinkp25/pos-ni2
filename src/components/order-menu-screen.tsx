@@ -530,8 +530,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                               {item.name}
                             </h3>
                             {item.allergens.length > 0 && (
-                              <span className="text-[#f59e0b] text-[11px] font-black tracking-tight uppercase">
-                                {item.allergens.join(', ')}
+                              <span className="text-[#6E6E6E] text-[11px] font-black tracking-tight uppercase">
+                                Allergen: {item.allergens.join(', ')}
                               </span>
                             )}
                             <div className="flex items-center gap-1 text-[#0066b2] mt-1">
@@ -852,8 +852,8 @@ function ItemDetailSheet({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {item.allergens.length > 0 ? (
-                      <span className="text-[#4b5563] text-[12px] font-black uppercase tracking-tight">
-                        {item.allergens.join(', ')}
+                      <span className="text-[#6E6E6E] text-[12px] font-black uppercase tracking-tight">
+                        Allergen: {item.allergens.join(', ')}
                       </span>
                     ) : (
                       <span className="text-[#94a3b8] text-[12px] font-bold">No common allergens</span>
