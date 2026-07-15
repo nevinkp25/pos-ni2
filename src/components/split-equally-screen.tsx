@@ -162,8 +162,8 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[31px] p-6 flex flex-col gap-5">
             <div className="flex items-center">
               <span className="text-[13px] font-black text-[#475569] w-[100px] shrink-0">Total Amount</span>
-              <div className="flex-1 flex justify-center">
-                <span className="text-[34px] font-black text-[#1a1c2e] tracking-tight leading-none">
+              <div className="flex-1 flex justify-center min-w-0">
+                <span className="text-[24px] min-[375px]:text-[28px] min-[414px]:text-[34px] font-black text-[#1a1c2e] tracking-tight leading-none whitespace-nowrap">
                   AED {totalBill.toFixed(2)}
                 </span>
               </div>
