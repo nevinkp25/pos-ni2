@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Menu, Check } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,15 @@ interface WelcomeScreenProps {
 }
 
 export function WelcomeScreen({ onStarted }: WelcomeScreenProps) {
+  const [slug, setSlug] = useState('');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Capitalize and replace spaces with hyphens
+    const transformed = value.toUpperCase().replace(/\s/g, '-');
+    setSlug(transformed);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-white font-sans text-[#1a1c2e] safe-top safe-bottom overflow-y-auto">
       {/* Top Header - Compact */}
@@ -33,14 +42,17 @@ export function WelcomeScreen({ onStarted }: WelcomeScreenProps) {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="bella-cuchina"
+                placeholder="BELLA-CUCHINA"
+                value={slug}
+                onChange={handleInputChange}
                 className="h-[54px] rounded-xl border-[#e5e7eb] border-2 px-5 text-lg placeholder:text-gray-400 focus-visible:ring-0 focus-visible:border-primary transition-all shadow-sm font-medium"
               />
             </div>
 
             <Button 
               onClick={onStarted}
-              className="w-full h-[54px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-xl text-lg font-bold shadow-[0_4px_12px_rgba(0,102,178,0.2)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+              disabled={!slug.trim()}
+              className="w-full h-[54px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-xl text-lg font-bold shadow-[0_4px_12px_rgba(0,102,178,0.2)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
             >
               <div className="w-5 h-5 rounded-full border-2 border-white flex items-center justify-center">
                 <Check className="w-3.5 h-3.5 stroke-[3px]" />
