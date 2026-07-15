@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Check, Printer, Home, CreditCard, User, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -11,12 +11,13 @@ interface SettledScreenProps {
 }
 
 export function SettledScreen({ onBackToHome, guestCount }: SettledScreenProps) {
-  const displayedCount = Math.min(guestCount, 5);
-  const showMore = guestCount > 6;
-  const remainingCount = guestCount - 5;
+  const [showAll, setShowAll] = useState(false);
   
-  // If count is 6, we can just show all 6. If > 6, show 5 + more.
-  const buttonsToShow = guestCount <= 6 ? guestCount : 5;
+  // Logic to determine how many buttons to show initially
+  // If count is 6 or less, we show all. If > 6, we show 5 + a "More" button unless expanded.
+  const showMoreButton = guestCount > 6 && !showAll;
+  const buttonsToDisplay = showAll || guestCount <= 6 ? guestCount : 5;
+  const remainingCount = guestCount - 5;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] items-center px-6 pt-12 pb-8 safe-top safe-bottom tracking-tight overflow-y-auto">
@@ -100,25 +101,18 @@ export function SettledScreen({ onBackToHome, guestCount }: SettledScreenProps) 
           </div>
           
           <div className="grid grid-cols-3 gap-3">
-            {Array.from({ length: buttonsToShow }).map((_, i) => (
+            {Array.from({ length: buttonsToDisplay }).map((_, i) => (
               <button 
                 key={i}
-                className="h-14 bg-white rounded-xl border border-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all"
+                className="h-14 bg-white rounded-xl border border-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all animate-in fade-in zoom-in-95 duration-200"
               >
                 <User className="w-4 h-4 text-[#1a1c2e]" />
                 <span className="text-[12px] font-black text-[#1a1c2e]">Guest {i + 1}</span>
               </button>
             ))}
-            {guestCount === 6 && (
+            {showMoreButton && (
               <button 
-                className="h-14 bg-white rounded-xl border border-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all"
-              >
-                <User className="w-4 h-4 text-[#1a1c2e]" />
-                <span className="text-[12px] font-black text-[#1a1c2e]">Guest 6</span>
-              </button>
-            )}
-            {showMore && (
-              <button 
+                onClick={() => setShowAll(true)}
                 className="h-14 bg-white rounded-xl border border-[#d1e9ff] shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-[#f0f7ff] active:scale-95 transition-all"
               >
                 <span className="text-[#0066b2] text-[12px] font-black">+ {remainingCount} More</span>
