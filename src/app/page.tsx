@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { WelcomeScreen } from '@/components/welcome-screen';
 import { StaffSignInScreen } from '@/components/staff-signin-screen';
 import { StaffDashboardScreen } from '@/components/staff-dashboard-screen';
@@ -16,6 +16,7 @@ import { SplitEquallyScreen } from '@/components/split-equally-screen';
 import { QRScanningScreen } from '@/components/qr-scanning-screen';
 import { useToast } from '@/hooks/use-toast';
 import { CartItem } from '@/lib/types';
+import { getOrderForTable, saveTableOrder, clearTableOrder } from '@/lib/storage';
 
 export default function Page() {
   const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled' | 'split-by-item' | 'split-equally' | 'qr-scanning'>('welcome');
@@ -65,6 +66,13 @@ export default function Page() {
   const handleStartOrder = (tableNumber: string, count: number) => {
     setSelectedTable(tableNumber);
     setGuestCount(count);
+    // Load existing order if any
+    const existingOrder = getOrderForTable(tableNumber);
+    if (existingOrder) {
+      setCart(existingOrder.items);
+    } else {
+      setCart([]);
+    }
     setCurrentScreen('order-menu');
   };
 
@@ -91,6 +99,8 @@ export default function Page() {
   };
 
   const handleOrderSent = () => {
+    // Persist the order
+    saveTableOrder(selectedTable, cart);
     setCurrentScreen('processing');
     setTimeout(() => {
       setCurrentScreen('order-success');
@@ -126,6 +136,8 @@ export default function Page() {
   };
 
   const handleFinishOrder = () => {
+    // Clear order from storage on finish
+    clearTableOrder(selectedTable);
     setCart([]);
     setSelectedTable('');
     setGuestCount(1);
@@ -133,14 +145,22 @@ export default function Page() {
   };
 
   const handleQRDetected = (tableId: string) => {
-    // For demo: automatically navigates to pay order detail for table detected
-    setSelectedTable(tableId);
-    setGuestCount(2); // Default mock count
-    setCurrentScreen('pay-order-detail');
-    toast({
-      title: "Table Detected",
-      description: `Accessing Table #${tableId} for Payment`,
-    });
+    const existingOrder = getOrderForTable(tableId);
+    if (existingOrder) {
+      setSelectedTable(tableId);
+      setGuestCount(2); // Default mock
+      setCurrentScreen('pay-order-detail');
+      toast({
+        title: "Table Detected",
+        description: `Accessing Table #${tableId} for Payment`,
+      });
+    } else {
+      toast({
+        title: "No Order Found",
+        description: `Table #${tableId} has no active orders. Starting new order.`,
+      });
+      handleStartOrder(tableId, 1);
+    }
   };
 
   return (
@@ -182,6 +202,7 @@ export default function Page() {
           mode="pay"
           onBack={handleBackToDashboard} 
           onConfirmSelection={handleGoToOrderPay} 
+          onNavigateToOrder={handleStartOrder}
         />
       )}
       {currentScreen === 'order-menu' && (
@@ -215,12 +236,14 @@ export default function Page() {
       )}
       {currentScreen === 'split-by-item' && (
         <SplitByItemScreen 
+          tableNumber={selectedTable}
           onBack={handleBackToPayOrder}
           onPay={() => handleSettleOrder()}
         />
       )}
       {currentScreen === 'split-equally' && (
         <SplitEquallyScreen 
+          tableNumber={selectedTable}
           onBack={handleBackToPayOrder}
           onPay={(count) => handleSettleOrder(count)}
         />
@@ -229,7 +252,7 @@ export default function Page() {
         <ProcessingScreen />
       )}
       {currentScreen === 'order-success' && (
-        <OrderSuccessScreen onBackToHome={handleFinishOrder} />
+        <OrderSuccessScreen onBackToHome={() => setCurrentScreen('staff-dashboard')} />
       )}
       {currentScreen === 'settled' && (
         <SettledScreen guestCount={guestCount} onBackToHome={handleFinishOrder} />

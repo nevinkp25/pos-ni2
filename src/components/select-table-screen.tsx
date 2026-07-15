@@ -3,10 +3,14 @@
 import React, { useState, useMemo } from 'react';
 import { ChevronLeft, Scan, X, Minus, Plus, ArrowRight, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getOrderForTable } from '@/lib/storage';
+import { useToast } from '@/hooks/use-toast';
+import { ToastAction } from '@/components/ui/toast';
 
 interface SelectTableScreenProps {
   onBack?: () => void;
   onConfirmSelection?: (tableNumber: string, guestCount: number) => void;
+  onNavigateToOrder?: (tableNumber: string, guestCount: number) => void;
   mode?: 'order' | 'pay';
 }
 
@@ -16,10 +20,11 @@ interface TableStatus {
   isAvailable: boolean;
 }
 
-export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }: SelectTableScreenProps) {
+export function SelectTableScreen({ onBack, onConfirmSelection, onNavigateToOrder, mode = 'order' }: SelectTableScreenProps) {
   const [tableNumber, setTableNumber] = useState<string>('');
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [guestCount, setGuestCount] = useState(1);
+  const { toast } = useToast();
 
   // Mock table data for the chips
   const tables: TableStatus[] = [
@@ -61,6 +66,29 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
     setShowBottomSheet(true);
   };
 
+  const handleConfirm = () => {
+    if (mode === 'pay') {
+      const existingOrder = getOrderForTable(tableNumber);
+      if (!existingOrder) {
+        toast({
+          title: "No Order Found",
+          description: `Table #${tableNumber} does not have an active order to pay.`,
+          variant: "destructive",
+          action: (
+            <ToastAction 
+              altText="Start Order" 
+              onClick={() => onNavigateToOrder?.(tableNumber, 1)}
+            >
+              Start Order
+            </ToastAction>
+          ),
+        });
+        return;
+      }
+    }
+    onConfirmSelection?.(tableNumber, guestCount);
+  };
+
   const keypadButtons = [
     { value: '1', type: 'number' },
     { value: '2', type: 'number' },
@@ -78,7 +106,6 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
 
   return (
     <div className="flex flex-col h-screen bg-[#fcfdff] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
-      {/* Header */}
       <div className="bg-white px-6 h-16 flex items-center justify-between shrink-0 shadow-sm rounded-b-[24px] z-10">
         <button 
           onClick={onBack}
@@ -92,11 +119,9 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
         </button>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col items-center px-6 pt-4 overflow-y-auto pb-4">
-        {/* Table Number Display Card */}
         <div className={cn(
-          "w-full max-w-sm bg-white border border-[#f0f4f8] rounded-[24px] flex items-center justify-center relative transition-all duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.02)] mb-4 shrink-0",
+          "w-full max-w-sm bg-white border border-[#f0f4f8] rounded-[24px] flex items-center justify-center relative transition-all duration-300 shadow-[0_8px_24px_rgba(0,0,0,0.02)] mb-4 shrink-0 overflow-hidden",
           tableNumber ? "h-24" : "h-40"
         )}>
           {tableNumber ? (
@@ -123,7 +148,6 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
           )}
         </div>
 
-        {/* Table Status Chips - Revealed when typing */}
         <div className={cn(
           "w-full max-w-sm grid grid-cols-4 gap-2 mb-4 shrink-0 transition-all duration-300",
           filteredTables.length > 0 ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2 pointer-events-none h-0 mb-0"
@@ -146,7 +170,6 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
           ))}
         </div>
 
-        {/* Keypad Grid */}
         <div className="w-full max-w-sm grid grid-cols-3 gap-y-3 gap-x-5 mb-8">
           {keypadButtons.map((btn, index) => (
             <button
@@ -176,7 +199,6 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
           ))}
         </div>
 
-        {/* Begin Notification Pill */}
         <div className="w-full max-w-sm bg-[#f0f7ff] rounded-[20px] py-4 flex items-center justify-center gap-2.5 border border-[#d1e9ff] mb-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
           <div className="w-5 h-5 rounded-full border-[1.5px] border-[#0066b2] flex items-center justify-center">
             <Check className="w-3.5 h-3.5 text-[#0066b2] stroke-[4px]" />
@@ -185,11 +207,9 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
         </div>
       </div>
 
-      {/* Selected Table Bottom Sheet */}
       {showBottomSheet && (
         <div className="absolute inset-x-0 bottom-0 z-50 animate-in slide-in-from-bottom duration-300">
           <div className="absolute inset-0 -top-screen bg-black/5" onClick={() => setShowBottomSheet(false)} />
-          
           <div className="bg-white rounded-t-[24px] shadow-[0_-12px_40px_rgba(0,0,0,0.12)] border-t border-gray-100 flex flex-col pt-4 pb-5 relative">
             <div className="px-6 flex items-center justify-between mb-3">
               <div className="flex flex-col">
@@ -227,7 +247,7 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
 
             <div className="px-6">
               <button 
-                onClick={() => onConfirmSelection?.(tableNumber, guestCount)}
+                onClick={handleConfirm}
                 className="w-full h-[52px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[16px] text-[16px] font-black shadow-[0_6px_20px_rgba(0,102,178,0.25)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
               >
                 {mode === 'order' ? 'Start Order' : 'Go to Order'}
