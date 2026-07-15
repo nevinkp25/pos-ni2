@@ -21,7 +21,6 @@ export default function Page() {
   const [selectedTable, setSelectedTable] = useState<string>('');
   const [guestCount, setGuestCount] = useState<number>(1);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [editingItem, setEditingItem] = useState<CartItem | null>(null);
   const { toast } = useToast();
 
   const handleStarted = () => {
@@ -78,12 +77,6 @@ export default function Page() {
   };
 
   const handleBackToMenu = () => {
-    setEditingItem(null);
-    setCurrentScreen('order-menu');
-  };
-
-  const handleEditItem = (item: CartItem) => {
-    setEditingItem(item);
     setCurrentScreen('order-menu');
   };
 
@@ -126,7 +119,6 @@ export default function Page() {
     setCart([]);
     setSelectedTable('');
     setGuestCount(1);
-    setEditingItem(null);
     setCurrentScreen('staff-dashboard');
   };
 
@@ -167,8 +159,6 @@ export default function Page() {
           onOpenCart={handleOpenCart}
           cart={cart}
           setCart={setCart}
-          editingItem={editingItem}
-          onCancelEdit={() => setEditingItem(null)}
         />
       )}
       {currentScreen === 'cart' && (
@@ -178,7 +168,6 @@ export default function Page() {
           cart={cart}
           setCart={setCart}
           onOrderSent={handleOrderSent}
-          onEditItem={handleEditItem}
         />
       )}
       {currentScreen === 'pay-order-detail' && (
