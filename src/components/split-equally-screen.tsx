@@ -157,25 +157,29 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
           <span className="text-[11px] font-black text-[#1a1c2e] uppercase tracking-[0.2em]">Order: NDAGPTW57XWM</span>
         </div>
 
-        {/* Progress Card with High-Fidelity Gradient Border */}
-        <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-tr from-[#6366f1]/40 via-[#3b82f6]/40 to-[#a855f7]/40 shadow-[0_15px_40px_rgba(0,102,178,0.06)]">
-          <div className="bg-gradient-to-br from-white to-[#f8fbff] rounded-[31px] p-7 flex flex-col gap-6">
-            <div className="flex items-center justify-between">
-              <span className="text-[14px] font-black text-[#475569] shrink-0">Total Amount</span>
-              <div className="flex-1 flex justify-center items-center">
-                <span className="text-[32px] font-black text-[#1a1c2e] tracking-tight">AED {totalBill.toFixed(2)}</span>
+        {/* PIXEL PERFECT Progress Card */}
+        <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-tr from-[#6366f1]/25 via-[#3b82f6]/25 to-[#a855f7]/25 shadow-[0_12px_40px_rgba(0,102,178,0.04)]">
+          <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[31px] p-6 flex flex-col gap-5">
+            <div className="flex items-center">
+              <span className="text-[13px] font-black text-[#475569] w-[100px] shrink-0">Total Amount</span>
+              <div className="flex-1 flex justify-center">
+                <span className="text-[34px] font-black text-[#1a1c2e] tracking-tight leading-none">
+                  AED {totalBill.toFixed(2)}
+                </span>
               </div>
-              <span className="text-[16px] font-black text-[#94a3b8] shrink-0">{Math.round(progressPercent)}%</span>
+              <span className="text-[18px] font-black text-[#94a3b8] w-[100px] shrink-0 text-right">
+                {Math.round(progressPercent)}%
+              </span>
             </div>
             
-            <div className="w-full h-3 bg-[#f1f5f9] rounded-full overflow-hidden">
+            <div className="w-full h-[14px] bg-[#f1f5f9] rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-[#f59e0b] via-[#3b82f6] to-[#0066b2] transition-all duration-1000 ease-out rounded-full"
+                className="h-full bg-gradient-to-r from-[#f59e0b] to-[#0066b2] transition-all duration-1000 ease-out rounded-full"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
             
-            <p className="text-[14px] font-bold text-[#94a3b8] text-center">
+            <p className="text-[15px] font-bold text-[#94a3b8] text-center leading-none">
               {paidCount} of {guestCount} guest paid
             </p>
           </div>
