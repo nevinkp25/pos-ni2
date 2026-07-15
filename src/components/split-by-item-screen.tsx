@@ -365,7 +365,7 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Item Amount</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[24px] font-black text-[#0066b2]">AED</span>
+                    <span className="text-[24px] font-black text-[#0066b2]">⃃</span>
                     <span className="text-[24px] font-black text-[#0066b2]">{yourShare.toFixed(2)}</span>
                   </div>
                 </div>
@@ -384,7 +384,7 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                         (!isCustomTipMode && selectedTip === amount) ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white"
                       )}
                     >
-                      <span className="text-[10px] font-black text-[#94a3b8] uppercase">AED</span>
+                      <span className="text-[10px] font-black text-[#94a3b8] uppercase">⃃</span>
                       <span className="text-[22px] font-black text-[#1a1c2e]">{amount}</span>
                       {(!isCustomTipMode && selectedTip === amount) && (
                         <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white">
@@ -410,7 +410,7 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                   <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                        <span className="text-[16px] font-black text-[#0066b2]">AED</span>
+                        <span className="text-[16px] font-black text-[#0066b2]">⃃</span>
                       </div>
                       <Input
                         type="number"
@@ -430,7 +430,7 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Bill Amount</span>
                   <div className="flex items-center gap-1.5 text-[#1a1c2e]">
-                    <span className="text-[15px] font-black">AED</span>
+                    <span className="text-[15px] font-black">⃃</span>
                     <span>{yourShare.toFixed(2)}</span>
                   </div>
                 </div>
@@ -438,7 +438,7 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                   <span className="text-[#94a3b8] uppercase">Tips</span>
                   <div className="flex items-center gap-1.5 text-[#26ab5f]">
                     <span>+</span>
-                    <span className="text-[15px] font-black">AED</span>
+                    <span className="text-[15px] font-black">⃃</span>
                     <span>{currentTipAmount.toFixed(2)}</span>
                   </div>
                 </div>

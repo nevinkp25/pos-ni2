@@ -231,7 +231,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
                       )}
                     </div>
                     <p className="text-[#0066b2] text-[14px] font-black">
-                      AED {itemDisplayTotal.toFixed(2)}
+                      ⃃ {itemDisplayTotal.toFixed(2)}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
@@ -269,7 +269,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
                               + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
                             </span>
                             <span className="text-[#0066b2]/60 text-[9px] font-black">
-                              AED {(addon.price * addon.quantity).toFixed(2)}
+                              ⃃ {(addon.price * addon.quantity).toFixed(2)}
                             </span>
                           </div>
                         ))}
@@ -368,7 +368,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
           <div className="flex items-center justify-between shrink-0 px-1">
             <h2 className="text-[#1a1c2e] text-[17px] font-black tracking-tight">Subtotal</h2>
             <div className="flex items-baseline gap-1">
-              <span className="text-[14px] font-black text-[#1a1c2e]">AED</span>
+              <span className="text-[14px] font-black text-[#1a1c2e]">⃃</span>
               <span className="text-[22px] font-black text-[#1a1c2e] tabular-nums tracking-tighter">{subtotal.toFixed(2)}</span>
             </div>
           </div>
@@ -452,7 +452,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
           <div className="px-5 pb-5 pt-1">
             <Button 
               onClick={saveInstruction}
-              className="w-full h-12 bg-[#0066b2] hover:bg-[#005ea1] text-white rounded-[16px] text-sm font-black shadow-md"
+              className="w-full h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[16px] text-sm font-black shadow-md"
             >
               Save Note
             </Button>
@@ -492,7 +492,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
           <div className="px-5 pb-5 pt-1">
             <Button 
               onClick={saveKitchenInstruction}
-              className="w-full h-12 bg-[#0066b2] hover:bg-[#005ea1] text-white rounded-[16px] text-sm font-black shadow-md"
+              className="w-full h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[16px] text-sm font-black shadow-md"
             >
               Save Note
             </Button>
