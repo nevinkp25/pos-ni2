@@ -1,9 +1,26 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { ChevronLeft, Check, Plus, Box } from 'lucide-react';
+import { 
+  ChevronLeft, 
+  Check, 
+  Plus, 
+  Box, 
+  X, 
+  CreditCard, 
+  Pencil, 
+  Landmark, 
+  Loader2 
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 
 interface SplitItemAddon {
   name: string;
@@ -20,7 +37,7 @@ interface SplitItem {
 
 interface SplitByItemScreenProps {
   onBack: () => void;
-  onPay: () => void;
+  onPay: () => void; // Final settlement callback
 }
 
 const CurrencySymbol = ({ className }: { className?: string }) => (
@@ -29,9 +46,16 @@ const CurrencySymbol = ({ className }: { className?: string }) => (
 
 export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+  const [paidItemIds, setPaidItemIds] = useState<string[]>([]);
+  const [isSettlementOpen, setIsSettlementOpen] = useState(false);
+  const [isPartialSuccessOpen, setIsPartialSuccessOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedTip, setSelectedTip] = useState<number | null>(10);
+  const [isCustomTipMode, setIsCustomTipMode] = useState(false);
+  const [customTipValue, setCustomTipValue] = useState('');
 
-  // Logical items matching the Pay Order Detail screen for presentation consistency
-  const items: SplitItem[] = [
+  // Initial logical items
+  const initialItems: SplitItem[] = [
     {
       id: '1',
       name: 'Buffalo Margherita',
@@ -76,15 +100,17 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
     }
   ];
 
-  // Logic: Calculate total based on items
+  // Filter out items that have already been paid in previous "loops"
+  const items = useMemo(() => {
+    return initialItems.filter(item => !paidItemIds.includes(item.id));
+  }, [paidItemIds]);
+
   const totalBill = useMemo(() => {
     return items.reduce((sum, item) => {
       const addonPrice = item.addons.reduce((a, b) => a + b.price, 0);
       return sum + (item.basePrice + addonPrice) * item.qty;
     }, 0);
   }, [items]);
-
-  const itemCount = items.reduce((s, i) => s + i.qty, 0);
 
   const yourShare = useMemo(() => {
     return items
@@ -95,23 +121,68 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
       }, 0);
   }, [selectedItemIds, items]);
 
+  const currentTipAmount = isCustomTipMode 
+    ? (parseFloat(customTipValue) || 0)
+    : (selectedTip || 0);
+
+  const grandTotal = yourShare + currentTipAmount;
+
   const toggleItem = (id: string) => {
     setSelectedItemIds(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter(i => id !== i) : [...prev, id]
     );
   };
 
-  const progressPercent = (yourShare / totalBill) * 100;
+  const handlePayClick = () => {
+    setIsSettlementOpen(true);
+  };
+
+  const handleFinalPayment = () => {
+    setIsSettlementOpen(false);
+    setIsProcessing(true);
+
+    // Simulate Payment Processing for 3 seconds
+    setTimeout(() => {
+      setIsProcessing(false);
+      
+      const newPaidItems = [...paidItemIds, ...selectedItemIds];
+      setPaidItemIds(newPaidItems);
+      setSelectedItemIds([]);
+
+      // Check if EVERYTHING is paid
+      const allPaid = initialItems.every(item => newPaidItems.includes(item.id));
+      
+      if (allPaid) {
+        onPay(); // Navigate to the final Settled Screen
+      } else {
+        setIsPartialSuccessOpen(true); // Show the "Payment In Progress" loop sheet
+      }
+    }, 3000);
+  };
+
+  const progressPercent = totalBill > 0 ? (yourShare / totalBill) * 100 : 0;
   
-  // Larger circle parameters: w-52 (208px)
   const circleSize = 208;
   const center = circleSize / 2;
   const radius = 90;
   const circumference = 2 * Math.PI * radius;
 
+  if (isProcessing) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-white font-sans">
+        <div className="relative flex items-center justify-center">
+          <div className="w-24 h-24 border-4 border-[#f1f5f9] rounded-full" />
+          <Loader2 className="w-24 h-24 text-[#0066b2] animate-spin absolute" />
+        </div>
+        <h2 className="mt-8 text-[22px] font-black text-[#1a1c2e] tracking-tight uppercase">Processing Payment...</h2>
+        <p className="mt-2 text-[#94a3b8] text-[14px] font-bold">Please tap your card on the terminal</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative tracking-normal">
-      {/* Header - Compact */}
+      {/* Header */}
       <div className="bg-white px-5 h-16 flex items-center shrink-0 z-20 shadow-sm border-b border-gray-50 rounded-b-[24px]">
         <button 
           onClick={onBack}
@@ -125,34 +196,20 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
       {/* Main Content */}
       <div className="flex-1 px-4 pt-4 overflow-y-auto pb-32 space-y-4">
         
-        {/* Info Text - Tighter */}
         <div className="text-center px-4">
           <p className="text-[#94a3b8] text-[14px] font-bold leading-tight">
-            Total bill is <CurrencySymbol />{totalBill.toFixed(2)} for <span className="text-[#0066b2] font-black">{itemCount} items</span>.<br />
+            Remaining balance is <CurrencySymbol />{totalBill.toFixed(2)}.<br />
             Select items to include in your share.
           </p>
         </div>
 
-        {/* Radial Progress - Enlarged for better spacing */}
+        {/* Radial Progress */}
         <div className="flex justify-center py-4">
           <div className="relative w-52 h-52 flex items-center justify-center">
-            {/* Background Circle */}
             <svg className="absolute w-full h-full -rotate-90" viewBox={`0 0 ${circleSize} ${circleSize}`}>
+              <circle cx={center} cy={center} r={radius} fill="none" stroke="#eef2f8" strokeWidth="12" />
               <circle
-                cx={center}
-                cy={center}
-                r={radius}
-                fill="none"
-                stroke="#eef2f8"
-                strokeWidth="12"
-              />
-              <circle
-                cx={center}
-                cy={center}
-                r={radius}
-                fill="none"
-                stroke="#0066b2"
-                strokeWidth="12"
+                cx={center} cy={center} r={radius} fill="none" stroke="#0066b2" strokeWidth="12"
                 strokeDasharray={circumference}
                 strokeDashoffset={circumference - (circumference * progressPercent) / 100}
                 strokeLinecap="round"
@@ -169,7 +226,7 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
           </div>
         </div>
 
-        {/* Item List - Tighter Gaps */}
+        {/* Item List */}
         <div className="space-y-3 pb-8">
           {items.map((item) => {
             const isSelected = selectedItemIds.includes(item.id);
@@ -185,7 +242,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                 )}
               >
                 <div className="flex items-start gap-4">
-                  {/* Custom Checkbox */}
                   <div className={cn(
                     "w-6 h-6 rounded-full border-[2px] flex items-center justify-center shrink-0 transition-all mt-0.5",
                     isSelected ? "bg-[#0066b2] border-[#0066b2]" : "border-gray-200"
@@ -204,13 +260,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
 
                     <div className="flex items-center gap-3 text-[#94a3b8] text-[12px] font-bold">
                       <div className="bg-[#f0f7ff] text-[#0066b2] px-2 py-0.5 rounded-md font-black text-[11px]">x{item.qty}</div>
-                      <div className="flex items-center gap-1 opacity-70">
-                        <span>Base:</span>
-                        <div className="flex items-center gap-0.5">
-                          <CurrencySymbol className="text-[10px]" />
-                          <span>{item.basePrice.toFixed(2)}</span>
-                        </div>
-                      </div>
                     </div>
 
                     {item.addons.length > 0 && (
@@ -218,13 +267,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                         {item.addons.map((addon, idx) => (
                           <div key={idx} className="bg-[#f8fafc] border border-gray-100 rounded-lg px-2.5 py-1 flex items-center gap-1.5">
                             <span className="text-[#475569] text-[10px] font-black uppercase tracking-tighter">{addon.name}</span>
-                            {addon.price > 0 && (
-                              <div className="flex items-center gap-0.5 text-[#0066b2] text-[10px] font-black">
-                                <span>+</span>
-                                <CurrencySymbol className="text-[9px]" />
-                                <span>{addon.price.toFixed(2)}</span>
-                              </div>
-                            )}
                           </div>
                         ))}
                       </div>
@@ -234,13 +276,19 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
               </div>
             );
           })}
+          {items.length === 0 && (
+            <div className="text-center py-10 opacity-40">
+              <Box className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+              <p className="text-sm font-bold">All items have been paid!</p>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Footer Button - Prominent & Professional */}
+      {/* Footer Button */}
       <div className="absolute bottom-0 inset-x-0 bg-white px-5 pt-3 pb-8 shadow-[0_-10px_30px_rgba(0,0,0,0.04)] z-30 flex justify-center border-t border-gray-50">
         <Button 
-          onClick={onPay}
+          onClick={handlePayClick}
           disabled={yourShare === 0}
           className={cn(
             "w-full h-14 rounded-[18px] text-[16px] font-black shadow-[0_8px_25px_rgba(0,102,178,0.2)] transition-all active:scale-[0.98]",
@@ -250,6 +298,81 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
           Pay Your Items (<CurrencySymbol />{yourShare.toFixed(2)})
         </Button>
       </div>
+
+      {/* Settlement Sheet */}
+      <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
+        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden max-h-[92vh] flex flex-col tracking-normal">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Settlement Final Review</SheetTitle>
+          </SheetHeader>
+          <div className="flex-1 overflow-y-auto pb-10">
+            <div className="flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-gray-200 rounded-full" /></div>
+            <div className="px-6 flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-[#f0f7ff] rounded-2xl flex items-center justify-center"><CreditCard className="w-6 h-6 text-[#0066b2]" /></div>
+                <div className="flex flex-col">
+                  <h2 className="text-[17px] font-black text-[#1a1c2e] leading-none uppercase">CHECK SETTLEMENT</h2>
+                  <span className="text-[11px] font-bold text-[#94a3b8] uppercase mt-1.5">FINAL REVIEW</span>
+                </div>
+              </div>
+              <button onClick={() => setIsSettlementOpen(false)} className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-50 text-gray-400"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="px-6 space-y-6">
+              <div className="bg-white rounded-[24px] p-5 shadow-sm border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
+                <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Selected Items Amount</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[24px] font-black text-[#0066b2]">AED</span>
+                  <span className="text-[24px] font-black text-[#0066b2]">{yourShare.toFixed(2)}</span>
+                </div>
+              </div>
+              {/* Tip Selection */}
+              <div className="space-y-4">
+                <span className="text-[11px] font-black text-[#94a3b8] uppercase">Add tips</span>
+                <div className="grid grid-cols-4 gap-3">
+                  {[5, 10, 20].map((amount) => (
+                    <button key={amount} onClick={() => { setIsCustomTipMode(false); setSelectedTip(selectedTip === amount ? null : amount); }} className={cn("h-[90px] rounded-[24px] flex flex-col items-center justify-center transition-all border", (!isCustomTipMode && selectedTip === amount) ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white border-gray-50")}>
+                      <span className="text-[10px] font-black text-[#94a3b8] uppercase">AED</span>
+                      <span className="text-[22px] font-black text-[#1a1c2e]">{amount}</span>
+                    </button>
+                  ))}
+                  <button onClick={() => setIsCustomTipMode(!isCustomTipMode)} className={cn("h-[90px] rounded-[24px] flex flex-col items-center justify-center border", isCustomTipMode ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white border-gray-50")}>
+                    <Pencil className="w-5 h-5 mb-1 text-gray-400" /><span className="text-[10px] font-black uppercase">Custom</span>
+                  </button>
+                </div>
+                {isCustomTipMode && <Input type="number" placeholder="AED Amount" value={customTipValue} onChange={(e) => setCustomTipValue(e.target.value)} className="h-14 rounded-[18px] border-[#0066b2]/20 border-2 pl-4 text-lg font-black" />}
+              </div>
+              <div className="bg-white rounded-[32px] p-6 shadow-sm border border-gray-50 space-y-4">
+                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Grand Total</span><div className="flex items-center gap-2 text-[#0066b2] font-black"><CurrencySymbol className="text-[28px]" /><span className="text-[34px]">{grandTotal.toFixed(2)}</span></div></div>
+              </div>
+              <Button onClick={handleFinalPayment} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black shadow-lg">PAY BY CARD</Button>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Payment In Progress Loop Sheet */}
+      <Sheet open={isPartialSuccessOpen} onOpenChange={setIsPartialSuccessOpen}>
+        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden h-[400px] flex flex-col tracking-normal">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Payment In Progress</SheetTitle>
+          </SheetHeader>
+          <div className="flex-1 flex flex-col items-center justify-center px-8 text-center pt-8">
+            <div className="w-24 h-24 bg-[#00d084] rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(0,208,132,0.3)] mb-8">
+              <Check className="w-12 h-12 text-white stroke-[5px]" />
+            </div>
+            <h2 className="text-[24px] font-black text-[#1a1c2e] uppercase mb-4 leading-tight">PAYMENT IN PROGRESS</h2>
+            <p className="text-[#94a3b8] text-[16px] font-bold leading-tight mb-8">
+              Some items have been paid. Please pay for remaining items.
+            </p>
+            <Button 
+              onClick={() => setIsPartialSuccessOpen(false)}
+              className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black uppercase shadow-lg active:scale-95 transition-all"
+            >
+              Continue
+            </Button>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
