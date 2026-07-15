@@ -16,7 +16,12 @@ import {
   Landmark,
   Equal,
   Box,
-  ArrowRight
+  ArrowRight,
+  List,
+  Printer,
+  Tag,
+  Trash2,
+  ArrowRightLeft
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -27,6 +32,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getOrderForTable, TableOrder } from '@/lib/storage';
 import { format } from 'date-fns';
 
@@ -37,6 +50,7 @@ interface PayOrderDetailScreenProps {
   onSettle: () => void;
   onSplitByItem?: () => void;
   onSplitEqually?: () => void;
+  onOrderMenu?: () => void;
 }
 
 export const CurrencySymbol = ({ className }: { className?: string }) => (
@@ -45,7 +59,15 @@ export const CurrencySymbol = ({ className }: { className?: string }) => (
   </span>
 );
 
-export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, onSplitByItem, onSplitEqually }: PayOrderDetailScreenProps) {
+export function PayOrderDetailScreen({ 
+  tableNumber, 
+  onBack, 
+  onHome, 
+  onSettle, 
+  onSplitByItem, 
+  onSplitEqually,
+  onOrderMenu 
+}: PayOrderDetailScreenProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedAddonItems, setExpandedAddonItems] = useState<string[]>([]);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
@@ -135,9 +157,59 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
           </div>
         </div>
         
-        <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#f8fafc] hover:bg-gray-100 active:scale-95 transition-all">
-          <MoreVertical className="w-5 h-5 text-gray-400" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#f8fafc] hover:bg-gray-100 active:scale-95 transition-all outline-none">
+              <MoreVertical className="w-5 h-5 text-gray-400" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[260px] rounded-[24px] p-2 mt-2 shadow-2xl border-none animate-in fade-in zoom-in-95 duration-200">
+            <DropdownMenuLabel className="px-4 py-3">
+              <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.25em]">Table Options</span>
+            </DropdownMenuLabel>
+            <div className="flex flex-col gap-0.5">
+              <DropdownMenuItem 
+                onClick={onOrderMenu}
+                className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-[#f0f7ff] group"
+              >
+                <div className="w-10 h-10 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] group-focus:bg-white transition-colors">
+                  <List className="w-5 h-5" />
+                </div>
+                <span className="text-[15px] font-black text-[#1a1c2e]">Order Menu</span>
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-[#f0f7ff] group">
+                <div className="w-10 h-10 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] group-focus:bg-white transition-colors">
+                  <Printer className="w-5 h-5" />
+                </div>
+                <span className="text-[15px] font-black text-[#1a1c2e]">Print Bill</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-[#f0f7ff] group">
+                <div className="w-10 h-10 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] group-focus:bg-white transition-colors">
+                  <Tag className="w-5 h-5" />
+                </div>
+                <span className="text-[15px] font-black text-[#1a1c2e]">Apply Discount</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-[#f0f7ff] group">
+                <div className="w-10 h-10 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] group-focus:bg-white transition-colors">
+                  <ArrowRightLeft className="w-5 h-5" />
+                </div>
+                <span className="text-[15px] font-black text-[#1a1c2e]">Transfer Table</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator className="my-2 bg-gray-50 mx-2" />
+
+              <DropdownMenuItem className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-red-50 group">
+                <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500 group-focus:bg-white transition-colors">
+                  <Trash2 className="w-5 h-5" />
+                </div>
+                <span className="text-[15px] font-black text-red-500">Void Order</span>
+              </DropdownMenuItem>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <div className="flex-1 px-4 pt-4 overflow-y-auto pb-52 space-y-4">

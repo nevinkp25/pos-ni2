@@ -232,6 +232,7 @@ export default function Page() {
           onSettle={() => handleSettleOrder()}
           onSplitByItem={handleStartSplitByItem}
           onSplitEqually={handleStartSplitEqually}
+          onOrderMenu={() => handleStartOrder(selectedTable, guestCount)}
         />
       )}
       {currentScreen === 'split-by-item' && (
