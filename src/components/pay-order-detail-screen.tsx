@@ -46,6 +46,7 @@ const CurrencySymbol = ({ className }: { className?: string }) => (
 
 export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, onSplitByItem, onSplitEqually }: PayOrderDetailScreenProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [expandedAddonItems, setExpandedAddonItems] = useState<string[]>([]);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
   const [isSplitBillOpen, setIsSplitBillOpen] = useState(false);
   const [selectedTip, setSelectedTip] = useState<number | null>(10);
@@ -71,9 +72,13 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
       price: '16.00',
       addons: [
         { name: 'Garlic', price: '0.50' },
-        { name: 'Tomato Basil', price: '1.00' }
-      ],
-      moreCount: 5
+        { name: 'Tomato Basil', price: '1.00' },
+        { name: 'Extra Olive Oil', price: '0.50' },
+        { name: 'Balsamic Glaze', price: '0.75' },
+        { name: 'Parmesan', price: '1.25' },
+        { name: 'Fresh Oregano', price: '0.25' },
+        { name: 'Sea Salt', price: '0.00' }
+      ]
     },
     {
       id: '3',
@@ -82,9 +87,13 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
       price: '16.00',
       addons: [
         { name: 'Med-Rare', price: '0.00' },
-        { name: 'Truffle Sauce', price: '3.00' }
-      ],
-      moreCount: 5
+        { name: 'Truffle Sauce', price: '3.00' },
+        { name: 'Caramelized Onion', price: '1.00' },
+        { name: 'Cheddar', price: '1.50' },
+        { name: 'Spicy Mayo', price: '0.50' },
+        { name: 'Pickles', price: '0.25' },
+        { name: 'Sesame Bun', price: '0.00' }
+      ]
     },
     {
       id: '4',
@@ -123,6 +132,12 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
     : (selectedTip || 0);
 
   const grandTotal = billAmount + currentTipAmount;
+
+  const toggleAddons = (id: string) => {
+    setExpandedAddonItems(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
 
   const handleTipClick = (amount: number) => {
     if (selectedTip === amount) {
@@ -210,46 +225,63 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
             <span className="text-[11px] font-black text-[#94a3b8] uppercase">Current Orders</span>
           </div>
 
-          {displayedItems.map((item) => (
-            <div key={item.id} className="space-y-4">
-              <div className="flex items-start justify-between">
-                <div className="flex gap-3 flex-1">
-                  <div className="w-8 h-8 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0">
-                    <span className="text-[#0066b2] text-[13px] font-black">{item.qty}</span>
-                  </div>
-                  <div className="flex flex-col gap-2.5 flex-1">
-                    <div className="flex justify-between items-center pr-1">
-                      <h3 className="text-[15px] font-black text-[#1a1c2e]">{item.name}</h3>
-                      <div className="flex items-center gap-1.5 text-[#1a1c2e] font-black text-[16px]">
-                        <CurrencySymbol className="text-[14px]" />
-                        <span>{item.price}</span>
-                      </div>
+          {displayedItems.map((item) => {
+            const isAddonsExpanded = expandedAddonItems.includes(item.id);
+            const addonsToShow = isAddonsExpanded ? item.addons : item.addons.slice(0, 2);
+            const moreCount = item.addons.length - 2;
+
+            return (
+              <div key={item.id} className="space-y-4">
+                <div className="flex items-start justify-between">
+                  <div className="flex gap-3 flex-1">
+                    <div className="w-8 h-8 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0">
+                      <span className="text-[#0066b2] text-[13px] font-black">{item.qty}</span>
                     </div>
-                    <div className="space-y-2">
-                      {item.addons.map((addon, idx) => (
-                        <div key={idx} className="flex items-center gap-3">
-                          <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
-                          <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">{addon.name}</span>
-                          <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
-                          <div className="flex items-center gap-1 text-[#94a3b8] text-[12px] font-bold">
-                            <CurrencySymbol className="text-[10px]" />
-                            <span>{addon.price}</span>
-                          </div>
+                    <div className="flex flex-col gap-2.5 flex-1">
+                      <div className="flex justify-between items-center pr-1">
+                        <h3 className="text-[15px] font-black text-[#1a1c2e]">{item.name}</h3>
+                        <div className="flex items-center gap-1.5 text-[#1a1c2e] font-black text-[16px]">
+                          <CurrencySymbol className="text-[14px]" />
+                          <span>{item.price}</span>
                         </div>
-                      ))}
-                    </div>
-                    {item.moreCount && (
-                      <div>
-                        <span className="bg-[#fffbeb] text-[#f59e0b] px-2.5 py-1 rounded-lg text-[11px] font-black">
-                          +{item.moreCount} more
-                        </span>
                       </div>
-                    )}
+                      <div className="space-y-2">
+                        {addonsToShow.map((addon, idx) => (
+                          <div key={idx} className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                            <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
+                            <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">{addon.name}</span>
+                            <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
+                            <div className="flex items-center gap-1 text-[#94a3b8] text-[12px] font-bold">
+                              <CurrencySymbol className="text-[10px]" />
+                              <span>{addon.price}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {moreCount > 0 && !isAddonsExpanded && (
+                        <div>
+                          <button 
+                            onClick={() => toggleAddons(item.id)}
+                            className="bg-[#fffbeb] text-[#f59e0b] px-2.5 py-1 rounded-lg text-[11px] font-black active:scale-95 transition-all"
+                          >
+                            +{moreCount} more
+                          </button>
+                        </div>
+                      )}
+                      {isAddonsExpanded && moreCount > 0 && (
+                        <button 
+                          onClick={() => toggleAddons(item.id)}
+                          className="text-[#0066b2] text-[11px] font-black uppercase text-left w-fit"
+                        >
+                          See Less
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           <div className="pt-2">
             <button 
