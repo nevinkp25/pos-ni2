@@ -628,7 +628,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                               )}
                               <CurrencyAmount 
                                 amount={item.basePrice} 
-                                weight="black" 
+                                weight="bold" 
                                 className="text-[17px] text-[#0066b2] mt-1" 
                               />
                             </div>
@@ -904,7 +904,7 @@ function ItemDetailSheet({
                     {item.description}
                   </p>
                   <div className="flex items-baseline gap-2 pt-1">
-                    <CurrencyAmount amount={item.basePrice} weight="black" className="text-[22px] text-[#1a1c2e]" />
+                    <CurrencyAmount amount={item.basePrice} weight="bold" className="text-[22px] text-[#1a1c2e]" />
                     <span className="text-[#94a3b8] text-[13px] font-bold">
                       (Base Price)
                     </span>
@@ -1111,7 +1111,7 @@ function ItemDetailSheet({
                 : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed"
             )}
           >
-            {editingItem ? 'Update' : 'Add'} <span className="opacity-40 font-normal">●</span> <CurrencyAmount amount={totalPrice} weight="black" className="text-[14px] text-inherit" />
+            {editingItem ? 'Update' : 'Add'} <span className="opacity-40 font-normal">●</span> <CurrencyAmount amount={totalPrice} weight="bold" className="text-[14px] text-inherit" />
           </button>
         </div>
       </SheetContent>

@@ -445,7 +445,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                         </div>
                       )}
                     </div>
-                    <CurrencyAmount amount={itemDisplayTotal} weight="black" className="text-[14px] text-[#0066b2]" />
+                    <CurrencyAmount amount={itemDisplayTotal} weight="bold" className="text-[14px] text-[#0066b2]" />
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button 
@@ -483,7 +483,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                           <span className="text-[#0066b2] text-[10px] font-black tracking-tight">
                             + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
                           </span>
-                          <CurrencyAmount amount={addon.price * addon.quantity} weight="black" className="text-[#0066b2]/60 text-[9px]" />
+                          <CurrencyAmount amount={addon.price * addon.quantity} weight="bold" className="text-[#0066b2]/60 text-[9px]" />
                         </div>
                       ))}
                     </div>
@@ -581,7 +581,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
 
           <div className="flex items-center justify-between shrink-0 px-1">
             <h2 className="text-[#1a1c2e] text-[17px] font-black tracking-tight">Subtotal</h2>
-            <CurrencyAmount amount={subtotal} weight="black" className="text-[22px] text-[#1a1c2e]" />
+            <CurrencyAmount amount={subtotal} weight="bold" className="text-[22px] text-[#1a1c2e]" />
           </div>
 
           <div 
@@ -812,7 +812,7 @@ function ItemDetailSheet({
                 {item.description}
               </p>
               <div className="flex items-baseline gap-2 pt-1">
-                <CurrencyAmount amount={item.basePrice} weight="black" className="text-[24px] text-[#1a1c2e]" />
+                <CurrencyAmount amount={item.basePrice} weight="bold" className="text-[24px] text-[#1a1c2e]" />
                 <span className="text-[#94a3b8] text-[13px] font-bold">
                   (Base Price)
                 </span>
@@ -941,7 +941,7 @@ function ItemDetailSheet({
             onAdd(item, selectedFlavor?.name, addons, specialRequests, itemQuantity);
             onClose();
           }} className={cn("flex-1 h-12 rounded-[16px] text-[16px] font-black shadow-[0_6px_20px_rgba(0,102,178,0.3)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all", isCustomized ? "bg-[#0066b2] hover:bg-[#005596] text-white" : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed")}>
-            Update <span className="opacity-40 font-normal">●</span> <CurrencyAmount amount={totalPrice} weight="black" className="text-[16px] text-inherit" />
+            Update <span className="opacity-40 font-normal">●</span> <CurrencyAmount amount={totalPrice} weight="bold" className="text-[16px] text-inherit" />
           </button>
         </div>
       </SheetContent>

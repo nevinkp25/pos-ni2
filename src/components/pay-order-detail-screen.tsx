@@ -170,6 +170,16 @@ export function PayOrderDetailScreen({
 
             <div className="flex flex-col gap-0.5">
               <DropdownMenuItem 
+                onClick={onOrderMenu}
+                className="flex items-center gap-3 p-2 rounded-xl cursor-pointer focus:bg-gray-50 group border-none outline-none"
+              >
+                <div className="w-9 h-9 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] shrink-0">
+                  <List className="w-4 h-4" />
+                </div>
+                <span className="text-[15px] font-black text-[#1a1c2e] group-hover:text-[#0066b2] transition-colors">Order Menu</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem 
                 className="flex items-center gap-3 p-2 rounded-xl cursor-pointer focus:bg-gray-50 group border-none outline-none"
               >
                 <div className="w-9 h-9 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] shrink-0">
@@ -243,7 +253,7 @@ export function PayOrderDetailScreen({
                     <div className="flex flex-col gap-2.5 flex-1">
                       <div className="flex justify-between items-center pr-1">
                         <h3 className="text-[15px] font-black text-[#1a1c2e]">{item.name}</h3>
-                        <CurrencyAmount amount={itemTotal} weight="black" className="text-[16px] text-[#1a1c2e]" />
+                        <CurrencyAmount amount={itemTotal} weight="bold" className="text-[16px] text-[#1a1c2e]" />
                       </div>
                       <div className="space-y-2">
                         {addonsToShow.map((addon, idx) => (
@@ -289,7 +299,7 @@ export function PayOrderDetailScreen({
           <div className="p-5 space-y-4">
             <div className="flex items-center justify-between">
               <span className="text-[15px] font-black text-[#0066b2] uppercase">SUBTOTAL</span>
-              <CurrencyAmount amount={subtotal} weight="black" className="text-[22px] text-[#0066b2]" />
+              <CurrencyAmount amount={subtotal} weight="bold" className="text-[22px] text-[#0066b2]" />
             </div>
             
             <div className="w-full border-t border-dotted border-[#0066b2]/20" />
@@ -297,11 +307,11 @@ export function PayOrderDetailScreen({
             <div className="space-y-3">
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
                 <span className="uppercase tracking-tight">Extra Charges (10%)</span>
-                <CurrencyAmount amount={extraCharges} weight="black" className="text-[11px]" />
+                <CurrencyAmount amount={extraCharges} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
                 <span className="uppercase tracking-tight">VAT (5%)</span>
-                <CurrencyAmount amount={vat} weight="black" className="text-[11px]" />
+                <CurrencyAmount amount={vat} weight="bold" className="text-[11px]" />
               </div>
             </div>
           </div>
@@ -311,7 +321,7 @@ export function PayOrderDetailScreen({
               <span className="text-[11px] font-black text-[#94a3b8] uppercase leading-none tracking-tight">Total Balance Due</span>
               <span className="text-[11px] font-black text-[#0066b2] uppercase leading-none tracking-tight">Order #{order?.timestamp.toString().slice(-4) || '----'}</span>
             </div>
-            <CurrencyAmount amount={billAmount} weight="black" className="text-[38px] text-[#0066b2] leading-none" />
+            <CurrencyAmount amount={billAmount} weight="bold" className="text-[38px] text-[#0066b2] leading-none" />
           </div>
         </div>
       </div>
@@ -376,7 +386,7 @@ export function PayOrderDetailScreen({
                 </div>
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
-                  <CurrencyAmount amount={billAmount} weight="black" className="text-[24px] text-[#0066b2]" />
+                  <CurrencyAmount amount={billAmount} weight="bold" className="text-[24px] text-[#0066b2]" />
                 </div>
               </div>
 
@@ -407,16 +417,16 @@ export function PayOrderDetailScreen({
               <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Bill Amount</span>
-                  <CurrencyAmount amount={billAmount} weight="black" className="text-[15px] text-[#1a1c2e]" />
+                  <CurrencyAmount amount={billAmount} weight="bold" className="text-[15px] text-[#1a1c2e]" />
                 </div>
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Tips</span>
-                  <div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="black" className="text-[15px] text-inherit" /></div>
+                  <div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="bold" className="text-[15px] text-inherit" /></div>
                 </div>
                 <div className="w-full border-t border-dashed border-gray-100 py-1" />
                 <div className="flex justify-between items-center">
                   <span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span>
-                  <CurrencyAmount amount={grandTotal} weight="black" className="text-[34px] text-[#0066b2]" />
+                  <CurrencyAmount amount={grandTotal} weight="bold" className="text-[34px] text-[#0066b2]" />
                 </div>
               </div>
             </div>
@@ -449,7 +459,7 @@ export function PayOrderDetailScreen({
               </div>
               <ArrowRight className={cn("w-6 h-6 transition-colors", selectedSplitType === 'equal' ? "text-[#0066b2]" : "text-gray-200")} />
             </button>
-            <button onClick={() => handleSplitTypeSelection('item')} className={cn("w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all", selectedSplitType === 'item' ? "shadow-[0_10px_30px_rgba(0,102,178,0.05)] border-[2px] border-[#0066b2]" : "shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50")}>
+            <button onClick={onSplitByItem} className={cn("w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all", selectedSplitType === 'item' ? "shadow-[0_10px_30px_rgba(0,102,178,0.05)] border-[2px] border-[#0066b2]" : "shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50")}>
               <div className="flex items-center gap-5">
                 <div className="w-16 h-16 bg-[#f0f7ff] rounded-[20px] flex items-center justify-center"><Box className={cn("w-7 h-7 stroke-[2.5px]", selectedSplitType === 'item' ? "text-[#0066b2] fill-[#0066b2]/10" : "text-[#94a3b8]")} /></div>
                 <div className="flex flex-col text-left"><h3 className={cn("text-[17px] font-black uppercase mb-1", selectedSplitType === 'item' ? "text-[#0066b2]" : "text-[#1a1c2e]")}>SPLIT BY ITEM</h3><p className="text-[#94a3b8] text-[14px] font-bold">Select specific items per guest</p></div>

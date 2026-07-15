@@ -4,23 +4,37 @@ import React from 'react';
 import { DirhamSymbol } from 'dirham/react';
 import { cn } from '@/lib/utils';
 
+type CurrencyWeight =
+  | 'thin'
+  | 'extralight'
+  | 'light'
+  | 'regular'
+  | 'medium'
+  | 'semibold'
+  | 'bold'
+  | 'extrabold'
+  | 'black';
+
 type CurrencyAmountProps = {
   amount: number;
   locale?: string;
   decimals?: number;
-  weight?:
-    | 'thin'
-    | 'extralight'
-    | 'light'
-    | 'regular'
-    | 'medium'
-    | 'semibold'
-    | 'bold'
-    | 'extrabold'
-    | 'black';
+  weight?: CurrencyWeight;
   notation?: 'standard' | 'compact';
   className?: string;
   symbolSize?: string;
+};
+
+const weightMap: Record<CurrencyWeight, string> = {
+  thin: 'font-thin',
+  extralight: 'font-extralight',
+  light: 'font-light',
+  regular: 'font-normal',
+  medium: 'font-medium',
+  semibold: 'font-semibold',
+  bold: 'font-bold',
+  extrabold: 'font-extrabold',
+  black: 'font-black',
 };
 
 /**
@@ -44,7 +58,11 @@ export function CurrencyAmount({
   }).format(amount);
 
   return (
-    <span className={cn("currency-amount inline-flex items-center gap-[0.2em] whitespace-nowrap tabular-nums font-sans", className)}>
+    <span className={cn(
+      "currency-amount inline-flex items-center gap-[0.2em] whitespace-nowrap tabular-nums font-sans", 
+      weightMap[weight],
+      className
+    )}>
       <DirhamSymbol
         size={symbolSize}
         weight={weight}
@@ -63,7 +81,7 @@ export function UAECurrencySymbol({
   className 
 }: { 
   size?: string; 
-  weight?: 'thin' | 'extralight' | 'light' | 'regular' | 'medium' | 'semibold' | 'bold' | 'extrabold' | 'black';
+  weight?: CurrencyWeight;
   className?: string;
 }) {
   return (
