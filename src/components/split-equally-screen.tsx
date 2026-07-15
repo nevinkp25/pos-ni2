@@ -14,8 +14,7 @@ import {
   Loader2,
   ArrowRight,
   Pencil,
-  Landmark,
-  Wallet
+  Landmark
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -158,26 +157,28 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
           <span className="text-[11px] font-black text-[#1a1c2e] uppercase tracking-[0.2em]">Order: NDAGPTW57XWM</span>
         </div>
 
-        {/* Progress Card */}
-        <div className="bg-gradient-to-br from-white to-[#f0f7ff] rounded-[32px] p-6 shadow-[0_15px_40px_rgba(0,102,178,0.06)] border border-[#f0f4f8] relative overflow-hidden">
-          <div className="flex justify-between items-end mb-4">
-            <div className="flex flex-col">
-              <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-1">Total Amount</span>
-              <h2 className="text-[24px] font-black text-[#1a1c2e]">AED {totalBill.toFixed(2)}</h2>
+        {/* Progress Card with High-Fidelity Gradient Border */}
+        <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-tr from-[#6366f1]/40 via-[#3b82f6]/40 to-[#a855f7]/40 shadow-[0_15px_40px_rgba(0,102,178,0.06)]">
+          <div className="bg-gradient-to-br from-white to-[#f8fbff] rounded-[31px] p-7 flex flex-col gap-6">
+            <div className="flex items-center justify-between">
+              <span className="text-[14px] font-black text-[#475569] shrink-0">Total Amount</span>
+              <div className="flex-1 flex justify-center items-center">
+                <span className="text-[32px] font-black text-[#1a1c2e] tracking-tight">AED {totalBill.toFixed(2)}</span>
+              </div>
+              <span className="text-[16px] font-black text-[#94a3b8] shrink-0">{Math.round(progressPercent)}%</span>
             </div>
-            <span className="text-[13px] font-black text-[#94a3b8]">{Math.round(progressPercent)}%</span>
+            
+            <div className="w-full h-3 bg-[#f1f5f9] rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-[#f59e0b] via-[#3b82f6] to-[#0066b2] transition-all duration-1000 ease-out rounded-full"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            
+            <p className="text-[14px] font-bold text-[#94a3b8] text-center">
+              {paidCount} of {guestCount} guest paid
+            </p>
           </div>
-          
-          <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden mb-3">
-            <div 
-              className="h-full bg-gradient-to-r from-[#f59e0b] via-[#0066b2] to-[#0066b2] transition-all duration-1000 ease-out rounded-full"
-              style={{ width: `${progressPercent}%` }}
-            />
-          </div>
-          
-          <p className="text-[12px] font-bold text-[#94a3b8] text-center">
-            {paidCount} of {guestCount} guest paid
-          </p>
         </div>
 
         {/* Guest Counter */}
