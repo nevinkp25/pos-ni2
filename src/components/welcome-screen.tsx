@@ -14,8 +14,14 @@ export function WelcomeScreen({ onStarted }: WelcomeScreenProps) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // Capitalize and replace spaces with hyphens
-    const transformed = value.toUpperCase().replace(/\s/g, '-');
+    // Replace spaces with hyphens
+    let transformed = value.replace(/\s/g, '-');
+    
+    // Formatting: First letter always uppercase, the rest lowercase
+    if (transformed.length > 0) {
+      transformed = transformed.charAt(0).toUpperCase() + transformed.slice(1).toLowerCase();
+    }
+    
     setSlug(transformed);
   };
 
@@ -42,7 +48,7 @@ export function WelcomeScreen({ onStarted }: WelcomeScreenProps) {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="BELLA-CUCHINA"
+                placeholder="Restaurant Slug"
                 value={slug}
                 onChange={handleInputChange}
                 className="h-[54px] rounded-xl border-[#e5e7eb] border-2 px-5 text-lg placeholder:text-gray-400 focus-visible:ring-0 focus-visible:border-primary transition-all shadow-sm font-medium"
