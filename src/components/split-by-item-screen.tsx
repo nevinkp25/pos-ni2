@@ -25,7 +25,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import { CurrencySymbol } from './pay-order-detail-screen';
+import { CurrencyAmount } from './CurrencyAmount';
 import { getOrderForTable, TableOrder } from '@/lib/storage';
 import { CartItem } from '@/lib/types';
 
@@ -151,7 +151,11 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
       </div>
 
       <div className="flex-1 px-4 pt-2 overflow-y-auto pb-32 space-y-4">
-        <div className="text-center px-4 mt-2"><p className="text-[#94a3b8] text-[14px] font-bold leading-tight">Remaining balance is <CurrencySymbol />{totalBill.toFixed(2)}.<br />Select items to include in your share.</p></div>
+        <div className="text-center px-4 mt-2">
+          <p className="text-[#94a3b8] text-[14px] font-bold leading-tight">
+            Remaining balance is <CurrencyAmount amount={totalBill} weight="black" className="text-inherit" />.<br />Select items to include in your share.
+          </p>
+        </div>
 
         <div className="flex justify-center py-2">
           <div className="relative flex items-center justify-center" style={{ width: circleSize, height: circleSize }}>
@@ -159,7 +163,10 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
               <circle cx={center} cy={center} r={radius} fill="none" stroke="#eef2f8" strokeWidth="14" />
               <circle cx={center} cy={center} r={radius} fill="none" stroke="#0066b2" strokeWidth="14" strokeDasharray={circumference} strokeDashoffset={circumference - (circumference * progressPercent) / 100} strokeLinecap="round" className="transition-all duration-700 ease-out" />
             </svg>
-            <div className="flex flex-col items-center justify-center z-10 px-6 text-center"><span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-2">Your Share</span><div className="flex items-center gap-2 text-[#1a1c2e] font-black text-[38px] leading-none"><CurrencySymbol className="text-[34px]" /><span>{yourShare.toFixed(2)}</span></div></div>
+            <div className="flex flex-col items-center justify-center z-10 px-6 text-center">
+              <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-2">Your Share</span>
+              <CurrencyAmount amount={yourShare} weight="black" className="text-[38px] text-[#1a1c2e] leading-none" />
+            </div>
           </div>
         </div>
 
@@ -176,7 +183,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                   <div className="flex-1 space-y-1.5">
                     <div className="flex justify-between items-start">
                       <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight pr-2">{item.name}</h3>
-                      <div className="flex items-center gap-1.5 text-[#1a1c2e] font-black text-[16px] shrink-0"><CurrencySymbol className="text-[14px]" /><span>{itemPrice.toFixed(2)}</span></div>
+                      <CurrencyAmount amount={itemPrice} weight="black" className="text-[16px] text-[#1a1c2e] shrink-0" />
                     </div>
                     <div className="flex items-center gap-2 text-[#94a3b8] text-[12px] font-bold"><div className="bg-[#f0f7ff] text-[#0066b2] px-2 py-0.5 rounded-md font-black text-[10px]">x{item.quantity}</div></div>
                     {item.addons.length > 0 && <div className="flex flex-wrap gap-1 pt-0.5">{item.addons.map((addon, idx) => (<div key={idx} className="bg-[#f8fafc] border border-gray-100 rounded-lg px-2 py-0.5 flex items-center gap-1.5"><span className="text-[#475569] text-[10px] font-black uppercase tracking-tighter">{addon.name}</span></div>))}</div>}
@@ -190,7 +197,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
       </div>
 
       <div className="absolute bottom-0 inset-x-0 bg-white px-5 pt-3 pb-8 shadow-[0_-10px_30px_rgba(0,0,0,0.04)] z-30 flex justify-center border-t border-gray-50">
-        <Button onClick={handlePayClick} disabled={yourShare === 0} className={cn("w-full h-14 rounded-[18px] text-[16px] font-black shadow-[0_8px_25px_rgba(0,102,178,0.2)] transition-all active:scale-[0.98]", yourShare > 0 ? "bg-[#0066b2] hover:bg-[#005596] text-white" : "bg-gray-100 text-gray-400 shadow-none pointer-events-none")}>Pay Your Items (<CurrencySymbol />{yourShare.toFixed(2)})</Button>
+        <Button onClick={handlePayClick} disabled={yourShare === 0} className={cn("w-full h-14 rounded-[18px] text-[16px] font-black shadow-[0_8px_25px_rgba(0,102,178,0.2)] transition-all active:scale-[0.98]", yourShare > 0 ? "bg-[#0066b2] hover:bg-[#005596] text-white" : "bg-gray-100 text-gray-400 shadow-none pointer-events-none")}>Pay Your Items (<CurrencyAmount amount={yourShare} weight="black" className="text-inherit" />)</Button>
       </div>
 
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
@@ -213,7 +220,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-1">Waiter ID:</span><span className="text-[15px] font-black text-[#1a1c2e]">#123456</span>
                 </div>
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
-                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Item Amount</span><div className="flex items-center gap-2"><CurrencySymbol className="text-[24px] text-[#0066b2]" /><span className="text-[24px] font-black text-[#0066b2]">{yourShare.toFixed(2)}</span></div>
+                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Item Amount</span><CurrencyAmount amount={yourShare} weight="black" className="text-[24px] text-[#0066b2]" />
                 </div>
               </div>
               <div className="space-y-4">
@@ -221,20 +228,20 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                 <div className="grid grid-cols-4 gap-3">
                   {[5, 10, 20].map((amount) => (
                     <button key={amount} onClick={() => handleTipClick(amount)} className={cn("relative h-[90px] rounded-[24px] flex flex-col items-center justify-center transition-all shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50", (!isCustomTipMode && selectedTip === amount) ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white")}>
-                      <CurrencySymbol className="text-[10px] text-[#94a3b8] uppercase" /><span className="text-[22px] font-black text-[#1a1c2e]">{amount}</span>{(!isCustomTipMode && selectedTip === amount) && <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white"><X className="w-3 h-3 text-white stroke-[4px]" /></div>}
+                      <span className="text-[22px] font-black text-[#1a1c2e]">{amount}</span>{(!isCustomTipMode && selectedTip === amount) && <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white"><X className="w-3 h-3 text-white stroke-[4px]" /></div>}
                     </button>
                   ))}
                   <button onClick={handleCustomTipToggle} className={cn("h-[90px] rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,102,178,0.03)] border border-gray-50 transition-all", isCustomTipMode ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white")}>
                     <Pencil className={cn("w-5 h-5 mb-1", isCustomTipMode ? "text-[#0066b2]" : "text-[#94a3b8]")} /><span className={cn("text-[10px] font-black uppercase", isCustomTipMode ? "text-[#0066b2]" : "text-[#94a3b8]")}>Custom</span>
                   </button>
                 </div>
-                {isCustomTipMode && (<div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200"><div className="relative"><div className="absolute left-4 top-1/2 -translate-y-1/2"><CurrencySymbol className="text-[16px] text-[#0066b2]" /></div><Input type="number" placeholder="Enter tip amount" value={customTipValue} onChange={(e) => setCustomTipValue(e.target.value)} className="h-14 rounded-[18px] border-[#0066b2]/20 border-2 pl-16 text-lg font-black focus-visible:ring-0 focus-visible:border-[#0066b2]" autoFocus /></div></div>)}
+                {isCustomTipMode && (<div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200"><div className="relative"><Input type="number" placeholder="Enter tip amount" value={customTipValue} onChange={(e) => setCustomTipValue(e.target.value)} className="h-14 rounded-[18px] border-[#0066b2]/20 border-2 px-6 text-lg font-black focus-visible:ring-0 focus-visible:border-[#0066b2]" autoFocus /></div></div>)}
               </div>
               <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
-                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Bill Amount</span><div className="flex items-center gap-1.5 text-[#1a1c2e]"><CurrencySymbol className="text-[15px]" /><span>{yourShare.toFixed(2)}</span></div></div>
-                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Tips</span><div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencySymbol className="text-[15px]" /><span>{currentTipAmount.toFixed(2)}</span></div></div>
+                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Bill Amount</span><CurrencyAmount amount={yourShare} weight="black" className="text-[15px] text-[#1a1c2e]" /></div>
+                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Tips</span><div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="black" className="text-[15px] text-inherit" /></div></div>
                 <div className="w-full border-t border-dashed border-gray-100 py-1" />
-                <div className="flex justify-between items-center"><span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span><div className="flex items-center gap-2 text-[#0066b2] font-black"><CurrencySymbol className="text-[28px]" /><span className="text-[34px]">{grandTotal.toFixed(2)}</span></div></div>
+                <div className="flex justify-between items-center"><span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span><CurrencyAmount amount={grandTotal} weight="black" className="text-[34px] text-[#0066b2]" /></div>
               </div>
             </div>
             <div className="px-6 mt-10 space-y-4">

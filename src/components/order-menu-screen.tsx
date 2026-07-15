@@ -38,6 +38,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { CartItem, CartItemAddon } from '@/lib/types';
+import { CurrencyAmount } from './CurrencyAmount';
 
 interface MenuItemOption {
   name: string;
@@ -76,12 +77,6 @@ interface OrderMenuScreenProps {
 }
 
 const ALLERGENS_LIST = ['Dairy', 'Gluten', 'Shellfish', 'Fish', 'Eggs', 'Nuts'];
-
-const CurrencySymbol = ({ className }: { className?: string }) => (
-  <span className={cn("currency-symbol leading-none inline-flex items-center justify-center", className)}>
-    {"\u20C3"}
-  </span>
-);
 
 export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart, setCart, editingItem, onCancelEdit }: OrderMenuScreenProps) {
   const [showSuccess, setShowSuccess] = useState(false);
@@ -627,14 +622,11 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                                 {item.name}
                               </h3>
                               {item.allergens.length > 0 && (
-                                <span className="text-[#6E6E6E] text-[11px] font-black">
+                                <span className="text-[#6E6E6E] text-[11px] font-bold">
                                   Allergen: {item.allergens.join(', ')}
                                 </span>
                               )}
-                              <div className="flex items-center gap-1 text-[#0066b2] mt-1">
-                                <CurrencySymbol className="text-[14px]" />
-                                <span className="text-[18px] font-black">{item.basePrice.toFixed(2)}</span>
-                              </div>
+                              <CurrencyAmount amount={item.basePrice} weight="black" className="text-[18px] text-[#0066b2] mt-1" />
                             </div>
 
                             <div className="flex flex-col items-end gap-1 shrink-0">
@@ -908,10 +900,7 @@ function ItemDetailSheet({
                     {item.description}
                   </p>
                   <div className="flex items-baseline gap-2 pt-1">
-                    <CurrencySymbol className="text-[20px] text-[#1a1c2e]" />
-                    <span className="text-[#1a1c2e] text-[24px] font-black">
-                      {item.basePrice.toFixed(2)}
-                    </span>
+                    <CurrencyAmount amount={item.basePrice} weight="black" className="text-[24px] text-[#1a1c2e]" />
                     <span className="text-[#94a3b8] text-[13px] font-bold">
                       (Base Price)
                     </span>
@@ -952,7 +941,7 @@ function ItemDetailSheet({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {item.allergens.length > 0 ? (
-                      <span className="text-[#6E6E6E] text-[12px] font-black">
+                      <span className="text-[#6E6E6E] text-[12px] font-bold">
                         Allergen: {item.allergens.join(', ')}
                       </span>
                     ) : (
@@ -985,8 +974,7 @@ function ItemDetailSheet({
                           {v.price > 0 && (
                             <div className="flex items-center gap-1">
                               <span className="text-[#0066b2] text-[11px] font-bold">+</span>
-                              <CurrencySymbol className="text-[10px] text-[#0066b2]" />
-                              <span className="text-[#0066b2] text-[11px] font-bold">{v.price.toFixed(2)}</span>
+                              <CurrencyAmount amount={v.price} weight="bold" className="text-[11px] text-[#0066b2]" />
                             </div>
                           )}
                         </div>
@@ -1024,8 +1012,7 @@ function ItemDetailSheet({
                           <div className="flex flex-col">
                             <span className="text-[#334155] text-[14px] font-black">{addon.name}</span>
                             <div className="flex items-center gap-1">
-                              <CurrencySymbol className="text-[10px] text-[#0066b2]" />
-                              <span className="text-[#0066b2] text-[11px] font-bold">{addon.price.toFixed(2)}</span>
+                              <CurrencyAmount amount={addon.price} weight="bold" className="text-[10px] text-[#0066b2]" />
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
@@ -1120,7 +1107,7 @@ function ItemDetailSheet({
                 : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed"
             )}
           >
-            {editingItem ? 'Update' : 'Add'} <span className="opacity-40 font-normal">●</span> <CurrencySymbol className="text-[14px]" /> {totalPrice.toFixed(2)}
+            {editingItem ? 'Update' : 'Add'} <span className="opacity-40 font-normal">●</span> <CurrencyAmount amount={totalPrice} weight="black" className="text-[14px] text-inherit" />
           </button>
         </div>
       </SheetContent>

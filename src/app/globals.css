@@ -45,15 +45,10 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
-  /* Currency symbol specific class using the linked font-family 'Currency' */
-  /* Added robust fallbacks and force font-family to fix multi-device rendering */
-  .currency-symbol {
-    font-family: 'Currency', "Arial Unicode MS", "Inter", sans-serif !important;
-    font-weight: 400 !important;
-    font-style: normal;
+  /* Currency styles are now handled by the 'dirham' package components */
+  .currency-amount {
+    @apply inline-flex items-baseline gap-[0.25em] whitespace-nowrap;
     font-variant-numeric: tabular-nums;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 }
 

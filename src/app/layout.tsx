@@ -30,7 +30,6 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" href="https://wild-leaf-f686.nevinvinz.workers.dev/fonts.css" />
       </head>
       <body className={cn(
         "font-sans antialiased bg-white text-[#1a1c2e] selection:bg-primary/10", 
