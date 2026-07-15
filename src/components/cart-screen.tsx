@@ -34,9 +34,10 @@ interface CartScreenProps {
   cart: CartItem[];
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
   onOrderSent: () => void;
+  onEditItem?: (item: CartItem) => void;
 }
 
-export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: CartScreenProps) {
+export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, onEditItem }: CartScreenProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>(cart.map(i => i.id));
   const [isFooterExpanded, setIsFooterExpanded] = useState(true);
   const footerTouchStartY = useRef(0);
@@ -235,6 +236,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button 
+                      onClick={() => onEditItem?.(item)}
                       className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all"
                     >
                       <Pencil className="w-3.5 h-3.5" />

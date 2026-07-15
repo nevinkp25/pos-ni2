@@ -61,9 +61,11 @@ interface OrderMenuScreenProps {
   onOpenCart?: () => void;
   cart: CartItem[];
   setCart: React.Dispatch<React.SetStateAction<CartItem[]>>;
+  editingItem?: CartItem | null;
+  onCancelEdit?: () => void;
 }
 
-export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart, setCart }: OrderMenuScreenProps) {
+export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart, setCart, editingItem, onCancelEdit }: OrderMenuScreenProps) {
   const [showSuccess, setShowSuccess] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
@@ -243,6 +245,25 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
     },
   ];
 
+  useEffect(() => {
+    if (editingItem) {
+      // Find the menu item matching the name
+      let found: MenuItem | null = null;
+      for (const cat of menuData) {
+        const item = cat.items.find(i => i.name === editingItem.name);
+        if (item) {
+          found = item;
+          break;
+        }
+      }
+      if (found) {
+        setSelectedItem(found);
+        setDetailMode('full');
+        setIsDetailSheetOpen(true);
+      }
+    }
+  }, [editingItem]);
+
   const totalItemsInCart = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.quantity, 0);
   }, [cart]);
@@ -310,6 +331,15 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
 
   const handleAddToCart = (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => {
     setCart(prev => {
+      if (editingItem) {
+        // If editing, replace the specific item
+        return prev.map(ci => 
+          ci.id === editingItem.id 
+            ? { ...ci, flavor, addons, specialRequests: requests, quantity: qty }
+            : ci
+        );
+      }
+
       const isIdentical = (ci: CartItem) => ci.name === item.name && ci.flavor === flavor && JSON.stringify(ci.addons) === JSON.stringify(addons) && ci.specialRequests === requests;
       const existing = prev.find(isIdentical);
       
@@ -327,6 +357,17 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         flavor
       }];
     });
+    
+    if (editingItem && onCancelEdit) {
+      onCancelEdit();
+    }
+  };
+
+  const handleCloseSheet = () => {
+    setIsDetailSheetOpen(false);
+    if (editingItem && onCancelEdit) {
+      onCancelEdit();
+    }
   };
 
   return (
@@ -494,7 +535,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
       </div>
 
       {/* Success Notification */}
-      {showSuccess && (
+      {showSuccess && !editingItem && (
         <div className="absolute bottom-6 inset-x-6 z-50 animate-in slide-in-from-bottom duration-500">
           <div className="bg-white/95 backdrop-blur-md rounded-[20px] p-4 flex items-center gap-4 shadow-[0_10px_40px_rgba(0,0,0,0.08)] border-[1.5px] border-[#00d084]/20 overflow-hidden relative group">
             <div className="absolute inset-0 border-[1.5px] rounded-[20px] border-transparent bg-gradient-to-r from-transparent via-[#d1e9ff]/50 to-[#dce4ff]/50 pointer-events-none" />
@@ -522,10 +563,11 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
       {/* Item Detail Sheet */}
       <ItemDetailSheet 
         isOpen={isDetailSheetOpen}
-        onClose={() => setIsDetailSheetOpen(false)}
+        onClose={handleCloseSheet}
         item={selectedItem}
         mode={detailMode}
         onAdd={handleAddToCart}
+        editingItem={editingItem}
       />
     </div>
   );
@@ -537,12 +579,14 @@ function ItemDetailSheet({
   item, 
   mode,
   onAdd,
+  editingItem,
 }: { 
   isOpen: boolean; 
   onClose: () => void; 
   item: MenuItem | null;
   mode: 'full' | 'compact';
   onAdd: (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => void;
+  editingItem?: CartItem | null;
 }) {
   const [selectedFlavor, setSelectedFlavor] = useState<MenuItemOption | null>(null);
   const [addonQuantities, setAddonQuantities] = useState<Record<string, number>>({});
@@ -554,12 +598,26 @@ function ItemDetailSheet({
 
   useEffect(() => {
     if (isOpen) {
-      setSelectedFlavor(null);
-      setAddonQuantities({});
-      setSpecialRequests('');
-      setItemQuantity(1);
+      if (editingItem) {
+        // Pre-fill from editingItem
+        const flavor = item?.variations.find(v => v.name === editingItem.flavor) || null;
+        setSelectedFlavor(flavor);
+        
+        const quantities: Record<string, number> = {};
+        editingItem.addons.forEach(a => {
+          quantities[a.name] = a.quantity;
+        });
+        setAddonQuantities(quantities);
+        setSpecialRequests(editingItem.specialRequests);
+        setItemQuantity(editingItem.quantity);
+      } else {
+        setSelectedFlavor(null);
+        setAddonQuantities({});
+        setSpecialRequests('');
+        setItemQuantity(1);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, editingItem, item]);
 
   const handleFlavorSelect = (flavor: MenuItemOption) => {
     setSelectedFlavor(flavor);
@@ -835,7 +893,7 @@ function ItemDetailSheet({
                 : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed"
             )}
           >
-            Add <span className="opacity-40 font-normal">●</span> AED {totalPrice.toFixed(2)}
+            {editingItem ? 'Update' : 'Add'} <span className="opacity-40 font-normal">●</span> AED {totalPrice.toFixed(2)}
           </button>
         </div>
       </SheetContent>
