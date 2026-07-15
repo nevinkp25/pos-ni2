@@ -81,6 +81,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
   const [detailMode, setDetailMode] = useState<'full' | 'compact'>('full');
+  const [internalEditingItem, setInternalEditingItem] = useState<CartItem | null>(null);
 
   useEffect(() => {
     setShowSuccess(true);
@@ -257,7 +258,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
 
   useEffect(() => {
     if (editingItem) {
-      // Find the menu item matching the name
       let found: MenuItem | null = null;
       for (const cat of menuData) {
         const item = cat.items.find(i => i.name === editingItem.name);
@@ -318,7 +318,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   const handleMinusClick = (e: React.MouseEvent, itemName: string) => {
     e.stopPropagation();
     setCart(prev => {
-      // Find the most recently added version of this item (or the simple one)
       const existing = prev.filter(ci => ci.name === itemName).pop();
       if (!existing) return prev;
       
@@ -330,6 +329,13 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   };
 
   const handleItemClick = (item: MenuItem) => {
+    // Check if item is already in cart to edit it
+    const existingInCart = cart.find(ci => ci.name === item.name);
+    if (existingInCart) {
+      setInternalEditingItem(existingInCart);
+    } else {
+      setInternalEditingItem(null);
+    }
     setSelectedItem(item);
     setDetailMode('full');
     setIsDetailSheetOpen(true);
@@ -340,11 +346,12 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   };
 
   const handleAddToCart = (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => {
+    const activeEdit = internalEditingItem || editingItem;
+    
     setCart(prev => {
-      if (editingItem) {
-        // If editing, replace the specific item
+      if (activeEdit) {
         return prev.map(ci => 
-          ci.id === editingItem.id 
+          ci.id === activeEdit.id 
             ? { ...ci, flavor, addons, specialRequests: requests, quantity: qty }
             : ci
         );
@@ -375,6 +382,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
 
   const handleCloseSheet = () => {
     setIsDetailSheetOpen(false);
+    setInternalEditingItem(null);
     if (editingItem && onCancelEdit) {
       onCancelEdit();
     }
@@ -573,7 +581,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         item={selectedItem}
         mode={detailMode}
         onAdd={handleAddToCart}
-        editingItem={editingItem}
+        editingItem={internalEditingItem || editingItem}
       />
     </div>
   );
