@@ -877,7 +877,7 @@ function ItemDetailSheet({
                           {v.price > 0 && (
                             <div className="flex items-center gap-1">
                               <span className="text-[#0066b2] text-[11px] font-bold">+</span>
-                              <CurrencySymbol className="text-[#0066b2] text-[10px]" />
+                              <CurrencySymbol className="text-[10px] text-[#0066b2]" />
                               <span className="text-[#0066b2] text-[11px] font-bold">{v.price.toFixed(2)}</span>
                             </div>
                           )}
@@ -905,7 +905,7 @@ function ItemDetailSheet({
                           <div className="flex flex-col">
                             <span className="text-[#334155] text-[14px] font-black">{addon.name}</span>
                             <div className="flex items-center gap-1">
-                              <CurrencySymbol className="text-[#0066b2] text-[10px]" />
+                              <CurrencySymbol className="text-[10px] text-[#0066b2]" />
                               <span className="text-[#0066b2] text-[11px] font-bold">{addon.price.toFixed(2)}</span>
                             </div>
                           </div>
@@ -960,3 +960,4 @@ function ItemDetailSheet({
     </Sheet>
   );
 }
+
