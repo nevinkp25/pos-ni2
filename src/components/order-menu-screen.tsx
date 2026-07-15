@@ -18,7 +18,8 @@ import {
   AlertTriangle,
   Pencil,
   Circle,
-  SquarePen
+  SquarePen,
+  MessageCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -27,6 +28,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { CartItem, CartItemAddon } from '@/lib/types';
 
 interface MenuItemOption {
@@ -82,6 +91,11 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
   const [detailMode, setDetailMode] = useState<'full' | 'compact'>('full');
   const [internalEditingItem, setInternalEditingItem] = useState<CartItem | null>(null);
+
+  // Instruction Dialog State
+  const [isInstructionDialogOpen, setIsInstructionDialogOpen] = useState(false);
+  const [activeInstructionItem, setActiveInstructionItem] = useState<MenuItem | null>(null);
+  const [tempInstruction, setTempInstruction] = useState('');
 
   useEffect(() => {
     setShowSuccess(true);
@@ -341,8 +355,34 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
     setIsDetailSheetOpen(true);
   };
 
+  const handleInstructionClick = (e: React.MouseEvent, item: MenuItem) => {
+    e.stopPropagation();
+    const existingInCart = cart.find(ci => ci.name === item.name);
+    if (existingInCart) {
+      setActiveInstructionItem(item);
+      setTempInstruction(existingInCart.specialRequests);
+      setIsInstructionDialogOpen(true);
+    }
+  };
+
+  const saveInstruction = () => {
+    if (activeInstructionItem) {
+      setCart(prev => prev.map(ci => 
+        ci.name === activeInstructionItem.name 
+          ? { ...ci, specialRequests: tempInstruction }
+          : ci
+      ));
+      setIsInstructionDialogOpen(false);
+      setActiveInstructionItem(null);
+    }
+  };
+
   const getItemQty = (itemName: string) => {
     return cart.filter(ci => ci.name === itemName).reduce((sum, item) => sum + item.quantity, 0);
+  };
+
+  const getItemHasInstruction = (itemName: string) => {
+    return cart.some(ci => ci.name === itemName && ci.specialRequests.trim().length > 0);
   };
 
   const handleAddToCart = (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => {
@@ -474,6 +514,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                   <div className="bg-[#f8fbff] animate-in fade-in slide-in-from-top-2 duration-300">
                     {category.items.map((item, itemIndex) => {
                       const quantity = getItemQty(item.name);
+                      const hasInstruction = getItemHasInstruction(item.name);
+
                       return (
                         <div 
                           key={itemIndex} 
@@ -502,11 +544,26 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                             {quantity > 0 ? (
                               <>
                                 <button 
-                                  className="flex items-center gap-1.5 text-[#0066b2] text-[12px] font-black tracking-tight mb-2 whitespace-nowrap"
-                                  onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
+                                  className={cn(
+                                    "flex items-center gap-1.5 text-[12px] font-black tracking-tight mb-2 whitespace-nowrap transition-all relative",
+                                    hasInstruction ? "text-[#f59e0b]" : "text-[#0066b2]"
+                                  )}
+                                  onClick={(e) => handleInstructionClick(e, item)}
                                 >
-                                  <SquarePen className="w-3.5 h-3.5" />
-                                  <span className="border-b border-dotted border-[#0066b2]">Instruction</span>
+                                  {hasInstruction ? (
+                                    <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                                  ) : (
+                                    <SquarePen className="w-3.5 h-3.5" />
+                                  )}
+                                  <span className={cn(
+                                    "border-b border-dotted",
+                                    hasInstruction ? "border-[#f59e0b]" : "border-[#0066b2]"
+                                  )}>
+                                    {hasInstruction ? "Instruction Saved" : "Instruction"}
+                                  </span>
+                                  {hasInstruction && (
+                                    <div className="absolute -top-1 -right-1.5 w-2 h-2 bg-[#f59e0b] rounded-full animate-pulse" />
+                                  )}
                                 </button>
                                 <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between">
                                   <button 
@@ -547,6 +604,55 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
           })}
         </div>
       </div>
+
+      {/* Instruction Dialog */}
+      <Dialog open={isInstructionDialogOpen} onOpenChange={setIsInstructionDialogOpen}>
+        <DialogContent className="rounded-[24px] sm:max-w-[360px] p-0 overflow-hidden border-none shadow-2xl">
+          <DialogHeader className="px-5 pt-5 pb-1.5 flex flex-row items-center justify-between">
+            <DialogTitle className="text-lg font-black text-[#1a1c2e]">Item Note</DialogTitle>
+            <button 
+              onClick={() => setIsInstructionDialogOpen(false)}
+              className="w-7 h-7 flex items-center justify-center rounded-full bg-gray-50 text-gray-400"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </DialogHeader>
+          <div className="px-5 py-3 space-y-3">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-8 h-8 rounded-lg bg-[#fef3c7] flex items-center justify-center shrink-0">
+                <SquarePen className="w-4 h-4 text-[#f59e0b]" />
+              </div>
+              <span className="text-[13px] font-black text-[#1a1c2e] uppercase tracking-tight">
+                {activeInstructionItem?.name}
+              </span>
+            </div>
+            <p className="text-[12px] font-bold text-[#94a3b8] leading-tight">
+              Add any specific requests for this item for the kitchen staff.
+            </p>
+            <div className="relative">
+              <Textarea 
+                value={tempInstruction}
+                onChange={(e) => setTempInstruction(e.target.value)}
+                placeholder="e.g. Less ice please, no sugar, allergy..."
+                className="h-28 rounded-xl border-2 border-gray-100 focus:border-[#0066b2] focus:ring-0 transition-all text-sm font-bold p-3 resize-none"
+                maxLength={150}
+              />
+              <span className="absolute bottom-3 right-3 text-[9px] font-black text-gray-300">
+                {tempInstruction.length}/150
+              </span>
+            </div>
+          </div>
+          <div className="px-5 pb-5 pt-1">
+            <Button 
+              onClick={saveInstruction}
+              className="w-full h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[16px] text-sm font-black shadow-md flex items-center justify-center gap-2"
+            >
+              <Check className="w-4 h-4 stroke-[3px]" />
+              Save Instruction
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Success Notification */}
       {showSuccess && !editingItem && (
