@@ -71,25 +71,23 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }:
 
           {/* Status Section */}
           <div className="flex flex-col items-center mb-6">
-            <div className="relative w-28 h-28 mb-3">
-                <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-lg">
-                  <rect x="25" y="25" width="50" height="65" rx="8" fill="#d1e0f3" />
-                  <rect x="25" y="25" width="50" height="35" rx="8" fill="#eff6ff" />
-                  <rect x="30" y="30" width="40" height="25" rx="4" fill="#bfdbfe" />
-                  <g fill="#94a3b8">
-                    <rect x="32" y="65" width="8" height="6" rx="1.5" />
-                    <rect x="46" y="65" width="8" height="6" rx="1.5" />
-                    <rect x="60" y="65" width="8" height="6" rx="1.5" />
-                    <rect x="32" y="75" width="8" height="6" rx="1.5" />
-                    <rect x="46" y="75" width="8" height="6" rx="1.5" />
-                    <rect x="60" y="75" width="8" height="6" rx="1.5" />
-                  </g>
-                  <rect x="25" y="20" width="50" height="5" rx="2" fill="#94a3b8" />
-                  <g transform="translate(58, 52)">
-                    <rect x="0" y="0" width="22" height="18" rx="4" fill="#f59e0b" />
-                    <path d="M5 0 V-6 A6 6 0 0 1 17 -6 V0" fill="none" stroke="#f59e0b" strokeWidth="4" />
-                    <circle cx="11" cy="9" r="2.5" fill="#fff" />
-                  </g>
+            <div className="relative w-28 h-28 mb-4">
+                <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
+                  {/* Shackle */}
+                  <path 
+                    d="M30 45 V35 C30 24 39 15 50 15 C61 15 70 24 70 35 V45" 
+                    fill="none" 
+                    stroke="#cbd5e1" 
+                    strokeWidth="10" 
+                    strokeLinecap="round" 
+                  />
+                  {/* Body */}
+                  <rect x="20" y="45" width="60" height="45" rx="14" fill="#f59e0b" />
+                  {/* Shine effect on body */}
+                  <rect x="26" y="51" width="48" height="4" rx="2" fill="white" fillOpacity="0.2" />
+                  {/* Keyhole */}
+                  <circle cx="50" cy="65" r="7" fill="white" />
+                  <path d="M50 65 L50 78" stroke="white" strokeWidth="5" strokeLinecap="round" />
                 </svg>
             </div>
             <h3 className="text-lg font-bold mb-0.5 tracking-tight text-[#1e293b]">Staff actions are locked</h3>
@@ -101,7 +99,7 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }:
       {/* Footer Branding */}
       <div className="bg-white py-6 flex flex-col items-center shrink-0">
         <div className="flex flex-col items-center">
-          <span className="text-[8px] font-bold text-[#cbd5e1] tracking-[0.3em] uppercase mb-1">
+          <span className="text-[8px] font-bold text-[#cbd5e1] tracking-[0.2em] uppercase mb-1">
             POWERED BY
           </span>
           <div className="mt-1">
