@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { DirhamPrice, DirhamSymbol } from 'dirham/react';
+import { DirhamSymbol } from 'dirham/react';
 import { cn } from '@/lib/utils';
 
 type CurrencyAmountProps = {
@@ -20,8 +20,13 @@ type CurrencyAmountProps = {
     | 'black';
   notation?: 'standard' | 'compact';
   className?: string;
+  symbolSize?: string;
 };
 
+/**
+ * Renders a formatted currency amount using the official UAE Dirham symbol.
+ * Uses the 'dirham' package for the symbol and standard Inter font for numbers.
+ */
 export function CurrencyAmount({
   amount,
   locale = 'en-AE',
@@ -29,16 +34,25 @@ export function CurrencyAmount({
   weight = 'regular',
   notation = 'standard',
   className,
+  symbolSize = '0.9em',
 }: CurrencyAmountProps) {
+  // We format the number separately to ensure it uses the app's Inter font
+  const formattedNumber = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+    notation: notation,
+  }).format(amount);
+
   return (
-    <span className={cn("currency-amount", className)}>
-      <DirhamPrice
-        amount={amount}
-        locale={locale}
-        decimals={decimals}
+    <span className={cn("currency-amount inline-flex items-center gap-[0.2em] whitespace-nowrap tabular-nums font-sans", className)}>
+      <DirhamSymbol
+        size={symbolSize}
         weight={weight}
-        notation={notation}
+        aria-label="UAE Dirham"
       />
+      <span className="leading-none">
+        {formattedNumber}
+      </span>
     </span>
   );
 }

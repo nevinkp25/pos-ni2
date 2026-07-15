@@ -165,7 +165,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
             </svg>
             <div className="flex flex-col items-center justify-center z-10 px-6 text-center">
               <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-2">Your Share</span>
-              <CurrencyAmount amount={yourShare} weight="black" className="text-[38px] text-[#1a1c2e] leading-none" />
+              <CurrencyAmount amount={yourShare} weight="black" className="text-[34px] text-[#1a1c2e] leading-none" />
             </div>
           </div>
         </div>
@@ -183,7 +183,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                   <div className="flex-1 space-y-1.5">
                     <div className="flex justify-between items-start">
                       <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight pr-2">{item.name}</h3>
-                      <CurrencyAmount amount={itemPrice} weight="black" className="text-[16px] text-[#1a1c2e] shrink-0" />
+                      <CurrencyAmount amount={itemPrice} weight="black" className="text-[15px] text-[#1a1c2e] shrink-0" />
                     </div>
                     <div className="flex items-center gap-2 text-[#94a3b8] text-[12px] font-bold"><div className="bg-[#f0f7ff] text-[#0066b2] px-2 py-0.5 rounded-md font-black text-[10px]">x{item.quantity}</div></div>
                     {item.addons.length > 0 && <div className="flex flex-wrap gap-1 pt-0.5">{item.addons.map((addon, idx) => (<div key={idx} className="bg-[#f8fafc] border border-gray-100 rounded-lg px-2 py-0.5 flex items-center gap-1.5"><span className="text-[#475569] text-[10px] font-black uppercase tracking-tighter">{addon.name}</span></div>))}</div>}
@@ -217,10 +217,10 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
                   <div className="w-10 h-10 bg-[#f8fafc] rounded-full flex items-center justify-center mb-2 border border-gray-50"><User className="w-5 h-5 text-[#94a3b8]" /></div>
-                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-1">Waiter ID:</span><span className="text-[15px] font-black text-[#1a1c2e]">#123456</span>
+                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-1 tracking-tight">Waiter ID:</span><span className="text-[15px] font-black text-[#1a1c2e]">#123456</span>
                 </div>
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
-                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Item Amount</span><CurrencyAmount amount={yourShare} weight="black" className="text-[24px] text-[#0066b2]" />
+                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2 tracking-tight">Item Amount</span><CurrencyAmount amount={yourShare} weight="black" className="text-[20px] text-[#0066b2]" />
                 </div>
               </div>
               <div className="space-y-4">
@@ -228,7 +228,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                 <div className="grid grid-cols-4 gap-3">
                   {[5, 10, 20].map((amount) => (
                     <button key={amount} onClick={() => handleTipClick(amount)} className={cn("relative h-[90px] rounded-[24px] flex flex-col items-center justify-center transition-all shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50", (!isCustomTipMode && selectedTip === amount) ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white")}>
-                      <span className="text-[22px] font-black text-[#1a1c2e]">{amount}</span>{(!isCustomTipMode && selectedTip === amount) && <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white"><X className="w-3 h-3 text-white stroke-[4px]" /></div>}
+                      <span className="text-[22px] font-black text-[#1a1c2e] tabular-nums">{amount}</span>{(!isCustomTipMode && selectedTip === amount) && <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white"><X className="w-3 h-3 text-white stroke-[4px]" /></div>}
                     </button>
                   ))}
                   <button onClick={handleCustomTipToggle} className={cn("h-[90px] rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,102,178,0.03)] border border-gray-50 transition-all", isCustomTipMode ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white")}>
@@ -238,19 +238,13 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                 {isCustomTipMode && (<div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200"><div className="relative"><Input type="number" placeholder="Enter tip amount" value={customTipValue} onChange={(e) => setCustomTipValue(e.target.value)} className="h-14 rounded-[18px] border-[#0066b2]/20 border-2 px-6 text-lg font-black focus-visible:ring-0 focus-visible:border-[#0066b2]" autoFocus /></div></div>)}
               </div>
               <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
-                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Bill Amount</span><CurrencyAmount amount={yourShare} weight="black" className="text-[15px] text-[#1a1c2e]" /></div>
-                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Tips</span><div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="black" className="text-[15px] text-inherit" /></div></div>
+                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Bill Amount</span><CurrencyAmount amount={yourShare} weight="black" className="text-[14px] text-[#1a1c2e]" /></div>
+                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Tips</span><div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="black" className="text-[14px] text-inherit" /></div></div>
                 <div className="w-full border-t border-dashed border-gray-100 py-1" />
-                <div className="flex justify-between items-center"><span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span><CurrencyAmount amount={grandTotal} weight="black" className="text-[34px] text-[#0066b2]" /></div>
+                <div className="flex justify-between items-center"><span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span><CurrencyAmount amount={grandTotal} weight="black" className="text-[30px] text-[#0066b2]" /></div>
               </div>
             </div>
-            <div className="px-6 mt-10 space-y-4">
-              <Button onClick={handleFinalPayment} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)]"><CreditCard className="w-5 h-5" />PAY BY CARD</Button>
-              <div className="grid grid-cols-2 gap-4">
-                <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button>
-                <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button>
-              </div>
-            </div>
+            <div className="px-6 mt-10 space-y-4"><Button onClick={handleFinalPayment} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)]"><CreditCard className="w-5 h-5" />PAY BY CARD</Button><div className="grid grid-cols-2 gap-4"><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button></div></div>
           </div>
         </SheetContent>
       </Sheet>
@@ -258,12 +252,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
       <Sheet open={isPartialSuccessOpen} onOpenChange={setIsPartialSuccessOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden h-[400px] flex flex-col tracking-normal">
           <SheetHeader className="sr-only"><SheetTitle>Payment In Progress</SheetTitle></SheetHeader>
-          <div className="flex-1 flex flex-col items-center justify-center px-8 text-center pt-8">
-            <div className="w-24 h-24 bg-[#00d084] rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(0,208,132,0.3)] mb-8"><Check className="w-12 h-12 text-white stroke-[5px]" /></div>
-            <h2 className="text-[24px] font-black text-[#1a1c2e] uppercase mb-4 leading-tight">PAYMENT IN PROGRESS</h2>
-            <p className="text-[#94a3b8] text-[16px] font-bold leading-tight mb-8">Some items have been paid. Please pay for remaining items.</p>
-            <Button onClick={() => setIsPartialSuccessOpen(false)} className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black uppercase shadow-lg active:scale-95 transition-all">Continue</Button>
-          </div>
+          <div className="flex-1 flex flex-col items-center justify-center px-8 text-center pt-8"><div className="w-24 h-24 bg-[#00d084] rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(0,208,132,0.3)] mb-8"><Check className="w-12 h-12 text-white stroke-[5px]" /></div><h2 className="text-[24px] font-black text-[#1a1c2e] uppercase mb-4 leading-tight">PAYMENT IN PROGRESS</h2><p className="text-[#94a3b8] text-[16px] font-bold leading-tight mb-8">Some items have been paid. Please pay for remaining items.</p><Button onClick={() => setIsPartialSuccessOpen(false)} className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black uppercase shadow-lg active:scale-95 transition-all">Continue</Button></div>
         </SheetContent>
       </Sheet>
     </div>

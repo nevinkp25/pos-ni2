@@ -175,7 +175,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
             <div className="flex items-center">
               <span className="text-[9px] font-black text-[#475569] w-[100px] shrink-0 uppercase tracking-tight">Total Amount</span>
               <div className="flex-1 flex justify-center min-w-0">
-                <CurrencyAmount amount={totalBill} weight="black" className="text-[24px] min-[375px]:text-[28px] min-[414px]:text-[34px] text-[#1a1c2e]" />
+                <CurrencyAmount amount={totalBill} weight="black" className="text-[24px] min-[375px]:text-[26px] min-[414px]:text-[32px] text-[#1a1c2e]" />
               </div>
               <span className="text-[18px] font-black text-[#94a3b8] w-[100px] shrink-0 text-right">
                 {Math.round(progressPercent)}%
@@ -203,7 +203,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
 
         <div className="bg-white rounded-[32px] py-10 px-6 shadow-[0_15px_40px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center text-center">
           <span className="text-[11px] font-black text-[#1a1c2e] uppercase tracking-[0.2em] mb-4">Each Person Pays</span>
-          <CurrencyAmount amount={shareAmount} weight="black" className="text-[42px] text-[#0066b2]" />
+          <CurrencyAmount amount={shareAmount} weight="black" className="text-[38px] text-[#0066b2]" />
         </div>
 
         {!isConfirmed && (<div className="pt-2"><Button onClick={handleConfirmSplit} disabled={isConfirming} className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black uppercase shadow-[0_10px_30px_rgba(0,102,178,0.25)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all">{isConfirming ? (<><Loader2 className="w-5 h-5 animate-spin" />Calculating...</>) : (<>Confirm Split<ArrowRight className="w-5 h-5 stroke-[3px]" /></>)}</Button></div>)}
@@ -231,7 +231,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-1 tracking-tight">Waiter ID:</span><span className="text-[15px] font-black text-[#1a1c2e]">#123456</span>
                 </div>
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
-                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2 tracking-tight">Bill Amount</span><CurrencyAmount amount={shareAmount} weight="black" className="text-[24px] text-[#0066b2] tabular-nums" />
+                  <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2 tracking-tight">Bill Amount</span><CurrencyAmount amount={shareAmount} weight="black" className="text-[22px] text-[#0066b2] tabular-nums" />
                 </div>
               </div>
               <div className="space-y-4">
@@ -249,10 +249,13 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                 {isCustomTipMode && (<div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200"><div className="relative"><Input type="number" placeholder="Enter tip amount" value={customTipValue} onChange={(e) => setCustomTipValue(e.target.value)} className="h-14 rounded-[18px] border-[#0066b2]/20 border-2 px-6 text-lg font-black focus-visible:ring-0 focus-visible:border-[#0066b2]" autoFocus /></div></div>)}
               </div>
               <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
-                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Bill Amount</span><CurrencyAmount amount={shareAmount} weight="black" className="text-[15px] text-[#1a1c2e] tabular-nums" /></div>
-                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Tips</span><div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="black" className="text-[15px] text-inherit tabular-nums" /></div></div>
+                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Bill Amount</span><CurrencyAmount amount={shareAmount} weight="black" className="text-[14px] text-[#1a1c2e] tabular-nums" /></div>
+                <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Tips</span><div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="black" className="text-[14px] text-inherit tabular-nums" /></div></div>
                 <div className="w-full border-t border-dashed border-gray-100 py-1" />
-                <div className="flex justify-between items-center"><span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span><CurrencyAmount amount={grandTotal} weight="black" className="text-[34px] text-[#0066b2] tabular-nums" /></div>
+                <div className="flex justify-between items-center">
+                  <span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span>
+                  <CurrencyAmount amount={grandTotal} weight="black" className="text-[32px] text-[#0066b2] tabular-nums" />
+                </div>
               </div>
             </div>
             <div className="px-6 mt-10 space-y-4"><Button onClick={handleFinalPayment} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)] active:scale-[0.98] transition-all"><CreditCard className="w-5 h-5" />PAY BY CARD</Button><div className="grid grid-cols-2 gap-4"><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button></div></div>

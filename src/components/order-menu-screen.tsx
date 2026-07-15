@@ -622,11 +622,15 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                                 {item.name}
                               </h3>
                               {item.allergens.length > 0 && (
-                                <span className="text-[#6E6E6E] text-[11px] font-bold">
+                                <span className="text-[#6E6E6E] text-[11px] font-medium leading-tight">
                                   Allergen: {item.allergens.join(', ')}
                                 </span>
                               )}
-                              <CurrencyAmount amount={item.basePrice} weight="black" className="text-[18px] text-[#0066b2] mt-1" />
+                              <CurrencyAmount 
+                                amount={item.basePrice} 
+                                weight="black" 
+                                className="text-[17px] text-[#0066b2] mt-1" 
+                              />
                             </div>
 
                             <div className="flex flex-col items-end gap-1 shrink-0">
@@ -900,7 +904,7 @@ function ItemDetailSheet({
                     {item.description}
                   </p>
                   <div className="flex items-baseline gap-2 pt-1">
-                    <CurrencyAmount amount={item.basePrice} weight="black" className="text-[24px] text-[#1a1c2e]" />
+                    <CurrencyAmount amount={item.basePrice} weight="black" className="text-[22px] text-[#1a1c2e]" />
                     <span className="text-[#94a3b8] text-[13px] font-bold">
                       (Base Price)
                     </span>
@@ -941,7 +945,7 @@ function ItemDetailSheet({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {item.allergens.length > 0 ? (
-                      <span className="text-[#6E6E6E] text-[12px] font-bold">
+                      <span className="text-[#6E6E6E] text-[12px] font-medium leading-tight">
                         Allergen: {item.allergens.join(', ')}
                       </span>
                     ) : (
