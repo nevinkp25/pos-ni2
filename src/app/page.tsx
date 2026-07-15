@@ -13,11 +13,12 @@ import { SettledScreen } from '@/components/settled-screen';
 import { PayOrderDetailScreen } from '@/components/pay-order-detail-screen';
 import { SplitByItemScreen } from '@/components/split-by-item-screen';
 import { SplitEquallyScreen } from '@/components/split-equally-screen';
+import { QRScanningScreen } from '@/components/qr-scanning-screen';
 import { useToast } from '@/hooks/use-toast';
 import { CartItem } from '@/lib/types';
 
 export default function Page() {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled' | 'split-by-item' | 'split-equally'>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled' | 'split-by-item' | 'split-equally' | 'qr-scanning'>('welcome');
   const [restaurantName, setRestaurantName] = useState<string>('Bella-cuchina');
   const [staffId, setStaffId] = useState<string>('');
   const [selectedTable, setSelectedTable] = useState<string>('');
@@ -51,6 +52,10 @@ export default function Page() {
 
   const handlePayOrder = () => {
     setCurrentScreen('select-table-pay');
+  };
+
+  const handleScanQR = () => {
+    setCurrentScreen('qr-scanning');
   };
 
   const handleBackToDashboard = () => {
@@ -127,6 +132,17 @@ export default function Page() {
     setCurrentScreen('staff-dashboard');
   };
 
+  const handleQRDetected = (tableId: string) => {
+    // For demo: automatically navigates to order menu for table detected
+    setSelectedTable(tableId);
+    setGuestCount(2); // Default mock count
+    setCurrentScreen('order-menu');
+    toast({
+      title: "Table Detected",
+      description: `Accessing Table #${tableId}`,
+    });
+  };
+
   return (
     <main>
       {currentScreen === 'welcome' && (
@@ -145,6 +161,13 @@ export default function Page() {
           onLogout={handleLogout} 
           onOrderMenu={handleOrderMenu} 
           onPayOrder={handlePayOrder}
+          onScanQR={handleScanQR}
+        />
+      )}
+      {currentScreen === 'qr-scanning' && (
+        <QRScanningScreen 
+          onBack={handleBackToDashboard}
+          onDetected={handleQRDetected}
         />
       )}
       {currentScreen === 'select-table' && (
