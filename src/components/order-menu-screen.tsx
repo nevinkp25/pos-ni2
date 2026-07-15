@@ -479,16 +479,11 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                             <h3 className="text-[17px] font-black text-[#1a1c2e] leading-tight truncate">
                               {item.name}
                             </h3>
-                            <div className="flex gap-1.5 flex-wrap">
-                              {item.allergens.map((allergen) => (
-                                <span 
-                                  key={allergen}
-                                  className="px-2.5 py-0.5 rounded-full border-[1.5px] border-[#f59e0b] text-[#f59e0b] text-[11px] font-black tracking-tight"
-                                >
-                                  {allergen}
-                                </span>
-                              ))}
-                            </div>
+                            {item.allergens.length > 0 && (
+                              <span className="text-[#f59e0b] text-[11px] font-black tracking-tight uppercase">
+                                {item.allergens.join(', ')}
+                              </span>
+                            )}
                             <div className="flex items-center gap-1 text-[#0066b2] mt-1">
                               <CurrencySymbol className="text-[14px]" />
                               <span className="text-[18px] font-black">{item.basePrice.toFixed(2)}</span>
@@ -742,14 +737,11 @@ function ItemDetailSheet({
                     <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Allergen Information</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {item.allergens.map((allergen) => (
-                      <div key={allergen} className="bg-white rounded-xl px-3 py-1.5 border border-[#fef3c7] flex items-center gap-1.5 shadow-sm">
-                        {allergen === 'Gluten' && <Flame className="w-3.5 h-3.5 text-[#f59e0b]" />}
-                        {allergen === 'Dairy' && <Circle className="w-3.5 h-3.5 text-[#f59e0b] fill-[#f59e0b]" />}
-                        <span className="text-[#4b5563] text-[12px] font-black">{allergen}</span>
-                      </div>
-                    ))}
-                    {item.allergens.length === 0 && (
+                    {item.allergens.length > 0 ? (
+                      <span className="text-[#4b5563] text-[12px] font-black uppercase tracking-tight">
+                        {item.allergens.join(', ')}
+                      </span>
+                    ) : (
                       <span className="text-[#94a3b8] text-[12px] font-bold">No common allergens</span>
                     )}
                   </div>

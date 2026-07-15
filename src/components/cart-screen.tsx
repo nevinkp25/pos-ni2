@@ -854,14 +854,16 @@ function ItemDetailSheet({
             <div className="bg-[#fffbeb] rounded-[24px] p-5 border border-[#fef3c7]">
               <div className="flex items-center gap-2 mb-3">
                 <AlertTriangle className="w-5 h-5 text-[#f59e0b] fill-[#f59e0b]/10" />
-                <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Allergen Info</span>
+                <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Allergen Information</span>
               </div>
               <div className="flex flex-wrap gap-2">
-                {item.allergens.map((allergen) => (
-                  <div key={allergen} className="bg-white rounded-xl px-3 py-1.5 border border-[#fef3c7] flex items-center gap-1.5 shadow-sm">
-                    <span className="text-[#4b5563] text-[12px] font-black">{allergen}</span>
-                  </div>
-                ))}
+                {item.allergens.length > 0 ? (
+                  <span className="text-[#4b5563] text-[12px] font-black uppercase tracking-tight">
+                    {item.allergens.join(', ')}
+                  </span>
+                ) : (
+                  <span className="text-[#94a3b8] text-[12px] font-bold">No common allergens</span>
+                )}
               </div>
             </div>
 
@@ -960,4 +962,3 @@ function ItemDetailSheet({
     </Sheet>
   );
 }
-
