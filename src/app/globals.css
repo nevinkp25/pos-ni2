@@ -44,6 +44,14 @@
   .safe-bottom {
     padding-bottom: env(safe-area-inset-bottom);
   }
+
+  /* Currency symbol specific class using the linked font-family 'Currency' */
+  .currency-symbol {
+    font-family: 'Currency', "Arial Unicode MS", "Inter", sans-serif;
+    font-weight: inherit;
+    font-style: normal;
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 /* Prevent accidental pull-to-refresh on mobile browsers */

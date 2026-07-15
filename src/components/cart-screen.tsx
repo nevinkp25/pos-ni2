@@ -16,8 +16,7 @@ import {
   Check,
   Pencil,
   Flame,
-  AlertTriangle,
-  Circle
+  AlertTriangle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CartItem, CartItemAddon } from '@/lib/types';
@@ -36,8 +35,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { CurrencySymbol } from './pay-order-detail-screen';
 
-// --- Types & Data (Duplicated for standalone Edit functionality in Cart) ---
 interface MenuItemOption {
   name: string;
   price: number;
@@ -214,24 +213,20 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
   const footerTouchStartY = useRef(0);
   const { toast } = useToast();
   
-  // Slider State (Left to Right)
   const [sliderX, setSliderX] = useState(0);
   const [isSliding, setIsSliding] = useState(false);
   const [isOrderSent, setIsOrderSent] = useState(false);
   const sliderContainerRef = useRef<HTMLDivElement>(null);
   const sliderStartX = useRef(0);
 
-  // Edit Local State
   const [isEditSheetOpen, setIsEditSheetOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<CartItem | null>(null);
   const [menuItemData, setMenuItemData] = useState<MenuItem | null>(null);
 
-  // Item Instruction Dialog State (Direct Notes)
   const [isInstructionDialogOpen, setIsInstructionDialogOpen] = useState(false);
   const [activeItemId, setActiveItemId] = useState<string | null>(null);
   const [tempInstruction, setTempInstruction] = useState('');
 
-  // Global Kitchen Instructions State
   const [kitchenInstructions, setKitchenInstructions] = useState('');
   const [isKitchenDialogOpen, setIsKitchenDialogOpen] = useState(false);
   const [tempKitchenInstruction, setTempKitchenInstruction] = useState('');
@@ -324,9 +319,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
     });
   };
 
-  const totalItemCount = cart.reduce((s, i) => s + i.quantity, 0);
-
-  // Swipe for Footer (Up/Down)
   const handleFooterTouchStart = (e: React.TouchEvent) => {
     footerTouchStartY.current = e.touches[0].clientY;
   };
@@ -339,7 +331,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
     }
   };
 
-  // Slider Logic (Unified for Touch and Mouse)
   const handleSliderStart = (clientX: number) => {
     if (isOrderSent) return;
     sliderStartX.current = clientX;
@@ -350,7 +341,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
     if (!isSliding || !sliderContainerRef.current || isOrderSent) return;
     const deltaX = clientX - sliderStartX.current;
     const containerWidth = sliderContainerRef.current.offsetWidth;
-    const handleWidth = 44; // Approx width of handle
+    const handleWidth = 44;
     const maxPath = containerWidth - handleWidth - 8;
 
     if (deltaX > 0) {
@@ -375,7 +366,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
     }
   };
 
-  // Attach global mouse listeners when sliding starts
   useEffect(() => {
     if (!isSliding) return;
 
@@ -404,7 +394,10 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
           </button>
           <div className="flex flex-col">
             <h1 className="text-[18px] font-black leading-tight text-[#1a1c2e]">Your Items</h1>
-            <span className="text-[#94a3b8] text-[11px] font-bold">⃃ {subtotal.toFixed(2)} · Table #{tableNumber}</span>
+            <div className="flex items-center gap-1">
+              <CurrencySymbol className="text-[#94a3b8] text-[10px]" />
+              <span className="text-[#94a3b8] text-[11px] font-bold">{subtotal.toFixed(2)} · Table #{tableNumber}</span>
+            </div>
           </div>
         </div>
         
@@ -450,9 +443,10 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                         </div>
                       )}
                     </div>
-                    <p className="text-[#0066b2] text-[14px] font-black">
-                      ⃃ {itemDisplayTotal.toFixed(2)}
-                    </p>
+                    <div className="flex items-center gap-1.5 text-[#0066b2] font-black">
+                      <CurrencySymbol className="text-[13px]" />
+                      <span className="text-[14px]">{itemDisplayTotal.toFixed(2)}</span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
                     <button 
@@ -488,9 +482,12 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                             <span className="text-[#0066b2] text-[10px] font-black tracking-tight">
                               + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
                             </span>
-                            <span className="text-[#0066b2]/60 text-[9px] font-black">
-                              ⃃ {(addon.price * addon.quantity).toFixed(2)}
-                            </span>
+                            <div className="flex items-center gap-1">
+                              <CurrencySymbol className="text-[#0066b2]/60 text-[8px]" />
+                              <span className="text-[#0066b2]/60 text-[9px] font-black">
+                                {(addon.price * addon.quantity).toFixed(2)}
+                              </span>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -546,7 +543,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
         <div className="h-20" />
       </div>
 
-      {/* Cart Footer - Swipable Drawer */}
+      {/* Cart Footer */}
       <div 
         className="absolute bottom-0 inset-x-0 bg-white shadow-[0_-8px_30px_rgba(0,0,0,0.06)] rounded-t-[24px] px-5 pt-2 pb-5 flex flex-col z-20 transition-all duration-300 ease-in-out"
         onTouchStart={handleFooterTouchStart}
@@ -588,12 +585,11 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
           <div className="flex items-center justify-between shrink-0 px-1">
             <h2 className="text-[#1a1c2e] text-[17px] font-black tracking-tight">Subtotal</h2>
             <div className="flex items-baseline gap-1">
-              <span className="text-[14px] font-black text-[#1a1c2e]">⃃</span>
+              <CurrencySymbol className="text-[14px] text-[#1a1c2e]" />
               <span className="text-[22px] font-black text-[#1a1c2e] tabular-nums tracking-tighter">{subtotal.toFixed(2)}</span>
             </div>
           </div>
 
-          {/* Swipeable Horizontal Slider */}
           <div 
             ref={sliderContainerRef}
             className="relative h-[56px] w-full bg-[#0066b2] rounded-[18px] p-1 flex items-center overflow-hidden shadow-[0_6px_20px_rgba(0,102,178,0.18)] shrink-0 select-none"
@@ -604,7 +600,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
               </span>
             </div>
             
-            {/* The Slidable Handle */}
             <div 
               className={cn(
                 "h-11 w-12 bg-white rounded-[14px] flex items-center justify-center shadow-lg z-10 transition-transform relative cursor-grab active:cursor-grabbing",
@@ -629,7 +624,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
         </div>
       </div>
 
-      {/* Item Edit Sheet (Directly in Cart) */}
+      {/* Dialogs and Sheets */}
       {menuItemData && itemToEdit && (
         <ItemDetailSheet 
           isOpen={isEditSheetOpen}
@@ -723,7 +718,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
   );
 }
 
-// --- Item Detail Sheet (Adapted for internal Cart use) ---
 function ItemDetailSheet({ 
   isOpen, 
   onClose, 
@@ -824,8 +818,9 @@ function ItemDetailSheet({
                 {item.description}
               </p>
               <div className="flex items-baseline gap-2 pt-1">
+                <CurrencySymbol className="text-[#1a1c2e] text-[22px]" />
                 <span className="text-[#1a1c2e] text-[24px] font-black">
-                  ⃃ {item.basePrice.toFixed(2)}
+                  {item.basePrice.toFixed(2)}
                 </span>
                 <span className="text-[#94a3b8] text-[13px] font-bold">
                   (Base Price)
@@ -833,6 +828,7 @@ function ItemDetailSheet({
               </div>
             </div>
 
+            {/* Other sections... */}
             <div className="bg-[#f8fbff] rounded-[24px] p-5 border border-[#f0f4f8]">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -878,7 +874,13 @@ function ItemDetailSheet({
                       <div className="flex items-center justify-between py-1 cursor-pointer" onClick={() => handleFlavorSelect(v)}>
                         <div className="flex flex-col">
                           <span className="text-[#334155] text-[14px] font-black">{v.name}</span>
-                          {v.price > 0 && <span className="text-[#0066b2] text-[11px] font-bold">+ ⃃ {v.price.toFixed(2)}</span>}
+                          {v.price > 0 && (
+                            <div className="flex items-center gap-1">
+                              <span className="text-[#0066b2] text-[11px] font-bold">+</span>
+                              <CurrencySymbol className="text-[#0066b2] text-[10px]" />
+                              <span className="text-[#0066b2] text-[11px] font-bold">{v.price.toFixed(2)}</span>
+                            </div>
+                          )}
                         </div>
                         <div className={cn("w-5 h-5 rounded-full border-[2px] flex items-center justify-center", selectedFlavor?.name === v.name ? "border-[#0066b2] bg-white" : "border-gray-200")}>
                           {selectedFlavor?.name === v.name && <div className="w-2.5 h-2.5 bg-[#0066b2] rounded-full" />}
@@ -902,7 +904,10 @@ function ItemDetailSheet({
                         <div className="flex items-center justify-between py-1">
                           <div className="flex flex-col">
                             <span className="text-[#334155] text-[14px] font-black">{addon.name}</span>
-                            <span className="text-[#0066b2] text-[11px] font-bold">⃃ {addon.price.toFixed(2)}</span>
+                            <div className="flex items-center gap-1">
+                              <CurrencySymbol className="text-[#0066b2] text-[10px]" />
+                              <span className="text-[#0066b2] text-[11px] font-bold">{addon.price.toFixed(2)}</span>
+                            </div>
                           </div>
                           <div className="flex items-center gap-3">
                             {qty > 0 && (
@@ -948,7 +953,7 @@ function ItemDetailSheet({
             onAdd(item, selectedFlavor?.name, addons, specialRequests, itemQuantity);
             onClose();
           }} className={cn("flex-1 h-12 rounded-[16px] text-[16px] font-black shadow-[0_6px_20px_rgba(0,102,178,0.3)] flex items-center justify-center gap-2 active:scale-[0.98] transition-all", isCustomized ? "bg-[#0066b2] hover:bg-[#005596] text-white" : "bg-gray-100 text-gray-400 shadow-none cursor-not-allowed")}>
-            Update <span className="opacity-40 font-normal">●</span> ⃃ {totalPrice.toFixed(2)}
+            Update <span className="opacity-40 font-normal">●</span> <CurrencySymbol className="text-[14px]" /> {totalPrice.toFixed(2)}
           </button>
         </div>
       </SheetContent>

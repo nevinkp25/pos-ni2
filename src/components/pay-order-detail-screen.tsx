@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { 
   ChevronLeft, 
   MoreVertical, 
@@ -12,10 +12,8 @@ import {
   CreditCard, 
   Split,
   X,
-  Check,
   Pencil,
   Landmark,
-  Wallet,
   Equal,
   Box,
   ArrowRight
@@ -39,9 +37,14 @@ interface PayOrderDetailScreenProps {
   onSplitEqually?: () => void;
 }
 
-// Dirham symbol as requested
-const CurrencySymbol = ({ className }: { className?: string }) => (
-  <span className={cn("font-bold text-inherit leading-none tracking-normal", className)}>⃃</span>
+/**
+ * Shared Currency Symbol component that uses the custom local font.
+ * This ensures the Dirham symbol renders identically across all devices.
+ */
+export const CurrencySymbol = ({ className }: { className?: string }) => (
+  <span className={cn("currency-symbol leading-none inline-flex items-center justify-center", className)}>
+    ⃃
+  </span>
 );
 
 export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, onSplitByItem, onSplitEqually }: PayOrderDetailScreenProps) {
@@ -197,7 +200,6 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
           <div className="w-full border-t border-gray-100 mb-6 border-dashed" />
           
           <div className="grid grid-cols-2 w-full relative">
-            {/* Center Divider */}
             <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gray-100" />
             
             <div className="flex flex-col items-center pr-4">
@@ -372,7 +374,6 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
             <SheetTitle>Check Settlement</SheetTitle>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto pb-10">
-            {/* Header */}
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 bg-gray-200 rounded-full" />
             </div>
@@ -398,7 +399,6 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
             <div className="w-full border-t border-gray-50 mb-8" />
 
             <div className="px-6 space-y-6">
-              {/* Waiter & Bill Info Cards */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
                   <div className="w-10 h-10 bg-[#f8fafc] rounded-full flex items-center justify-center mb-2 border border-gray-50">
@@ -410,13 +410,12 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[24px] font-black text-[#0066b2]">⃃</span>
+                    <CurrencySymbol className="text-[24px] text-[#0066b2]" />
                     <span className="text-[24px] font-black text-[#0066b2]">{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Tips Section */}
               <div className="space-y-4">
                 <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-normal">Add tips for your waiter</span>
                 <div className="grid grid-cols-4 gap-3">
@@ -429,7 +428,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
                         (!isCustomTipMode && selectedTip === amount) ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white"
                       )}
                     >
-                      <span className="text-[10px] font-black text-[#94a3b8] uppercase">⃃</span>
+                      <CurrencySymbol className="text-[10px] text-[#94a3b8] uppercase" />
                       <span className="text-[22px] font-black text-[#1a1c2e]">{amount}</span>
                       {(!isCustomTipMode && selectedTip === amount) && (
                         <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white">
@@ -450,12 +449,11 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
                   </button>
                 </div>
                 
-                {/* Custom Tip Input Field */}
                 {isCustomTipMode && (
                   <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                        <span className="text-[16px] font-black text-[#0066b2]">⃃</span>
+                        <CurrencySymbol className="text-[16px] text-[#0066b2]" />
                       </div>
                       <Input
                         type="number"
@@ -470,12 +468,11 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
                 )}
               </div>
 
-              {/* Bill Summary Card */}
               <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Bill Amount</span>
                   <div className="flex items-center gap-1.5 text-[#1a1c2e]">
-                    <span className="text-[15px] font-black">⃃</span>
+                    <CurrencySymbol className="text-[15px]" />
                     <span>{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -483,7 +480,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
                   <span className="text-[#94a3b8] uppercase">Tips</span>
                   <div className="flex items-center gap-1.5 text-[#26ab5f]">
                     <span>+</span>
-                    <span className="text-[15px] font-black">⃃</span>
+                    <CurrencySymbol className="text-[15px]" />
                     <span>{currentTipAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -520,7 +517,6 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
               </div>
             </div>
 
-            {/* Payment Logos Footer */}
             <div className="px-6 mt-8 flex justify-center gap-3">
               {[
                 { name: 'JCB', color: 'text-[#004e9c]' },
@@ -558,7 +554,6 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
           </div>
 
           <div className="flex-1 px-6 pb-10 space-y-4">
-            {/* Split Equally Card */}
             <button 
               onClick={() => handleSplitTypeSelection('equal')}
               className={cn(
@@ -580,7 +575,6 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
               <ArrowRight className={cn("w-6 h-6 transition-colors", selectedSplitType === 'equal' ? "text-[#0066b2]" : "text-gray-200")} />
             </button>
 
-            {/* Split By Item Card */}
             <button 
               onClick={() => handleSplitTypeSelection('item')}
               className={cn(

@@ -30,15 +30,12 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { CurrencySymbol } from './pay-order-detail-screen';
 
 interface SplitEquallyScreenProps {
   onBack: () => void;
   onPay: (guestCount: number) => void;
 }
-
-const CurrencySymbol = ({ className }: { className?: string }) => (
-  <span className={cn("font-bold text-inherit leading-none tracking-normal", className)}>⃃</span>
-);
 
 export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
   const [guestCount, setGuestCount] = useState(3);
@@ -51,7 +48,6 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
   const [isPartialSuccessOpen, setIsPartialSuccessOpen] = useState(false);
   const [activePayingGuest, setActivePayingGuest] = useState<number | null>(null);
 
-  // Tip State for Settlement Sheet
   const [selectedTip, setSelectedTip] = useState<number | null>(10);
   const [isCustomTipMode, setIsCustomTipMode] = useState(false);
   const [customTipValue, setCustomTipValue] = useState('');
@@ -163,9 +159,12 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
             <div className="flex items-center">
               <span className="text-[9px] font-black text-[#475569] w-[100px] shrink-0 uppercase tracking-tight">Total Amount</span>
               <div className="flex-1 flex justify-center min-w-0">
-                <span className="text-[24px] min-[375px]:text-[28px] min-[414px]:text-[34px] font-black text-[#1a1c2e] tracking-tight leading-none whitespace-nowrap">
-                  <CurrencySymbol /> {totalBill.toFixed(2)}
-                </span>
+                <div className="flex items-center gap-1 min-[375px]:gap-2">
+                  <CurrencySymbol className="text-[20px] min-[414px]:text-[28px] text-[#1a1c2e]" />
+                  <span className="text-[24px] min-[375px]:text-[28px] min-[414px]:text-[34px] font-black text-[#1a1c2e] tracking-tight leading-none whitespace-nowrap">
+                    {totalBill.toFixed(2)}
+                  </span>
+                </div>
               </div>
               <span className="text-[18px] font-black text-[#94a3b8] w-[100px] shrink-0 text-right">
                 {Math.round(progressPercent)}%
@@ -272,7 +271,10 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
                               </button>
                             </CollapsibleTrigger>
                           </div>
-                          <span className="text-[11px] font-bold text-[#94a3b8]">⃃ {shareAmount.toFixed(2)}</span>
+                          <div className="flex items-center gap-1">
+                            <CurrencySymbol className="text-[#94a3b8] text-[10px]" />
+                            <span className="text-[11px] font-bold text-[#94a3b8]">{shareAmount.toFixed(2)}</span>
+                          </div>
                         </div>
                       </div>
                       
@@ -324,14 +326,12 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
         )}
       </div>
 
-      {/* High Fidelity Check Settlement Sheet */}
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden max-h-[92vh] flex flex-col tracking-normal">
           <SheetHeader className="sr-only">
             <SheetTitle>Final Review</SheetTitle>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto pb-10">
-            {/* Header Handle */}
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 bg-gray-200 rounded-full" />
             </div>
@@ -357,7 +357,6 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
             <div className="w-full border-t border-gray-50 mb-8" />
 
             <div className="px-6 space-y-6">
-              {/* Stats Cards */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
                   <div className="w-10 h-10 bg-[#f8fafc] rounded-full flex items-center justify-center mb-2 border border-gray-50">
@@ -369,13 +368,12 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2 tracking-tight">Bill Amount</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[20px] font-black text-[#0066b2]">⃃</span>
+                    <CurrencySymbol className="text-[20px] text-[#0066b2]" />
                     <span className="text-[24px] font-black text-[#0066b2] tabular-nums">{shareAmount.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Tips Section */}
               <div className="space-y-4">
                 <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-normal">Add tips for your waiter</span>
                 <div className="grid grid-cols-4 gap-3">
@@ -388,7 +386,7 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
                         (!isCustomTipMode && selectedTip === amount) ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white"
                       )}
                     >
-                      <span className="text-[10px] font-black text-[#94a3b8] uppercase">⃃</span>
+                      <CurrencySymbol className="text-[10px] text-[#94a3b8] uppercase" />
                       <span className="text-[22px] font-black text-[#1a1c2e] tabular-nums">{amount}</span>
                       {(!isCustomTipMode && selectedTip === amount) && (
                         <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white">
@@ -409,12 +407,11 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
                   </button>
                 </div>
                 
-                {/* Custom Tip Input */}
                 {isCustomTipMode && (
                   <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                        <span className="text-[16px] font-black text-[#0066b2]">⃃</span>
+                        <CurrencySymbol className="text-[16px] text-[#0066b2]" />
                       </div>
                       <Input
                         type="number"
@@ -429,12 +426,11 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
                 )}
               </div>
 
-              {/* Summary Card */}
               <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Bill Amount</span>
                   <div className="flex items-center gap-1.5 text-[#1a1c2e]">
-                    <span className="text-[15px] font-black">⃃</span>
+                    <CurrencySymbol className="text-[15px]" />
                     <span className="tabular-nums">{shareAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -442,7 +438,7 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
                   <span className="text-[#94a3b8] uppercase">Tips</span>
                   <div className="flex items-center gap-1.5 text-[#26ab5f]">
                     <span>+</span>
-                    <span className="text-[15px] font-black">⃃</span>
+                    <CurrencySymbol className="text-[15px]" />
                     <span className="tabular-nums">{currentTipAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -476,7 +472,6 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
               </div>
             </div>
 
-            {/* Payment Logos Footer */}
             <div className="px-6 mt-8 flex justify-center gap-3">
               {[
                 { name: 'JCB', color: 'text-[#004e9c]' },
@@ -494,7 +489,6 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
         </SheetContent>
       </Sheet>
 
-      {/* Partial Success Loop Sheet */}
       <Sheet open={isPartialSuccessOpen} onOpenChange={setIsPartialSuccessOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden h-[400px] flex flex-col tracking-normal">
           <SheetHeader className="sr-only">

@@ -25,6 +25,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import { CurrencySymbol } from './pay-order-detail-screen';
 
 interface SplitItemAddon {
   name: string;
@@ -44,10 +45,6 @@ interface SplitByItemScreenProps {
   onPay: () => void; // Final settlement callback
 }
 
-const CurrencySymbol = ({ className }: { className?: string }) => (
-  <span className={cn("font-bold text-inherit leading-none tracking-normal", className)}>⃃</span>
-);
-
 export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [paidItemIds, setPaidItemIds] = useState<string[]>([]);
@@ -58,7 +55,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
   const [isCustomTipMode, setIsCustomTipMode] = useState(false);
   const [customTipValue, setCustomTipValue] = useState('');
 
-  // Initial logical items matching the order flow
   const initialItems: SplitItem[] = [
     {
       id: '1',
@@ -104,7 +100,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
     }
   ];
 
-  // Filter out items that have already been paid in previous "loops"
   const items = useMemo(() => {
     return initialItems.filter(item => !paidItemIds.includes(item.id));
   }, [paidItemIds]);
@@ -145,7 +140,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
     setIsSettlementOpen(false);
     setIsProcessing(true);
 
-    // Simulate Payment Processing for 3 seconds
     setTimeout(() => {
       setIsProcessing(false);
       
@@ -153,13 +147,12 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
       setPaidItemIds(newPaidItems);
       setSelectedItemIds([]);
 
-      // Check if EVERYTHING is paid
       const allPaid = initialItems.every(item => newPaidItems.includes(item.id));
       
       if (allPaid) {
-        onPay(); // Navigate to the final Settled Screen
+        onPay();
       } else {
-        setIsPartialSuccessOpen(true); // Show the "Payment In Progress" loop sheet
+        setIsPartialSuccessOpen(true);
       }
     }, 3000);
   };
@@ -182,7 +175,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
 
   const progressPercent = totalBill > 0 ? (yourShare / totalBill) * 100 : 0;
   
-  // Larger circular chart for 4 digit amounts
   const circleSize = 240;
   const center = circleSize / 2;
   const radius = 100;
@@ -320,14 +312,12 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
         </Button>
       </div>
 
-      {/* High-Fidelity Settlement Sheet synchronized with PayOrderDetailScreen */}
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden max-h-[92vh] flex flex-col tracking-normal">
           <SheetHeader className="sr-only">
             <SheetTitle>Check Settlement</SheetTitle>
           </SheetHeader>
           <div className="flex-1 overflow-y-auto pb-10">
-            {/* Header Handle */}
             <div className="flex justify-center pt-3 pb-1">
               <div className="w-10 h-1 bg-gray-200 rounded-full" />
             </div>
@@ -353,7 +343,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
             <div className="w-full border-t border-gray-50 mb-8" />
 
             <div className="px-6 space-y-6">
-              {/* Waiter & Item Amount Cards aligned and centered */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
                   <div className="w-10 h-10 bg-[#f8fafc] rounded-full flex items-center justify-center mb-2 border border-gray-50">
@@ -365,13 +354,12 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Item Amount</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[24px] font-black text-[#0066b2]">⃃</span>
+                    <CurrencySymbol className="text-[24px] text-[#0066b2]" />
                     <span className="text-[24px] font-black text-[#0066b2]">{yourShare.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Tips Section with Toggle Logic */}
               <div className="space-y-4">
                 <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-normal">Add tips for your waiter</span>
                 <div className="grid grid-cols-4 gap-3">
@@ -384,7 +372,7 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                         (!isCustomTipMode && selectedTip === amount) ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white"
                       )}
                     >
-                      <span className="text-[10px] font-black text-[#94a3b8] uppercase">⃃</span>
+                      <CurrencySymbol className="text-[10px] text-[#94a3b8] uppercase" />
                       <span className="text-[22px] font-black text-[#1a1c2e]">{amount}</span>
                       {(!isCustomTipMode && selectedTip === amount) && (
                         <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white">
@@ -405,12 +393,11 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                   </button>
                 </div>
                 
-                {/* Custom Tip Input */}
                 {isCustomTipMode && (
                   <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                        <span className="text-[16px] font-black text-[#0066b2]">⃃</span>
+                        <CurrencySymbol className="text-[16px] text-[#0066b2]" />
                       </div>
                       <Input
                         type="number"
@@ -425,12 +412,11 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                 )}
               </div>
 
-              {/* Bill Summary Card matching latest typography requests */}
               <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Bill Amount</span>
                   <div className="flex items-center gap-1.5 text-[#1a1c2e]">
-                    <span className="text-[15px] font-black">⃃</span>
+                    <CurrencySymbol className="text-[15px]" />
                     <span>{yourShare.toFixed(2)}</span>
                   </div>
                 </div>
@@ -438,7 +424,7 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
                   <span className="text-[#94a3b8] uppercase">Tips</span>
                   <div className="flex items-center gap-1.5 text-[#26ab5f]">
                     <span>+</span>
-                    <span className="text-[15px] font-black">⃃</span>
+                    <CurrencySymbol className="text-[15px]" />
                     <span>{currentTipAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -472,7 +458,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
               </div>
             </div>
 
-            {/* Payment Logos */}
             <div className="px-6 mt-8 flex justify-center gap-3">
               {[
                 { name: 'JCB', color: 'text-[#004e9c]' },
@@ -490,7 +475,6 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
         </SheetContent>
       </Sheet>
 
-      {/* Payment In Progress Loop Sheet */}
       <Sheet open={isPartialSuccessOpen} onOpenChange={setIsPartialSuccessOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden h-[400px] flex flex-col tracking-normal">
           <SheetHeader className="sr-only">
