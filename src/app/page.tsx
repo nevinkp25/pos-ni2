@@ -133,13 +133,13 @@ export default function Page() {
   };
 
   const handleQRDetected = (tableId: string) => {
-    // For demo: automatically navigates to order menu for table detected
+    // For demo: automatically navigates to pay order detail for table detected
     setSelectedTable(tableId);
     setGuestCount(2); // Default mock count
-    setCurrentScreen('order-menu');
+    setCurrentScreen('pay-order-detail');
     toast({
       title: "Table Detected",
-      description: `Accessing Table #${tableId}`,
+      description: `Accessing Table #${tableId} for Payment`,
     });
   };
 
