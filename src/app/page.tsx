@@ -11,11 +11,12 @@ import { ProcessingScreen } from '@/components/processing-screen';
 import { OrderSuccessScreen } from '@/components/order-success-screen';
 import { SettledScreen } from '@/components/settled-screen';
 import { PayOrderDetailScreen } from '@/components/pay-order-detail-screen';
+import { SplitByItemScreen } from '@/components/split-by-item-screen';
 import { useToast } from '@/hooks/use-toast';
 import { CartItem } from '@/lib/types';
 
 export default function Page() {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled'>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled' | 'split-by-item'>('welcome');
   const [selectedTable, setSelectedTable] = useState<string>('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const { toast } = useToast();
@@ -89,6 +90,17 @@ export default function Page() {
     }, 3000);
   };
 
+  const handleStartSplitByItem = () => {
+    setCurrentScreen('processing');
+    setTimeout(() => {
+      setCurrentScreen('split-by-item');
+    }, 2000);
+  };
+
+  const handleBackToPayOrder = () => {
+    setCurrentScreen('pay-order-detail');
+  };
+
   const handleFinishOrder = () => {
     setCart([]);
     setSelectedTable('');
@@ -149,6 +161,13 @@ export default function Page() {
           onBack={handleBackToSelectTablePay}
           onHome={handleBackToDashboard}
           onSettle={handleSettleOrder}
+          onSplitByItem={handleStartSplitByItem}
+        />
+      )}
+      {currentScreen === 'split-by-item' && (
+        <SplitByItemScreen 
+          onBack={handleBackToPayOrder}
+          onPay={handleSettleOrder}
         />
       )}
       {currentScreen === 'processing' && (

@@ -35,14 +35,15 @@ interface PayOrderDetailScreenProps {
   onBack: () => void;
   onHome: () => void;
   onSettle: () => void;
+  onSplitByItem?: () => void;
 }
 
 // Dirham symbol as requested
 const CurrencySymbol = ({ className }: { className?: string }) => (
-  <span className={cn("font-bold text-inherit leading-none", className)}>⃃</span>
+  <span className={cn("font-bold text-inherit leading-none tracking-normal", className)}>⃃</span>
 );
 
-export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: PayOrderDetailScreenProps) {
+export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, onSplitByItem }: PayOrderDetailScreenProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
   const [isSplitBillOpen, setIsSplitBillOpen] = useState(false);
@@ -138,8 +139,16 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
     }
   };
 
+  const handleSplitTypeSelection = (type: 'equal' | 'item') => {
+    setSelectedSplitType(type);
+    if (type === 'item') {
+      setIsSplitBillOpen(false);
+      onSplitByItem?.();
+    }
+  };
+
   return (
-    <div className="flex flex-col h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
+    <div className="flex flex-col h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative tracking-normal">
       {/* Header */}
       <div className="bg-white px-5 h-16 flex items-center justify-between shrink-0 z-20 shadow-sm border-b border-gray-50">
         <div className="flex items-center gap-3">
@@ -323,7 +332,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
 
       {/* Check Settlement Bottom Sheet */}
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
-        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden max-h-[92vh] flex flex-col">
+        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden max-h-[92vh] flex flex-col tracking-normal">
           <SheetHeader className="sr-only">
             <SheetTitle>Check Settlement</SheetTitle>
           </SheetHeader>
@@ -374,7 +383,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
 
               {/* Tips Section */}
               <div className="space-y-4">
-                <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-wide">Add tips for your waiter</span>
+                <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-normal">Add tips for your waiter</span>
                 <div className="grid grid-cols-4 gap-3">
                   {[5, 10, 20].map((amount) => (
                     <button 
@@ -411,7 +420,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                        <span className="text-[16px] font-bold text-[#0066b2]">AED</span>
+                        <span className="text-[16px] font-black text-[#0066b2]">AED</span>
                       </div>
                       <Input
                         type="number"
@@ -431,7 +440,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Bill Amount</span>
                   <div className="flex items-center gap-1.5 text-[#1a1c2e]">
-                    <span className="text-[15px] font-bold">AED</span>
+                    <span className="text-[15px] font-black">AED</span>
                     <span>{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -439,7 +448,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   <span className="text-[#94a3b8] uppercase">Tips</span>
                   <div className="flex items-center gap-1.5 text-[#26ab5f]">
                     <span>+</span>
-                    <span className="text-[15px] font-bold">AED</span>
+                    <span className="text-[15px] font-black">AED</span>
                     <span>{currentTipAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -486,7 +495,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 { name: 'VISA', color: 'text-[#1a1f71]' }
               ].map((logo) => (
                 <div key={logo.name} className="px-3 h-8 rounded-lg bg-white border border-gray-100 flex items-center justify-center shadow-sm">
-                  <span className={cn("text-[10px] font-black uppercase tracking-tight", logo.color)}>{logo.name}</span>
+                  <span className={cn("text-[10px] font-black uppercase tracking-normal", logo.color)}>{logo.name}</span>
                 </div>
               ))}
             </div>
@@ -496,7 +505,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
 
       {/* Split Bill Bottom Sheet */}
       <Sheet open={isSplitBillOpen} onOpenChange={setIsSplitBillOpen}>
-        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden flex flex-col">
+        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden flex flex-col tracking-normal">
           <SheetHeader className="sr-only">
             <SheetTitle>Split Bill</SheetTitle>
           </SheetHeader>
@@ -516,7 +525,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
           <div className="flex-1 px-6 pb-10 space-y-4">
             {/* Split Equally Card */}
             <button 
-              onClick={() => setSelectedSplitType('equal')}
+              onClick={() => handleSplitTypeSelection('equal')}
               className={cn(
                 "w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all",
                 selectedSplitType === 'equal' 
@@ -538,7 +547,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
 
             {/* Split By Item Card */}
             <button 
-              onClick={() => setSelectedSplitType('item')}
+              onClick={() => handleSplitTypeSelection('item')}
               className={cn(
                 "w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all",
                 selectedSplitType === 'item' 
