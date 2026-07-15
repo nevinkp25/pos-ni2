@@ -9,12 +9,13 @@ import { OrderMenuScreen } from '@/components/order-menu-screen';
 import { CartScreen } from '@/components/cart-screen';
 import { ProcessingScreen } from '@/components/processing-screen';
 import { OrderSuccessScreen } from '@/components/order-success-screen';
+import { SettledScreen } from '@/components/settled-screen';
 import { PayOrderDetailScreen } from '@/components/pay-order-detail-screen';
 import { useToast } from '@/hooks/use-toast';
 import { CartItem } from '@/lib/types';
 
 export default function Page() {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail'>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled'>('welcome');
   const [selectedTable, setSelectedTable] = useState<string>('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const { toast } = useToast();
@@ -81,6 +82,13 @@ export default function Page() {
     }, 3000);
   };
 
+  const handleSettleOrder = () => {
+    setCurrentScreen('processing');
+    setTimeout(() => {
+      setCurrentScreen('settled');
+    }, 3000);
+  };
+
   const handleFinishOrder = () => {
     setCart([]);
     setSelectedTable('');
@@ -140,7 +148,7 @@ export default function Page() {
           tableNumber={selectedTable}
           onBack={handleBackToSelectTablePay}
           onHome={handleBackToDashboard}
-          onSettle={() => handleFinishOrder()}
+          onSettle={handleSettleOrder}
         />
       )}
       {currentScreen === 'processing' && (
@@ -148,6 +156,9 @@ export default function Page() {
       )}
       {currentScreen === 'order-success' && (
         <OrderSuccessScreen onBackToHome={handleFinishOrder} />
+      )}
+      {currentScreen === 'settled' && (
+        <SettledScreen onBackToHome={handleFinishOrder} />
       )}
     </main>
   );

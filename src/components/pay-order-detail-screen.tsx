@@ -329,7 +329,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   <CreditCard className="w-6 h-6 text-[#0066b2]" />
                 </div>
                 <div className="flex flex-col">
-                  <h2 className="text-[17px] font-black text-[#1a1c2e] leading-none">CHECK SETTLEMENT</h2>
+                  <h2 className="text-[17px] font-black text-[#1a1c2e] leading-none uppercase">CHECK SETTLEMENT</h2>
                   <span className="text-[11px] font-bold text-[#94a3b8] uppercase mt-1.5">Final Review</span>
                 </div>
               </div>
@@ -356,7 +356,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
                   <div className="flex items-baseline gap-1.5 text-[#0066b2] font-black">
-                    <span className="text-[24px] font-bold">AED</span>
+                    <span className="text-[24px] font-black">AED</span>
                     <span className="text-[24px]">{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -421,7 +421,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Bill Amount</span>
                   <div className="flex items-center gap-1.5 text-[#1a1c2e]">
-                    <span className="text-[15px] font-bold">AED</span>
+                    <span className="text-[15px] font-black">AED</span>
                     <span>{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -429,7 +429,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   <span className="text-[#94a3b8] uppercase">Tips</span>
                   <div className="flex items-center gap-1.5 text-[#26ab5f]">
                     <span>+</span>
-                    <span className="text-[15px] font-bold">AED</span>
+                    <span className="text-[15px] font-black">AED</span>
                     <span>{currentTipAmount.toFixed(2)}</span>
                   </div>
                 </div>
