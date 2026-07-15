@@ -317,6 +317,11 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
         : ci
     ));
     setIsEditSheetOpen(false);
+    toast({
+      title: "Success",
+      description: "Item updated successfully",
+      duration: 3000,
+    });
   };
 
   const totalItemCount = cart.reduce((s, i) => s + i.quantity, 0);
