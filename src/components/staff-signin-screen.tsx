@@ -118,16 +118,18 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }:
             </div>
           </div>
 
-          {/* Status Section */}
-          <div className="flex flex-col items-center mb-6">
-            <div className="relative w-32 h-32 mb-4 flex items-center justify-center">
+          {/* Status Section - Refined & Compact */}
+          <div className="flex flex-col items-center mt-auto mb-8 pt-6 border-t border-dashed border-gray-100">
+            <div className="relative w-24 h-24 mb-4 flex items-center justify-center">
                 <div className="absolute inset-0 bg-[#fef3c7] rounded-full opacity-60" />
-                <svg viewBox="0 0 24 24" className="w-16 h-16 text-[#f59e0b] drop-shadow-lg relative z-10" fill="currentColor">
+                <svg viewBox="0 0 24 24" className="w-12 h-12 text-[#f59e0b] drop-shadow-sm relative z-10" fill="currentColor">
                   <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clipRule="evenodd" />
                 </svg>
             </div>
-            <h3 className="text-lg font-bold mb-0.5 tracking-tight text-[#1e293b]">Staff actions are locked</h3>
-            <p className="text-[#94a3b8] text-sm font-medium">Available after staff verification</p>
+            <h3 className="text-[17px] font-black mb-1 tracking-tight text-[#1a1c2e]">Staff actions are locked</h3>
+            <p className="text-[#94a3b8] text-[13px] font-bold text-center leading-tight">
+              Available after staff verification
+            </p>
           </div>
         </div>
       </div>
