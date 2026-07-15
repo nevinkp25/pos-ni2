@@ -19,6 +19,7 @@ import { CartItem } from '@/lib/types';
 export default function Page() {
   const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled' | 'split-by-item' | 'split-equally'>('welcome');
   const [selectedTable, setSelectedTable] = useState<string>('');
+  const [guestCount, setGuestCount] = useState<number>(1);
   const [cart, setCart] = useState<CartItem[]>([]);
   const { toast } = useToast();
 
@@ -51,13 +52,15 @@ export default function Page() {
     setCurrentScreen('staff-dashboard');
   };
 
-  const handleStartOrder = (tableNumber: string) => {
+  const handleStartOrder = (tableNumber: string, count: number) => {
     setSelectedTable(tableNumber);
+    setGuestCount(count);
     setCurrentScreen('order-menu');
   };
 
-  const handleGoToOrderPay = (tableNumber: string) => {
+  const handleGoToOrderPay = (tableNumber: string, count: number) => {
     setSelectedTable(tableNumber);
+    setGuestCount(count);
     setCurrentScreen('pay-order-detail');
   };
 
@@ -84,7 +87,10 @@ export default function Page() {
     }, 3000);
   };
 
-  const handleSettleOrder = () => {
+  const handleSettleOrder = (finalGuestCount?: number) => {
+    if (finalGuestCount !== undefined) {
+      setGuestCount(finalGuestCount);
+    }
     setCurrentScreen('processing');
     setTimeout(() => {
       setCurrentScreen('settled');
@@ -112,6 +118,7 @@ export default function Page() {
   const handleFinishOrder = () => {
     setCart([]);
     setSelectedTable('');
+    setGuestCount(1);
     setCurrentScreen('staff-dashboard');
   };
 
@@ -168,7 +175,7 @@ export default function Page() {
           tableNumber={selectedTable}
           onBack={handleBackToSelectTablePay}
           onHome={handleBackToDashboard}
-          onSettle={handleSettleOrder}
+          onSettle={() => handleSettleOrder()}
           onSplitByItem={handleStartSplitByItem}
           onSplitEqually={handleStartSplitEqually}
         />
@@ -176,13 +183,13 @@ export default function Page() {
       {currentScreen === 'split-by-item' && (
         <SplitByItemScreen 
           onBack={handleBackToPayOrder}
-          onPay={handleSettleOrder}
+          onPay={() => handleSettleOrder()}
         />
       )}
       {currentScreen === 'split-equally' && (
         <SplitEquallyScreen 
           onBack={handleBackToPayOrder}
-          onPay={handleSettleOrder}
+          onPay={(count) => handleSettleOrder(count)}
         />
       )}
       {currentScreen === 'processing' && (
@@ -192,7 +199,7 @@ export default function Page() {
         <OrderSuccessScreen onBackToHome={handleFinishOrder} />
       )}
       {currentScreen === 'settled' && (
-        <SettledScreen onBackToHome={handleFinishOrder} />
+        <SettledScreen guestCount={guestCount} onBackToHome={handleFinishOrder} />
       )}
     </main>
   );

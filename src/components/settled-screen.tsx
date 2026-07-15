@@ -7,12 +7,16 @@ import { cn } from '@/lib/utils';
 
 interface SettledScreenProps {
   onBackToHome: () => void;
+  guestCount: number;
 }
 
-export function SettledScreen({ onBackToHome }: SettledScreenProps) {
-  // Mock data for presentation
-  const guestCount = 11;
-  const displayedGuests = 5;
+export function SettledScreen({ onBackToHome, guestCount }: SettledScreenProps) {
+  const displayedCount = Math.min(guestCount, 5);
+  const showMore = guestCount > 6;
+  const remainingCount = guestCount - 5;
+  
+  // If count is 6, we can just show all 6. If > 6, show 5 + more.
+  const buttonsToShow = guestCount <= 6 ? guestCount : 5;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] items-center px-6 pt-12 pb-8 safe-top safe-bottom tracking-tight overflow-y-auto">
@@ -85,32 +89,44 @@ export function SettledScreen({ onBackToHome }: SettledScreenProps) {
         </Button>
       </div>
 
-      {/* Print Per Guest Section */}
-      <div className="w-full max-w-md mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-[#94a3b8] text-[11px] font-black uppercase tracking-widest">Print per Guest</span>
-          <div className="bg-[#f0f7ff] rounded-md px-2 py-1 flex items-center justify-center">
-            <span className="text-[#0066b2] text-[10px] font-black uppercase">{guestCount} Guests</span>
+      {/* Print Per Guest Section - Dynamic */}
+      {guestCount > 1 && (
+        <div className="w-full max-w-md mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-[#94a3b8] text-[11px] font-black uppercase tracking-widest">Print per Guest</span>
+            <div className="bg-[#f0f7ff] rounded-md px-2 py-1 flex items-center justify-center">
+              <span className="text-[#0066b2] text-[10px] font-black uppercase">{guestCount} Guests</span>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-3">
+            {Array.from({ length: buttonsToShow }).map((_, i) => (
+              <button 
+                key={i}
+                className="h-14 bg-white rounded-xl border border-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all"
+              >
+                <User className="w-4 h-4 text-[#1a1c2e]" />
+                <span className="text-[12px] font-black text-[#1a1c2e]">Guest {i + 1}</span>
+              </button>
+            ))}
+            {guestCount === 6 && (
+              <button 
+                className="h-14 bg-white rounded-xl border border-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all"
+              >
+                <User className="w-4 h-4 text-[#1a1c2e]" />
+                <span className="text-[12px] font-black text-[#1a1c2e]">Guest 6</span>
+              </button>
+            )}
+            {showMore && (
+              <button 
+                className="h-14 bg-white rounded-xl border border-[#d1e9ff] shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-[#f0f7ff] active:scale-95 transition-all"
+              >
+                <span className="text-[#0066b2] text-[12px] font-black">+ {remainingCount} More</span>
+              </button>
+            )}
           </div>
         </div>
-        
-        <div className="grid grid-cols-3 gap-3">
-          {Array.from({ length: displayedGuests }).map((_, i) => (
-            <button 
-              key={i}
-              className="h-14 bg-white rounded-xl border border-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all"
-            >
-              <User className="w-4 h-4 text-[#1a1c2e]" />
-              <span className="text-[12px] font-black text-[#1a1c2e]">Guest 1</span>
-            </button>
-          ))}
-          <button 
-            className="h-14 bg-white rounded-xl border border-[#d1e9ff] shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-[#f0f7ff] active:scale-95 transition-all"
-          >
-            <span className="text-[#0066b2] text-[12px] font-black">+ 6 More</span>
-          </button>
-        </div>
-      </div>
+      )}
 
       {/* Back to Home Action */}
       <div className="w-full max-w-md mt-auto">

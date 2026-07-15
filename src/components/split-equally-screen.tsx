@@ -33,7 +33,7 @@ import {
 
 interface SplitEquallyScreenProps {
   onBack: () => void;
-  onPay: () => void;
+  onPay: (guestCount: number) => void;
 }
 
 const CurrencySymbol = ({ className }: { className?: string }) => (
@@ -101,7 +101,7 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
         setActivePayingGuest(null);
 
         if (newPaid.length === guestCount) {
-          onPay();
+          onPay(guestCount);
         } else {
           setIsPartialSuccessOpen(true);
         }
