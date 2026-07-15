@@ -15,7 +15,10 @@ import {
   Check,
   Pencil,
   Landmark,
-  Wallet
+  Wallet,
+  Equal,
+  Box,
+  ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -42,6 +45,7 @@ const CurrencySymbol = ({ className }: { className?: string }) => (
 export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: PayOrderDetailScreenProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
+  const [isSplitBillOpen, setIsSplitBillOpen] = useState(false);
   const [selectedTip, setSelectedTip] = useState<number | null>(10);
   const [isCustomTipMode, setIsCustomTipMode] = useState(false);
   const [customTipValue, setCustomTipValue] = useState('');
@@ -118,8 +122,12 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
   const grandTotal = billAmount + currentTipAmount;
 
   const handleTipClick = (amount: number) => {
-    setIsCustomTipMode(false);
-    setSelectedTip(amount === selectedTip ? null : amount);
+    if (selectedTip === amount) {
+      setSelectedTip(null);
+    } else {
+      setIsCustomTipMode(false);
+      setSelectedTip(amount);
+    }
   };
 
   const handleCustomTipToggle = () => {
@@ -296,6 +304,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
             Pay Full
           </Button>
           <Button 
+            onClick={() => setIsSplitBillOpen(true)}
             variant="outline"
             className="h-[60px] bg-[#0f172a] border-none hover:bg-black text-white rounded-[18px] text-[16px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
           >
@@ -355,9 +364,9 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 </div>
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
-                  <div className="flex items-baseline gap-1.5 text-[#0066b2] font-black">
-                    <span className="text-[24px] font-black">AED</span>
-                    <span className="text-[24px]">{billAmount.toFixed(2)}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[24px] font-bold text-[#0066b2]">AED</span>
+                    <span className="text-[24px] font-black text-[#0066b2]">{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -401,7 +410,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                        <span className="text-[16px] font-black text-[#0066b2]">AED</span>
+                        <span className="text-[16px] font-bold text-[#0066b2]">AED</span>
                       </div>
                       <Input
                         type="number"
@@ -421,7 +430,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 <div className="flex justify-between items-center text-[15px] font-black">
                   <span className="text-[#94a3b8] uppercase">Bill Amount</span>
                   <div className="flex items-center gap-1.5 text-[#1a1c2e]">
-                    <span className="text-[15px] font-black">AED</span>
+                    <span className="text-[15px] font-bold">AED</span>
                     <span>{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -429,7 +438,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   <span className="text-[#94a3b8] uppercase">Tips</span>
                   <div className="flex items-center gap-1.5 text-[#26ab5f]">
                     <span>+</span>
-                    <span className="text-[15px] font-black">AED</span>
+                    <span className="text-[15px] font-bold">AED</span>
                     <span>{currentTipAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -480,6 +489,61 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 </div>
               ))}
             </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Split Bill Bottom Sheet */}
+      <Sheet open={isSplitBillOpen} onOpenChange={setIsSplitBillOpen}>
+        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden flex flex-col">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Split Bill</SheetTitle>
+          </SheetHeader>
+          
+          <div className="bg-white px-6 pt-6 pb-2 shrink-0">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-[20px] font-black text-[#1a1c2e] uppercase">SPLIT BILL</h2>
+              <button 
+                onClick={() => setIsSplitBillOpen(false)}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-[#f8fafc] text-gray-400 hover:bg-gray-100 transition-colors"
+              >
+                <X className="w-5 h-5 stroke-[2.5px]" />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 px-6 pb-10 space-y-4">
+            {/* Split Equally Card */}
+            <button 
+              className="w-full bg-white rounded-[24px] p-6 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex items-center justify-between group active:scale-[0.98] transition-all"
+            >
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-16 bg-[#f0f7ff] rounded-[20px] flex items-center justify-center">
+                  <Equal className="w-7 h-7 text-[#0066b2] stroke-[3px]" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <h3 className="text-[17px] font-black text-[#1a1c2e] uppercase mb-1">SPLIT EQUALLY</h3>
+                  <p className="text-[#94a3b8] text-[14px] font-bold">Divide total among guests</p>
+                </div>
+              </div>
+              <ArrowRight className="w-6 h-6 text-gray-200 group-hover:text-[#0066b2] transition-colors" />
+            </button>
+
+            {/* Split By Item Card - Selected State */}
+            <button 
+              className="w-full bg-white rounded-[24px] p-6 shadow-[0_10px_30px_rgba(0,102,178,0.05)] border-[2px] border-[#0066b2] flex items-center justify-between group active:scale-[0.98] transition-all"
+            >
+              <div className="flex items-center gap-5">
+                <div className="w-16 h-16 bg-[#f0f7ff] rounded-[20px] flex items-center justify-center">
+                  <Box className="w-7 h-7 text-[#0066b2] fill-[#0066b2]/10 stroke-[2.5px]" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <h3 className="text-[17px] font-black text-[#0066b2] uppercase mb-1">SPLIT BY ITEM</h3>
+                  <p className="text-[#94a3b8] text-[14px] font-bold">Select specific items per guest</p>
+                </div>
+              </div>
+              <ArrowRight className="w-6 h-6 text-[#0066b2] stroke-[2.5px]" />
+            </button>
           </div>
         </SheetContent>
       </Sheet>
