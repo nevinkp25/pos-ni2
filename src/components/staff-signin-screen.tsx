@@ -71,27 +71,14 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }:
 
           {/* Status Section */}
           <div className="flex flex-col items-center mb-6">
-            <div className="relative w-28 h-28 mb-4">
-                <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-2xl">
-                  {/* Shackle */}
-                  <path 
-                    d="M30 45 V35 C30 24 39 15 50 15 C61 15 70 24 70 35 V45" 
-                    fill="none" 
-                    stroke="#cbd5e1" 
-                    strokeWidth="10" 
-                    strokeLinecap="round" 
-                  />
-                  {/* Body */}
-                  <rect x="20" y="45" width="60" height="45" rx="14" fill="#f59e0b" />
-                  {/* Shine effect on body */}
-                  <rect x="26" y="51" width="48" height="4" rx="2" fill="white" fillOpacity="0.2" />
-                  {/* Keyhole */}
-                  <circle cx="50" cy="65" r="7" fill="white" />
-                  <path d="M50 65 L50 78" stroke="white" strokeWidth="5" strokeLinecap="round" />
+            <div className="relative w-32 h-32 mb-4 flex items-center justify-center">
+                <div className="absolute inset-0 bg-[#fef3c7] rounded-full opacity-60" />
+                <svg viewBox="0 0 24 24" className="w-16 h-16 text-[#f59e0b] drop-shadow-lg relative z-10" fill="currentColor">
+                  <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clipRule="evenodd" />
                 </svg>
             </div>
             <h3 className="text-lg font-bold mb-0.5 tracking-tight text-[#1e293b]">Staff actions are locked</h3>
-            <p className="text-[#94a3b8] text-sm font-medium">Available after start verification</p>
+            <p className="text-[#94a3b8] text-sm font-medium">Available after staff verification</p>
           </div>
         </div>
       </div>
