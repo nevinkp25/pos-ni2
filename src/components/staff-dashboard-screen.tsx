@@ -10,9 +10,10 @@ interface StaffDashboardScreenProps {
   onOrderMenu?: () => void;
   onPayOrder?: () => void;
   restaurantName?: string;
+  staffId?: string;
 }
 
-export function StaffDashboardScreen({ onLogout, onOrderMenu, onPayOrder, restaurantName = 'Bella-cuchina' }: StaffDashboardScreenProps) {
+export function StaffDashboardScreen({ onLogout, onOrderMenu, onPayOrder, restaurantName = 'Bella-cuchina', staffId }: StaffDashboardScreenProps) {
   const initials = useMemo(() => {
     return restaurantName
       .split('-')
@@ -76,7 +77,7 @@ export function StaffDashboardScreen({ onLogout, onOrderMenu, onPayOrder, restau
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-[#1a1c2e] text-[15px]">Staff Member</h3>
-            <p className="text-[#94a3b8] text-sm font-medium">ID: 232</p>
+            <p className="text-[#94a3b8] text-sm font-medium">ID: {staffId || '232'}</p>
           </div>
           <div className="h-10 w-[1px] border-r border-dashed border-[#e2e8f0] mx-1"></div>
           <button 

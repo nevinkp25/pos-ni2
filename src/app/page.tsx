@@ -19,6 +19,7 @@ import { CartItem } from '@/lib/types';
 export default function Page() {
   const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled' | 'split-by-item' | 'split-equally'>('welcome');
   const [restaurantName, setRestaurantName] = useState<string>('Bella-cuchina');
+  const [staffId, setStaffId] = useState<string>('');
   const [selectedTable, setSelectedTable] = useState<string>('');
   const [guestCount, setGuestCount] = useState<number>(1);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -29,12 +30,14 @@ export default function Page() {
     setCurrentScreen('staff-signin');
   };
 
-  const handleLogin = () => {
+  const handleLogin = (id: string) => {
+    setStaffId(id);
     setCurrentScreen('staff-dashboard');
   };
 
   const handleLogout = () => {
     setCurrentScreen('staff-signin');
+    setStaffId('');
     toast({
       title: "Success",
       description: "Successfully logged out",
@@ -138,6 +141,7 @@ export default function Page() {
       {currentScreen === 'staff-dashboard' && (
         <StaffDashboardScreen 
           restaurantName={restaurantName}
+          staffId={staffId}
           onLogout={handleLogout} 
           onOrderMenu={handleOrderMenu} 
           onPayOrder={handlePayOrder}
