@@ -21,7 +21,8 @@ import {
   Printer,
   Tag,
   Trash2,
-  ArrowRightLeft
+  ArrowRightLeft,
+  RefreshCcw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -163,49 +164,32 @@ export function PayOrderDetailScreen({
               <MoreVertical className="w-5 h-5 text-gray-400" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[260px] rounded-[24px] p-2 mt-2 shadow-2xl border-none animate-in fade-in zoom-in-95 duration-200">
-            <DropdownMenuLabel className="px-4 py-3">
-              <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.25em]">Table Options</span>
+          <DropdownMenuContent align="end" className="w-[300px] rounded-[32px] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-none animate-in fade-in zoom-in-95 duration-200">
+            <DropdownMenuLabel className="px-0 pt-0 pb-3">
+              <span className="text-[12px] font-black text-[#94a3b8] uppercase tracking-[0.05em]">
+                CHECK ACTIONS
+              </span>
             </DropdownMenuLabel>
-            <div className="flex flex-col gap-0.5">
+            
+            <div className="w-full border-t border-gray-100 mb-6" />
+
+            <div className="flex flex-col gap-1">
               <DropdownMenuItem 
-                onClick={onOrderMenu}
-                className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-[#f0f7ff] group"
+                className="flex items-center gap-5 p-0 rounded-2xl cursor-pointer focus:bg-transparent group"
               >
-                <div className="w-10 h-10 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] group-focus:bg-white transition-colors">
-                  <List className="w-5 h-5" />
+                <div className="w-11 h-11 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] shrink-0">
+                  <RefreshCcw className="w-5 h-5" />
                 </div>
-                <span className="text-[15px] font-black text-[#1a1c2e]">Order Menu</span>
+                <span className="text-[17px] font-black text-[#1a1c2e]">Sync Order</span>
               </DropdownMenuItem>
               
-              <DropdownMenuItem className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-[#f0f7ff] group">
-                <div className="w-10 h-10 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] group-focus:bg-white transition-colors">
-                  <Printer className="w-5 h-5" />
-                </div>
-                <span className="text-[15px] font-black text-[#1a1c2e]">Print Bill</span>
-              </DropdownMenuItem>
+              <div className="w-full border-t border-dashed border-gray-100 my-4" />
 
-              <DropdownMenuItem className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-[#f0f7ff] group">
-                <div className="w-10 h-10 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] group-focus:bg-white transition-colors">
-                  <Tag className="w-5 h-5" />
-                </div>
-                <span className="text-[15px] font-black text-[#1a1c2e]">Apply Discount</span>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-[#f0f7ff] group">
-                <div className="w-10 h-10 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] group-focus:bg-white transition-colors">
-                  <ArrowRightLeft className="w-5 h-5" />
-                </div>
-                <span className="text-[15px] font-black text-[#1a1c2e]">Transfer Table</span>
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator className="my-2 bg-gray-50 mx-2" />
-
-              <DropdownMenuItem className="flex items-center gap-4 p-3 rounded-2xl cursor-pointer focus:bg-red-50 group">
-                <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500 group-focus:bg-white transition-colors">
+              <DropdownMenuItem className="flex items-center gap-5 p-0 rounded-2xl cursor-pointer focus:bg-transparent group">
+                <div className="w-11 h-11 rounded-full bg-red-50 flex items-center justify-center text-red-500 shrink-0">
                   <Trash2 className="w-5 h-5" />
                 </div>
-                <span className="text-[15px] font-black text-red-500">Void Order</span>
+                <span className="text-[17px] font-black text-[#1a1c2e]">Reset Splits</span>
               </DropdownMenuItem>
             </div>
           </DropdownMenuContent>
