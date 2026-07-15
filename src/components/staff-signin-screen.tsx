@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Menu, User, ArrowRight, Lock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,8 @@ interface StaffSignInScreenProps {
 }
 
 export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }: StaffSignInScreenProps) {
+  const [staffId, setStaffId] = useState('');
+
   const initials = useMemo(() => {
     return restaurantName
       .split('-')
@@ -50,19 +52,22 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }:
               <Input
                 type="text"
                 placeholder="Staff ID (e.g. ABC1)"
+                value={staffId}
+                onChange={(e) => setStaffId(e.target.value)}
                 className="h-12 rounded-xl border-[#e2e8f0] border-[1.5px] pl-12 text-base placeholder:text-[#cbd5e1] focus-visible:ring-0 focus-visible:border-[#0081d3] transition-all font-medium"
               />
             </div>
 
             <Button 
               onClick={onLogin}
-              className="w-full h-12 bg-[#0081d3] hover:bg-[#005ea1] text-white rounded-xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98]"
+              disabled={!staffId.trim()}
+              className="w-full h-12 bg-[#0081d3] hover:bg-[#005ea1] text-white rounded-xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98] disabled:opacity-25 disabled:cursor-not-allowed"
             >
               Sign in
               <ArrowRight className="w-5 h-5 stroke-[3px]" />
             </Button>
 
-            {/* Information Note with green border - Non Clickable */}
+            {/* Information Note - Non Clickable */}
             <div className="w-full h-12 bg-[#ecf7ef] text-[#26ab5f] border border-[#26ab5f]/30 rounded-xl text-sm font-bold flex items-center justify-center gap-2 select-none">
               <Lock className="w-4 h-4 fill-current" />
               Sign in to enable actions
