@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 interface WelcomeScreenProps {
-  onStarted?: () => void;
+  onStarted?: (slug: string) => void;
 }
 
 export function WelcomeScreen({ onStarted }: WelcomeScreenProps) {
@@ -56,7 +56,7 @@ export function WelcomeScreen({ onStarted }: WelcomeScreenProps) {
             </div>
 
             <Button 
-              onClick={onStarted}
+              onClick={() => onStarted?.(slug)}
               disabled={!slug.trim()}
               className="w-full h-[54px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-xl text-lg font-bold shadow-[0_4px_12px_rgba(0,102,178,0.2)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
             >

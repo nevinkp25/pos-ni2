@@ -1,15 +1,24 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Menu, User, ArrowRight, Lock } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 interface StaffSignInScreenProps {
   onLogin?: () => void;
+  restaurantName?: string;
 }
 
-export function StaffSignInScreen({ onLogin }: StaffSignInScreenProps) {
+export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }: StaffSignInScreenProps) {
+  const initials = useMemo(() => {
+    return restaurantName
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('')
+      .substring(0, 2);
+  }, [restaurantName]);
+
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] overflow-y-auto safe-top safe-bottom">
       {/* Header Section */}
@@ -17,9 +26,9 @@ export function StaffSignInScreen({ onLogin }: StaffSignInScreenProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-              <span className="text-[#005ea1] font-bold text-base">BC</span>
+              <span className="text-[#005ea1] font-bold text-base">{initials}</span>
             </div>
-            <h2 className="text-white text-lg font-bold tracking-tight">Bella Cuchina</h2>
+            <h2 className="text-white text-lg font-bold tracking-tight">{restaurantName}</h2>
           </div>
           <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-md">
             <Menu className="w-5 h-5 text-white" />
