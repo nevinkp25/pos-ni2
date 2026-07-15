@@ -11,7 +11,8 @@ import {
   ChevronUp,
   CreditCard,
   X,
-  Loader2
+  Loader2,
+  ArrowRight
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,8 @@ const CurrencySymbol = ({ className }: { className?: string }) => (
 
 export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
   const [guestCount, setGuestCount] = useState(3);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
   const [paidGuests, setPaidGuests] = useState<number[]>([]);
   const [expandedGuest, setExpandedGuest] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -50,6 +53,14 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
   
   const paidCount = paidGuests.length;
   const progressPercent = (paidCount / guestCount) * 100;
+
+  const handleConfirmSplit = () => {
+    setIsConfirming(true);
+    setTimeout(() => {
+      setIsConfirming(false);
+      setIsConfirmed(true);
+    }, 1200);
+  };
 
   const handlePayClick = (guestId: number) => {
     setActivePayingGuest(guestId);
@@ -131,8 +142,11 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
           </p>
         </div>
 
-        {/* Guest Counter */}
-        <div className="flex items-center justify-between bg-white rounded-[32px] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.02)] border border-gray-50">
+        {/* Guest Counter - Disabled if confirmed */}
+        <div className={cn(
+          "flex items-center justify-between bg-white rounded-[32px] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.02)] border border-gray-50 transition-all",
+          isConfirmed && "opacity-50 pointer-events-none grayscale-[0.5]"
+        )}>
           <button 
             onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
             className="w-16 h-16 rounded-full bg-white shadow-[0_8px_20px_rgba(0,0,0,0.05)] border border-gray-50 flex items-center justify-center active:scale-90 transition-all"
@@ -162,91 +176,117 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
           </div>
         </div>
 
-        <div className="pt-2">
-          <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-widest mb-4 block">Select who is paying</span>
-          
-          <div className="space-y-3">
-            {Array.from({ length: guestCount }).map((_, i) => {
-              const guestId = i + 1;
-              const isPaid = paidGuests.includes(guestId);
-              const isOpen = expandedGuest === guestId;
-
-              return (
-                <Collapsible 
-                  key={guestId} 
-                  open={isOpen} 
-                  onOpenChange={() => setExpandedGuest(isOpen ? null : guestId)}
-                  className={cn(
-                    "bg-white rounded-[24px] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 overflow-hidden transition-all",
-                    isPaid && "opacity-80"
-                  )}
-                >
-                  <div className="p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-[#f8fbfe] flex items-center justify-center border border-gray-50">
-                        <User className="w-6 h-6 text-[#0066b2]" />
-                      </div>
-                      <div className="flex flex-col">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[15px] font-black text-[#1a1c2e]">Guest {guestId}</span>
-                          <CollapsibleTrigger asChild>
-                            <button className="text-gray-400">
-                              {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                            </button>
-                          </CollapsibleTrigger>
-                        </div>
-                        <span className="text-[11px] font-bold text-[#94a3b8]">AED {shareAmount.toFixed(2)}</span>
-                      </div>
-                    </div>
-                    
-                    {isPaid ? (
-                      <div className="h-10 px-4 rounded-full bg-[#ecf7ef] text-[#26ab5f] flex items-center gap-2 text-[12px] font-black uppercase">
-                        <Check className="w-3.5 h-3.5 stroke-[4px]" />
-                        Paid
-                      </div>
-                    ) : (
-                      <Button 
-                        onClick={() => handlePayClick(guestId)}
-                        className="h-10 px-6 rounded-full bg-[#0066b2] text-white text-[12px] font-black uppercase shadow-md active:scale-95"
-                      >
-                        Pay
-                      </Button>
-                    )}
-                  </div>
-
-                  <CollapsibleContent className="px-5 pb-5">
-                    <div className="bg-[#f8fbfe] rounded-[18px] p-4 space-y-3 border border-gray-50/50">
-                      <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                        <span className="uppercase">Service Fee</span>
-                        <div className="flex items-center gap-1">
-                          <CurrencySymbol className="text-[10px]" />
-                          <span>3.58</span>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                        <span className="uppercase">VAT (5%)</span>
-                        <div className="flex items-center gap-1">
-                          <CurrencySymbol className="text-[10px]" />
-                          <span>3.58</span>
-                        </div>
-                      </div>
-                      <div className="pt-2 border-t border-dashed border-gray-200 flex justify-between items-center">
-                        <span className="text-[11px] font-black text-[#1a1c2e] uppercase">Total</span>
-                        <div className="flex items-center gap-1.5 text-[#0066b2] font-black text-[16px]">
-                          <CurrencySymbol className="text-[14px]" />
-                          <span>{shareAmount.toFixed(2)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              );
-            })}
+        {/* Action: Confirm Split Button */}
+        {!isConfirmed && (
+          <div className="pt-2">
+            <Button 
+              onClick={handleConfirmSplit}
+              disabled={isConfirming}
+              className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black uppercase shadow-[0_10px_30px_rgba(0,102,178,0.25)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+            >
+              {isConfirming ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Calculating...
+                </>
+              ) : (
+                <>
+                  Confirm Split
+                  <ArrowRight className="w-5 h-5 stroke-[3px]" />
+                </>
+              )}
+            </Button>
           </div>
-        </div>
+        )}
+
+        {/* "Select who is paying" Section - Revealed after confirmation */}
+        {isConfirmed && (
+          <div className="pt-2 animate-in fade-in slide-in-from-top-4 duration-500">
+            <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-widest mb-4 block">Select who is paying</span>
+            
+            <div className="space-y-3">
+              {Array.from({ length: guestCount }).map((_, i) => {
+                const guestId = i + 1;
+                const isPaid = paidGuests.includes(guestId);
+                const isOpen = expandedGuest === guestId;
+
+                return (
+                  <Collapsible 
+                    key={guestId} 
+                    open={isOpen} 
+                    onOpenChange={() => setExpandedGuest(isOpen ? null : guestId)}
+                    className={cn(
+                      "bg-white rounded-[24px] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 overflow-hidden transition-all",
+                      isPaid && "opacity-80"
+                    )}
+                  >
+                    <div className="p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-[#f8fbfe] flex items-center justify-center border border-gray-50">
+                          <User className="w-6 h-6 text-[#0066b2]" />
+                        </div>
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[15px] font-black text-[#1a1c2e]">Guest {guestId}</span>
+                            <CollapsibleTrigger asChild>
+                              <button className="text-gray-400">
+                                {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                              </button>
+                            </CollapsibleTrigger>
+                          </div>
+                          <span className="text-[11px] font-bold text-[#94a3b8]">AED {shareAmount.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      
+                      {isPaid ? (
+                        <div className="h-10 px-4 rounded-full bg-[#ecf7ef] text-[#26ab5f] flex items-center gap-2 text-[12px] font-black uppercase">
+                          <Check className="w-3.5 h-3.5 stroke-[4px]" />
+                          Paid
+                        </div>
+                      ) : (
+                        <Button 
+                          onClick={() => handlePayClick(guestId)}
+                          className="h-10 px-6 rounded-full bg-[#0066b2] text-white text-[12px] font-black uppercase shadow-md active:scale-95"
+                        >
+                          Pay
+                        </Button>
+                      )}
+                    </div>
+
+                    <CollapsibleContent className="px-5 pb-5">
+                      <div className="bg-[#f8fbfe] rounded-[18px] p-4 space-y-3 border border-gray-50/50">
+                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                          <span className="uppercase">Service Fee</span>
+                          <div className="flex items-center gap-1">
+                            <CurrencySymbol className="text-[10px]" />
+                            <span>3.58</span>
+                          </div>
+                        </div>
+                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                          <span className="uppercase">VAT (5%)</span>
+                          <div className="flex items-center gap-1">
+                            <CurrencySymbol className="text-[10px]" />
+                            <span>3.58</span>
+                          </div>
+                        </div>
+                        <div className="pt-2 border-t border-dashed border-gray-200 flex justify-between items-center">
+                          <span className="text-[11px] font-black text-[#1a1c2e] uppercase">Total</span>
+                          <div className="flex items-center gap-1.5 text-[#0066b2] font-black text-[16px]">
+                            <CurrencySymbol className="text-[14px]" />
+                            <span>{shareAmount.toFixed(2)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Check Settlement Sheet - Reused for consistency */}
+      {/* Check Settlement Sheet */}
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-hidden max-h-[92vh] flex flex-col tracking-normal">
           <SheetHeader className="sr-only">
