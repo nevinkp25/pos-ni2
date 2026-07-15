@@ -102,6 +102,12 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
   };
 
   const progressPercent = (yourShare / totalBill) * 100;
+  
+  // Larger circle parameters: w-52 (208px)
+  const circleSize = 208;
+  const center = circleSize / 2;
+  const radius = 90;
+  const circumference = 2 * Math.PI * radius;
 
   return (
     <div className="flex flex-col h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative tracking-normal">
@@ -127,36 +133,36 @@ export function SplitByItemScreen({ onBack, onPay }: SplitByItemScreenProps) {
           </p>
         </div>
 
-        {/* Radial Progress - Polished & Compact */}
-        <div className="flex justify-center py-2">
-          <div className="relative w-40 h-40 flex items-center justify-center">
+        {/* Radial Progress - Enlarged for better spacing */}
+        <div className="flex justify-center py-4">
+          <div className="relative w-52 h-52 flex items-center justify-center">
             {/* Background Circle */}
-            <svg className="absolute w-full h-full -rotate-90">
+            <svg className="absolute w-full h-full -rotate-90" viewBox={`0 0 ${circleSize} ${circleSize}`}>
               <circle
-                cx="80"
-                cy="80"
-                r="64"
+                cx={center}
+                cy={center}
+                r={radius}
                 fill="none"
                 stroke="#eef2f8"
-                strokeWidth="10"
+                strokeWidth="12"
               />
               <circle
-                cx="80"
-                cy="80"
-                r="64"
+                cx={center}
+                cy={center}
+                r={radius}
                 fill="none"
                 stroke="#0066b2"
-                strokeWidth="10"
-                strokeDasharray="402.12"
-                strokeDashoffset={402.12 - (402.12 * progressPercent) / 100}
+                strokeWidth="12"
+                strokeDasharray={circumference}
+                strokeDashoffset={circumference - (circumference * progressPercent) / 100}
                 strokeLinecap="round"
                 className="transition-all duration-700 ease-out"
               />
             </svg>
-            <div className="flex flex-col items-center justify-center z-10">
-              <span className="text-[8px] font-black text-[#94a3b8] uppercase tracking-[0.1em] mb-1">Your Share</span>
-              <div className="flex items-center gap-1 text-[#1a1c2e] font-black text-[28px] leading-none">
-                <CurrencySymbol className="text-[24px]" />
+            <div className="flex flex-col items-center justify-center z-10 px-4 text-center">
+              <span className="text-[9px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-2">Your Share</span>
+              <div className="flex items-center gap-1.5 text-[#1a1c2e] font-black text-[32px] leading-none">
+                <CurrencySymbol className="text-[28px]" />
                 <span>{yourShare.toFixed(2)}</span>
               </div>
             </div>
