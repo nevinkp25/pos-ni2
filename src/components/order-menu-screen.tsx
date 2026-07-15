@@ -627,7 +627,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                                 {item.name}
                               </h3>
                               {item.allergens.length > 0 && (
-                                <span className="text-[#6E6E6E] text-[11px] font-black tracking-tight uppercase">
+                                <span className="text-[#6E6E6E] text-[11px] font-black">
                                   Allergen: {item.allergens.join(', ')}
                                 </span>
                               )}
@@ -952,7 +952,7 @@ function ItemDetailSheet({
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {item.allergens.length > 0 ? (
-                      <span className="text-[#6E6E6E] text-[12px] font-black uppercase tracking-tight">
+                      <span className="text-[#6E6E6E] text-[12px] font-black">
                         Allergen: {item.allergens.join(', ')}
                       </span>
                     ) : (
