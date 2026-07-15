@@ -502,13 +502,13 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                             {quantity > 0 ? (
                               <>
                                 <button 
-                                  className="flex items-center gap-1.5 text-[#0066b2] text-[12px] font-black tracking-tight mb-1 whitespace-nowrap"
+                                  className="flex items-center gap-1.5 text-[#0066b2] text-[12px] font-black tracking-tight mb-2 whitespace-nowrap"
                                   onClick={(e) => { e.stopPropagation(); handleItemClick(item); }}
                                 >
                                   <SquarePen className="w-3.5 h-3.5" />
                                   <span className="border-b border-dotted border-[#0066b2]">Instruction</span>
                                 </button>
-                                <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between mt-5">
+                                <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between">
                                   <button 
                                     onClick={(e) => handleMinusClick(e, item.name)}
                                     className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-900 active:scale-90 transition-all"
