@@ -36,6 +36,7 @@ interface PayOrderDetailScreenProps {
   onHome: () => void;
   onSettle: () => void;
   onSplitByItem?: () => void;
+  onSplitEqually?: () => void;
 }
 
 // Dirham symbol as requested
@@ -43,7 +44,7 @@ const CurrencySymbol = ({ className }: { className?: string }) => (
   <span className={cn("font-bold text-inherit leading-none tracking-normal", className)}>⃃</span>
 );
 
-export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, onSplitByItem }: PayOrderDetailScreenProps) {
+export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, onSplitByItem, onSplitEqually }: PayOrderDetailScreenProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
   const [isSplitBillOpen, setIsSplitBillOpen] = useState(false);
@@ -141,9 +142,11 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle, on
 
   const handleSplitTypeSelection = (type: 'equal' | 'item') => {
     setSelectedSplitType(type);
+    setIsSplitBillOpen(false);
     if (type === 'item') {
-      setIsSplitBillOpen(false);
       onSplitByItem?.();
+    } else {
+      onSplitEqually?.();
     }
   };
 
