@@ -334,11 +334,9 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   <span className="text-[15px] font-black text-[#1a1c2e]">#123456</span>
                 </div>
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
-                  {/* Invisible spacer to align labels horizontally with the left card */}
-                  <div className="w-10 h-10 mb-2 invisible" />
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
                   <div className="flex items-baseline gap-1 text-[#0066b2] font-black">
-                    <span className="text-[13px]">AED</span>
+                    <span className="text-[13px] font-normal">AED</span>
                     <span className="text-[24px]">{billAmount.toFixed(2)}</span>
                   </div>
                 </div>
@@ -366,7 +364,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                       )}
                     </button>
                   ))}
-                  <button className="h-[90px] bg-white rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50">
+                  <button className="h-[90px] bg-white rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,102,178,0.03)] border border-gray-50">
                     <Pencil className="w-5 h-5 text-[#94a3b8] mb-1" />
                     <span className="text-[10px] font-black text-[#94a3b8] uppercase">Custom</span>
                   </button>
