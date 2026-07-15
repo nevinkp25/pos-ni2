@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import { ChevronLeft, Scan, X, Minus, Plus, ArrowRight } from 'lucide-react';
+import { ChevronLeft, Scan, X, Minus, Plus, ArrowRight, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SelectTableScreenProps {
@@ -172,6 +172,14 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
               )}
             </button>
           ))}
+        </div>
+
+        {/* Begin Notification Pill */}
+        <div className="w-full max-w-sm bg-[#f0f7ff] rounded-[20px] py-4 flex items-center justify-center gap-2.5 border border-[#d1e9ff] mb-8 animate-in fade-in slide-in-from-bottom-2 duration-700">
+          <div className="w-5 h-5 rounded-full border-[1.5px] border-[#0066b2] flex items-center justify-center">
+            <Check className="w-3.5 h-3.5 text-[#0066b2] stroke-[4px]" />
+          </div>
+          <span className="text-[#0066b2] text-[14px] font-black tracking-tight">Tap a table number to begin</span>
         </div>
       </div>
 
