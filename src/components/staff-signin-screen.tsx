@@ -5,10 +5,13 @@ import { Menu, User, ArrowRight, Lock, ShieldAlert, CircleDollarSign, Settings, 
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface StaffSignInScreenProps {
   onLogin?: (staffId: string) => void;
@@ -46,42 +49,36 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }:
             <h2 className="text-white text-lg font-bold tracking-tight">{restaurantName}</h2>
           </div>
           
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-md active:scale-95">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-md active:scale-95 outline-none">
                 <Menu className="w-5 h-5 text-white" />
               </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[360px] rounded-[32px] border-none p-0 overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200">
-              <div className="bg-white p-6">
-                <div className="flex flex-col gap-6">
-                  <div className="flex items-center">
-                    <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.25em]">
-                      TERMINAL SYSTEMS
-                    </span>
-                  </div>
-                  
-                  <div className="w-full h-px bg-gray-100" />
-
-                  <div className="flex flex-col gap-1">
-                    {terminalMenuItems.map((item, idx) => (
-                      <React.Fragment key={idx}>
-                        {item.dividerBefore && <div className="w-full h-px bg-gray-100 my-4" />}
-                        <button className="flex items-center gap-5 p-3 rounded-2xl hover:bg-gray-50 active:scale-[0.98] transition-all group w-full text-left">
-                          <div className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 ${item.bgColor} ${item.color}`}>
-                            {item.icon}
-                          </div>
-                          <span className="text-[16px] font-black text-[#1a1c2e] group-hover:text-[#0081d3] transition-colors">
-                            {item.label}
-                          </span>
-                        </button>
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[280px] rounded-[24px] p-2 mt-2 shadow-2xl border-none">
+              <DropdownMenuLabel className="px-4 py-3">
+                <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.25em]">
+                  TERMINAL SYSTEMS
+                </span>
+              </DropdownMenuLabel>
+              
+              <div className="flex flex-col gap-0.5">
+                {terminalMenuItems.map((item, idx) => (
+                  <React.Fragment key={idx}>
+                    {item.dividerBefore && <DropdownMenuSeparator className="my-2 bg-gray-100 mx-2" />}
+                    <DropdownMenuItem className="flex items-center gap-4 p-2 rounded-2xl cursor-pointer focus:bg-gray-50 group">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${item.bgColor} ${item.color}`}>
+                        {item.icon}
+                      </div>
+                      <span className="text-[15px] font-black text-[#1a1c2e] group-hover:text-[#0081d3] transition-colors">
+                        {item.label}
+                      </span>
+                    </DropdownMenuItem>
+                  </React.Fragment>
+                ))}
               </div>
-            </DialogContent>
-          </Dialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -148,7 +145,7 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }:
               <path d="M98.7413 14.9234C98.7413 16.3635 98.4916 17.6689 97.9724 18.8628C97.473 20.0567 96.7238 21.0787 95.84 21.9679C94.9381 22.8199 93.862 23.5213 92.6332 23.9943C91.3846 24.4672 90.0786 24.7134 88.6378 24.7134C87.197 24.7134 85.8712 24.4672 84.6424 23.9943C83.3938 23.5213 82.3374 22.8199 81.4356 21.9679C80.5338 21.1159 79.8223 20.0549 79.3229 18.8628C78.8235 17.6689 78.554 16.3635 78.554 14.9234C78.554 13.4833 78.8037 12.1779 79.3229 11.0035C79.8223 9.80962 80.5338 8.80705 81.4356 7.95505C82.3374 7.10305 83.4136 6.4211 84.6424 5.94816C85.8909 5.47522 87.197 5.229 88.6378 5.229C90.0786 5.229 91.4044 5.47522 92.6332 5.94816C93.8818 6.4211 94.9381 7.08357 95.84 7.95505C96.7418 8.82654 97.473 9.84859 97.9724 11.0035C98.4916 12.1973 98.7413 13.5028 98.7413 14.9234ZM94.8609 14.9411C94.8609 14.0519 94.7261 13.2176 94.4387 12.4223C94.1513 11.6075 93.7668 10.9255 93.2279 10.3198C92.6907 9.71397 92.0368 9.24102 91.2499 8.84248C90.463 8.4829 89.5792 8.29337 88.5803 8.29337C87.5814 8.29337 86.6976 8.4829 85.9107 8.84248C85.1238 9.20206 84.4699 9.69448 83.9327 10.3198C83.3956 10.945 83.0111 11.627 82.7219 12.4223C82.4345 13.2371 82.2997 14.0696 82.2997 14.9411C82.2997 15.8126 82.4345 16.6646 82.7219 17.4599C83.0093 18.2552 83.3938 18.9939 83.9327 19.5997C84.4699 20.2054 85.1238 20.7174 85.9107 21.0769C86.6976 21.4365 87.5814 21.626 88.5803 21.626C89.5792 21.626 90.463 21.4365 91.2499 21.0769C92.0368 20.7174 92.6907 20.2249 93.2279 19.5997C93.765 18.9939 94.1495 18.2747 94.4387 17.4599C94.7459 16.6646 94.8609 15.8321 94.8609 14.9411Z" fill="#0069B1"/>
               <path d="M116.776 0H113.05V24.2209H116.776V0Z" fill="#0069B1"/>
               <path d="M47.8998 8.52178V5.71957H43.2127V0H39.5245V18.7476C39.5245 20.6606 40.0041 22.0989 40.9257 23.0837C41.8474 24.0491 43.2109 24.5238 44.9787 24.5238C45.5733 24.5238 46.1123 24.4671 46.6692 24.391C47.1111 24.3148 47.5135 24.2209 47.88 24.0881V21.0574C47.5926 21.1707 47.2854 21.2469 46.9584 21.3408C46.5542 21.4169 46.1895 21.4541 45.8643 21.4541C44.9427 21.4541 44.2511 21.2079 43.8289 20.735C43.4067 20.262 43.2145 19.4667 43.2145 18.349V8.5395L47.9016 8.52001L47.8998 8.52178Z" fill="#0069B1"/>
-              <path d="M109.9 5.22705C108.631 5.22705 107.499 5.56714 106.501 6.23138C105.482 6.89386 104.58 7.76534 104.081 8.86355V5.71948H100.567V24.2208H104.293V14.5052C104.293 13.7293 104.408 12.9712 104.6 12.2521C104.792 11.5329 105.137 10.9271 105.561 10.3585C105.983 9.80944 106.54 9.39318 107.194 9.05131C107.846 8.71122 108.635 8.55889 109.537 8.55889C110.131 8.55889 110.688 8.61557 111.227 8.74842V5.34041C110.843 5.24654 110.421 5.22705 109.901 5.22705H109.9Z" fill="#0069B1"/>
+              <path d="M109.9 5.22705C108.631 5.22705 107.499 5.56714 106.501 6.23138C105.482 6.89386 104.58 7.76534 104.081 8.86355V5.71948H100.567V24.2208H104.293V14.5052C104.293 13.7293 104.408 12.9712 104.6 12.2521C104.792 11.5329 104.408 12.9712 104.6 12.2521C104.792 11.5329 105.137 10.9271 105.561 10.3585C105.983 9.80944 106.54 9.39318 107.194 9.05131C107.846 8.71122 108.635 8.55889 109.537 8.55889C110.131 8.55889 110.688 8.61557 111.227 8.74842V5.34041C110.843 5.24654 110.421 5.22705 109.901 5.22705H109.9Z" fill="#0069B1"/>
               <path d="M16.3069 9.81037C16.0194 8.90168 15.5954 8.12408 15.0206 7.42441C14.4259 6.76194 13.7343 6.19335 12.8504 5.81428C11.9863 5.41574 10.9299 5.2085 9.71908 5.2085C9.04719 5.2085 8.3753 5.28466 7.74113 5.49191C7.12673 5.68144 6.53029 5.92765 5.99313 6.25003C5.45598 6.59012 5.01404 6.95147 4.59186 7.38544C4.16968 7.8017 3.74751 8.27464 3.49779 8.76706V5.73635H0V24.2377H3.72595V14.4087C3.72595 12.5718 4.20561 11.0751 5.12722 9.99635C6.04883 8.87865 7.25967 8.32955 8.73819 8.32955C9.60231 8.32955 10.3137 8.49959 10.8706 8.80249C11.4276 9.10538 11.8497 9.52164 12.1569 10.053C12.4641 10.5827 12.6941 11.1707 12.8091 11.8527C12.924 12.5152 12.9815 13.2343 12.9815 13.9924V24.2377H16.7272V12.7614C16.7272 11.7004 16.5925 10.7155 16.3051 9.80682L16.3069 9.81037Z" fill="#0069B1"/>
               <path d="M124.688 5.71948H129.278L121.366 15.0366L129.163 24.2208H124.573L116.776 15.0366L124.688 5.71948Z" fill="#0069B1"/>
               <path d="M137.819 5.65869H133.247L141.128 14.9386L133.362 24.0874H137.934L145.7 14.9386L137.819 5.65869Z" fill="#FF2E56"/>
