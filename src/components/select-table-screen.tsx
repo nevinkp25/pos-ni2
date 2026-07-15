@@ -191,24 +191,26 @@ export function SelectTableScreen({ onBack, onConfirmSelection, mode = 'order' }
                 </h2>
               </div>
               
-              <div className="flex items-center gap-3">
-                <button 
-                  onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-[#d1e9ff] shadow-sm text-[#0066b2] active:scale-90 transition-all"
-                >
-                  <Minus className="w-4 h-4 stroke-[3px]" />
-                </button>
-                <div className="flex flex-col items-center min-w-[28px]">
-                  <span className="text-[#1a1c2e] text-xl font-black leading-none">{guestCount}</span>
-                  <span className="text-[#0066b2]/60 text-[9px] font-black uppercase tracking-wider mt-0.5">GUEST</span>
+              {mode === 'order' && (
+                <div className="flex items-center gap-3">
+                  <button 
+                    onClick={() => setGuestCount(Math.max(1, guestCount - 1))}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-[#d1e9ff] shadow-sm text-[#0066b2] active:scale-90 transition-all"
+                  >
+                    <Minus className="w-4 h-4 stroke-[3px]" />
+                  </button>
+                  <div className="flex flex-col items-center min-w-[28px]">
+                    <span className="text-[#1a1c2e] text-xl font-black leading-none">{guestCount}</span>
+                    <span className="text-[#0066b2]/60 text-[9px] font-black uppercase tracking-wider mt-0.5">GUEST</span>
+                  </div>
+                  <button 
+                    onClick={() => setGuestCount(guestCount + 1)}
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
+                  >
+                    <Plus className="w-4 h-4 stroke-[3px]" />
+                  </button>
                 </div>
-                <button 
-                  onClick={() => setGuestCount(guestCount + 1)}
-                  className="w-10 h-10 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-[0_4px_12px_rgba(0,102,178,0.3)] active:scale-90 transition-all"
-                >
-                  <Plus className="w-4 h-4 stroke-[3px]" />
-                </button>
-              </div>
+              )}
             </div>
 
             <div className="w-full border-t border-dashed border-[#d1e9ff] mb-4" />
