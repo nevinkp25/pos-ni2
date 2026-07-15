@@ -161,10 +161,10 @@ export function SplitEquallyScreen({ onBack, onPay }: SplitEquallyScreenProps) {
         <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-tr from-[#6366f1]/25 via-[#3b82f6]/25 to-[#a855f7]/25 shadow-[0_12px_40px_rgba(0,102,178,0.04)]">
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[31px] p-6 flex flex-col gap-5">
             <div className="flex items-center">
-              <span className="text-[13px] font-black text-[#475569] w-[100px] shrink-0">Total Amount</span>
+              <span className="text-[9px] font-black text-[#475569] w-[100px] shrink-0 uppercase tracking-tight">Total Amount</span>
               <div className="flex-1 flex justify-center min-w-0">
                 <span className="text-[24px] min-[375px]:text-[28px] min-[414px]:text-[34px] font-black text-[#1a1c2e] tracking-tight leading-none whitespace-nowrap">
-                  ⃃ {totalBill.toFixed(2)}
+                  <CurrencySymbol /> {totalBill.toFixed(2)}
                 </span>
               </div>
               <span className="text-[18px] font-black text-[#94a3b8] w-[100px] shrink-0 text-right">
