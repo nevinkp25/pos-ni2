@@ -557,7 +557,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                   "px-4 py-2 rounded-xl text-[10px] font-black uppercase whitespace-nowrap transition-all border shrink-0 flex items-center gap-1.5",
                   isSelected 
                     ? "bg-[#ef4444] border-[#ef4444] text-white shadow-sm" 
-                    : "bg-white border-gray-100 text-[#94a3b8]"
+                    : "bg-white border-gray-100 text-[#475569]"
                 )}
               >
                 {isSelected && <FilterX className="w-3 h-3" />}
