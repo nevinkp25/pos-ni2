@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Sheet,
   SheetContent,
@@ -42,6 +43,8 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
   const [selectedTip, setSelectedTip] = useState<number | null>(10);
+  const [isCustomTipMode, setIsCustomTipMode] = useState(false);
+  const [customTipValue, setCustomTipValue] = useState('');
 
   const orderItems = [
     {
@@ -107,7 +110,24 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
 
   const displayedItems = isExpanded ? orderItems : orderItems.slice(0, 3);
   const billAmount = 75.08;
-  const grandTotal = billAmount + (selectedTip || 0);
+  
+  const currentTipAmount = isCustomTipMode 
+    ? (parseFloat(customTipValue) || 0)
+    : (selectedTip || 0);
+
+  const grandTotal = billAmount + currentTipAmount;
+
+  const handleTipClick = (amount: number) => {
+    setIsCustomTipMode(false);
+    setSelectedTip(amount === selectedTip ? null : amount);
+  };
+
+  const handleCustomTipToggle = () => {
+    setIsCustomTipMode(!isCustomTipMode);
+    if (!isCustomTipMode) {
+      setSelectedTip(null);
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
@@ -335,7 +355,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                 </div>
                 <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
                   <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
-                  <div className="flex items-baseline gap-1 text-[#0066b2] font-black">
+                  <div className="flex items-baseline gap-1.5 text-[#0066b2] font-black">
                     <span className="text-[24px] font-bold">AED</span>
                     <span className="text-[24px]">{billAmount.toFixed(2)}</span>
                   </div>
@@ -349,26 +369,51 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   {[5, 10, 20].map((amount) => (
                     <button 
                       key={amount}
-                      onClick={() => setSelectedTip(selectedTip === amount ? null : amount)}
+                      onClick={() => handleTipClick(amount)}
                       className={cn(
                         "relative h-[90px] rounded-[24px] flex flex-col items-center justify-center transition-all shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50",
-                        selectedTip === amount ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white"
+                        (!isCustomTipMode && selectedTip === amount) ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white"
                       )}
                     >
                       <span className="text-[10px] font-black text-[#94a3b8] uppercase">AED</span>
                       <span className="text-[22px] font-black text-[#1a1c2e]">{amount}</span>
-                      {selectedTip === amount && (
+                      {(!isCustomTipMode && selectedTip === amount) && (
                         <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white">
                           <X className="w-3 h-3 text-white stroke-[4px]" />
                         </div>
                       )}
                     </button>
                   ))}
-                  <button className="h-[90px] bg-white rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,102,178,0.03)] border border-gray-50">
-                    <Pencil className="w-5 h-5 text-[#94a3b8] mb-1" />
-                    <span className="text-[10px] font-black text-[#94a3b8] uppercase">Custom</span>
+                  <button 
+                    onClick={handleCustomTipToggle}
+                    className={cn(
+                      "h-[90px] rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,102,178,0.03)] border border-gray-50 transition-all",
+                      isCustomTipMode ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white"
+                    )}
+                  >
+                    <Pencil className={cn("w-5 h-5 mb-1", isCustomTipMode ? "text-[#0066b2]" : "text-[#94a3b8]")} />
+                    <span className={cn("text-[10px] font-black uppercase", isCustomTipMode ? "text-[#0066b2]" : "text-[#94a3b8]")}>Custom</span>
                   </button>
                 </div>
+                
+                {/* Custom Tip Input Field */}
+                {isCustomTipMode && (
+                  <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="relative">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                        <span className="text-[16px] font-black text-[#0066b2]">AED</span>
+                      </div>
+                      <Input
+                        type="number"
+                        placeholder="Enter tip amount"
+                        value={customTipValue}
+                        onChange={(e) => setCustomTipValue(e.target.value)}
+                        className="h-14 rounded-[18px] border-[#0066b2]/20 border-2 pl-16 text-lg font-black focus-visible:ring-0 focus-visible:border-[#0066b2]"
+                        autoFocus
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Bill Summary Card */}
@@ -385,7 +430,7 @@ export function PayOrderDetailScreen({ tableNumber, onBack, onHome, onSettle }: 
                   <div className="flex items-center gap-1.5 text-[#26ab5f]">
                     <span>+</span>
                     <span className="text-[15px] font-bold">AED</span>
-                    <span>{(selectedTip || 0).toFixed(2)}</span>
+                    <span>{currentTipAmount.toFixed(2)}</span>
                   </div>
                 </div>
                 <div className="w-full border-t border-dashed border-gray-100 py-1" />
