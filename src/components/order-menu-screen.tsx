@@ -561,9 +561,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                                   )}>
                                     {hasInstruction ? "Instruction Saved" : "Instruction"}
                                   </span>
-                                  {hasInstruction && (
-                                    <div className="absolute -top-1 -right-1.5 w-2 h-2 bg-[#f59e0b] rounded-full animate-pulse" />
-                                  )}
                                 </button>
                                 <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between">
                                   <button 
