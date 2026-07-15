@@ -79,7 +79,7 @@ const ALLERGENS_LIST = ['Dairy', 'Gluten', 'Shellfish', 'Fish', 'Eggs', 'Nuts'];
 
 const CurrencySymbol = ({ className }: { className?: string }) => (
   <span className={cn("currency-symbol leading-none inline-flex items-center justify-center", className)}>
-    ⃃
+    {"\u20C3"}
   </span>
 );
 

@@ -421,6 +421,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
           const hasInstructions = !!item.specialRequests;
           const singleItemPrice = item.basePrice + item.addons.reduce((acc, addon) => acc + (addon.price * addon.quantity), 0);
           const itemDisplayTotal = singleItemPrice * item.quantity;
+          const hasAddons = item.addons.length > 0;
 
           return (
             <div 
@@ -457,52 +458,53 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                       <Pencil className="w-3.5 h-3.5" />
                       <span className="text-[11px] font-black uppercase tracking-tight">Edit</span>
                     </button>
-                    <button 
-                      onClick={() => toggleItem(item.id)}
-                      className={cn(
-                        "w-8 h-8 rounded-full bg-[#f8fafc] flex items-center justify-center text-[#94a3b8] transition-transform",
-                        isExpanded ? "rotate-0" : ""
-                      )}
-                    >
-                      {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                    </button>
+                    {hasAddons && (
+                      <button 
+                        onClick={() => toggleItem(item.id)}
+                        className={cn(
+                          "w-8 h-8 rounded-full bg-[#f8fafc] flex items-center justify-center text-[#94a3b8] transition-transform",
+                          isExpanded ? "rotate-0" : ""
+                        )}
+                      >
+                        {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                {/* Collapsible Area: Addons and Instruction Box */}
-                {isExpanded && (
+                {/* Collapsible Area: Only Addons now */}
+                {isExpanded && hasAddons && (
                   <div className="mt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="w-full border-t border-dashed border-gray-100" />
                     
-                    {item.addons.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {item.addons.map((addon, idx) => (
-                          <div 
-                            key={idx}
-                            className="bg-[#f0f7ff] border border-[#d1e9ff] rounded-full px-3 py-1 flex items-center gap-2"
-                          >
-                            <span className="text-[#0066b2] text-[10px] font-black tracking-tight">
-                              + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
+                    <div className="flex flex-wrap gap-2">
+                      {item.addons.map((addon, idx) => (
+                        <div 
+                          key={idx}
+                          className="bg-[#f0f7ff] border border-[#d1e9ff] rounded-full px-3 py-1 flex items-center gap-2"
+                        >
+                          <span className="text-[#0066b2] text-[10px] font-black tracking-tight">
+                            + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <CurrencySymbol className="text-[#0066b2]/60 text-[8px]" />
+                            <span className="text-[#0066b2]/60 text-[9px] font-black">
+                              {(addon.price * addon.quantity).toFixed(2)}
                             </span>
-                            <div className="flex items-center gap-1">
-                              <CurrencySymbol className="text-[#0066b2]/60 text-[8px]" />
-                              <span className="text-[#0066b2]/60 text-[9px] font-black">
-                                {(addon.price * addon.quantity).toFixed(2)}
-                              </span>
-                            </div>
                           </div>
-                        ))}
-                      </div>
-                    )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-                    {hasInstructions && (
-                      <div className="bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] space-y-1">
-                        <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block">Special Instruction</span>
-                        <p className="text-[#92400e] text-[12px] font-bold leading-tight">
-                          {item.specialRequests}
-                        </p>
-                      </div>
-                    )}
+                {/* Instruction Box: Moved outside collapse check to be ALWAYS visible */}
+                {hasInstructions && (
+                  <div className="mt-4 bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] space-y-1 animate-in fade-in duration-300">
+                    <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block">Special Instruction</span>
+                    <p className="text-[#92400e] text-[12px] font-bold leading-tight">
+                      {item.specialRequests}
+                    </p>
                   </div>
                 )}
 
