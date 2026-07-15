@@ -164,32 +164,34 @@ export function PayOrderDetailScreen({
               <MoreVertical className="w-5 h-5 text-gray-400" />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[300px] rounded-[32px] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-none animate-in fade-in zoom-in-95 duration-200">
-            <DropdownMenuLabel className="px-0 pt-0 pb-3">
-              <span className="text-[12px] font-black text-[#94a3b8] uppercase tracking-[0.05em]">
+          <DropdownMenuContent align="end" className="w-[240px] rounded-[24px] p-4 shadow-[0_15px_35px_rgba(0,0,0,0.12)] border border-gray-50 animate-in fade-in zoom-in-95 duration-200">
+            <DropdownMenuLabel className="px-1 pt-0 pb-2">
+              <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.1em]">
                 CHECK ACTIONS
               </span>
             </DropdownMenuLabel>
             
-            <div className="w-full border-t border-gray-100 mb-6" />
+            <div className="w-full border-t border-gray-100 mb-3" />
 
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-0.5">
               <DropdownMenuItem 
-                className="flex items-center gap-5 p-0 rounded-2xl cursor-pointer focus:bg-transparent group"
+                className="flex items-center gap-3 p-2 rounded-xl cursor-pointer focus:bg-gray-50 group border-none outline-none"
               >
-                <div className="w-11 h-11 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] shrink-0">
-                  <RefreshCcw className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-full bg-[#f0f7ff] flex items-center justify-center text-[#0066b2] shrink-0">
+                  <RefreshCcw className="w-4 h-4" />
                 </div>
-                <span className="text-[17px] font-black text-[#1a1c2e]">Sync Order</span>
+                <span className="text-[15px] font-black text-[#1a1c2e] group-hover:text-[#0066b2] transition-colors">Sync Order</span>
               </DropdownMenuItem>
               
-              <div className="w-full border-t border-dashed border-gray-100 my-4" />
+              <div className="w-full border-t border-dashed border-gray-100 my-2" />
 
-              <DropdownMenuItem className="flex items-center gap-5 p-0 rounded-2xl cursor-pointer focus:bg-transparent group">
-                <div className="w-11 h-11 rounded-full bg-red-50 flex items-center justify-center text-red-500 shrink-0">
-                  <Trash2 className="w-5 h-5" />
+              <DropdownMenuItem 
+                className="flex items-center gap-3 p-2 rounded-xl cursor-pointer focus:bg-gray-50 group border-none outline-none"
+              >
+                <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center text-red-500 shrink-0">
+                  <Trash2 className="w-4 h-4" />
                 </div>
-                <span className="text-[17px] font-black text-[#1a1c2e]">Reset Splits</span>
+                <span className="text-[15px] font-black text-[#1a1c2e] group-hover:text-red-500 transition-colors">Reset Splits</span>
               </DropdownMenuItem>
             </div>
           </DropdownMenuContent>
