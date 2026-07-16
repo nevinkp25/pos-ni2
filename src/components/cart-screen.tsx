@@ -490,11 +490,13 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                   </div>
                 )}
 
-                {/* Instruction Box: Moved outside collapse check to be ALWAYS visible */}
+                {/* Instruction Box: ALWAYS visible */}
                 {hasInstructions && (
-                  <div className="mt-4 bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] space-y-1 animate-in fade-in duration-300">
-                    <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block">Special Instruction</span>
-                    <p className="text-[#92400e] text-[12px] font-bold leading-tight">
+                  <div className="mt-4 bg-[#FFF9EA] rounded-[18px] p-4 space-y-1.5 animate-in fade-in duration-300">
+                    <span className="text-[#B45309] text-[11px] font-black uppercase tracking-wider block">
+                      SPECIAL INSTRUCTION
+                    </span>
+                    <p className="text-[#948D72] text-[14px] font-semibold leading-snug">
                       {item.specialRequests}
                     </p>
                   </div>
@@ -507,7 +509,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
                     className={cn(
                       "flex items-center gap-2 px-3.5 h-10 rounded-full border-[1.5px] border-dotted transition-all active:scale-95",
                       hasInstructions 
-                        ? "bg-[#fffbeb] border-[#f59e0b]/40 text-[#f59e0b]" 
+                        ? "bg-[#FFF9EA] border-[#B45309]/40 text-[#B45309]" 
                         : "bg-white border-[#0066b2]/20 text-[#0066b2]"
                     )}
                   >
@@ -561,10 +563,12 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent }: 
             {kitchenInstructions ? (
               <button 
                 onClick={openKitchenDialog}
-                className="w-full bg-[#fffbeb] rounded-[16px] p-3 border border-dashed border-[#f59e0b] text-left animate-in fade-in duration-200"
+                className="w-full bg-[#FFF9EA] rounded-[18px] p-4 text-left animate-in fade-in duration-200"
               >
-                <span className="text-[#92400e] text-[9px] font-black uppercase tracking-wider block mb-0.5">Order Instructions</span>
-                <p className="text-[#92400e] text-[12px] font-bold leading-tight">
+                <span className="text-[#B45309] text-[11px] font-black uppercase tracking-wider block mb-1">
+                  ORDER INSTRUCTIONS
+                </span>
+                <p className="text-[#948D72] text-[14px] font-semibold leading-snug">
                   {kitchenInstructions}
                 </p>
               </button>
