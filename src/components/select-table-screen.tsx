@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useMemo } from 'react';
@@ -177,9 +178,7 @@ export function SelectTableScreen({ onBack, onConfirmSelection, onNavigateToOrde
                 "h-10 rounded-full border-[1.5px] text-xs font-bold transition-all active:scale-95 flex items-center justify-center",
                 tableNumber === table.number 
                   ? "bg-[#0066b2]/10 border-[#0066b2] text-[#0066b2]"
-                  : table.isAvailable 
-                    ? "bg-[#ecf7ef] border-[#def0e5] text-[#26ab5f]" 
-                    : "bg-[#fef2f2] border-[#fee2e2] text-[#ef4444]"
+                  : "bg-[#F6F9FF] border-[#CAD9F8] text-[#1a1c2e]"
               )}
             >
               {table.number}
