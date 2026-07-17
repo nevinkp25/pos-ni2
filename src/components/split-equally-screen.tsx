@@ -73,10 +73,17 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
     }, 0);
   }, [items]);
 
-  const vat = subtotal * 0.05;
-  const extraCharges = subtotal * 0.10; // Service Charge
-  const totalBill = subtotal + vat + extraCharges;
+  // Breakdown for total bill
+  const serviceChargeTotal = subtotal * 0.10;
+  const vatTotal = subtotal * 0.05;
+  const additionalChargesTotal = subtotal * 0.02;
+  const totalBill = subtotal + serviceChargeTotal + vatTotal + additionalChargesTotal;
   
+  // Breakdown per guest
+  const shareSubtotal = subtotal / guestCount;
+  const shareServiceCharge = serviceChargeTotal / guestCount;
+  const shareVat = vatTotal / guestCount;
+  const shareAdditionalCharges = additionalChargesTotal / guestCount;
   const shareAmount = totalBill / guestCount;
   
   const currentTipAmount = isCustomTipMode 
@@ -170,7 +177,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
           <span className="text-[11px] font-black text-[#1a1c2e] uppercase tracking-[0.2em]">Order: {order?.timestamp.toString().slice(-6) || '---'}</span>
         </div>
 
-        <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-tr from-[#6366f1]/25 via-[#3b82f6]/25 to-[#a855f7]/25 shadow-[0_12px_40px_rgba(0,102,178,0.04)]">
+        <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-tr from-[#6366f1]/25 via-[#3b82f6]/25 to-[#a855f7]/25 shadow-[0_12px_40px_rgba(102,178,0,0.04)]">
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[31px] p-6 flex flex-col gap-5">
             <div className="flex items-center">
               <span className="text-[9px] font-black text-[#475569] w-[100px] shrink-0 uppercase tracking-tight">Total Amount</span>
@@ -198,7 +205,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
         <div className="flex items-center justify-between bg-white rounded-[32px] p-4 shadow-[0_10px_30px_rgba(0,0,0,0.02)] border border-gray-50 transition-all">
           <button onClick={() => handleGuestCountChange(Math.max(1, guestCount - 1))} className="w-16 h-16 rounded-full bg-white shadow-[0_8px_20px_rgba(0,0,0,0.05)] border border-gray-50 flex items-center justify-center active:scale-90 transition-all"><Minus className="w-6 h-6 text-[#1a1c2e] stroke-[3px]" /></button>
           <div className="flex flex-col items-center"><span className="text-[32px] font-black text-[#1a1c2e] leading-none">{guestCount}</span><span className="text-[9px] font-black text-[#94a3b8] uppercase tracking-widest mt-1">Guests</span></div>
-          <button onClick={() => handleGuestCountChange(guestCount + 1)} className="w-16 h-16 rounded-full bg-[#0066b2] shadow-[0_8px_25px_rgba(0,102,178,0.3)] flex items-center justify-center active:scale-90 transition-all"><Plus className="w-6 h-6 text-white stroke-[3px]" /></button>
+          <button onClick={() => handleGuestCountChange(guestCount + 1)} className="w-16 h-16 rounded-full bg-[#0066b2] shadow-[0_8px_25px_rgba(102,178,0,0.3)] flex items-center justify-center active:scale-90 transition-all"><Plus className="w-6 h-6 text-white stroke-[3px]" /></button>
         </div>
 
         <div className="bg-white rounded-[32px] py-10 px-6 shadow-[0_15px_40px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center text-center">
@@ -206,9 +213,73 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
           <CurrencyAmount amount={shareAmount} weight="bold" className="text-[38px] text-[#0066b2]" />
         </div>
 
-        {!isConfirmed && (<div className="pt-2"><Button onClick={handleConfirmSplit} disabled={isConfirming} className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black uppercase shadow-[0_10px_30px_rgba(0,102,178,0.25)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all">{isConfirming ? (<><Loader2 className="w-5 h-5 animate-spin" />Calculating...</>) : (<>Confirm Split<ArrowRight className="w-5 h-5 stroke-[3px]" /></>)}</Button></div>)}
+        {!isConfirmed && (<div className="pt-2"><Button onClick={handleConfirmSplit} disabled={isConfirming} className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black uppercase shadow-[0_10px_30px_rgba(102,178,0,0.25)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all">{isConfirming ? (<><Loader2 className="w-5 h-5 animate-spin" />Calculating...</>) : (<>Confirm Split<ArrowRight className="w-5 h-5 stroke-[3px]" /></>)}</Button></div>)}
 
-        {isConfirmed && (<div className="pt-2 animate-in fade-in slide-in-from-top-4 duration-500"><span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-widest mb-4 block">Select who is paying</span><div className="space-y-3">{Array.from({ length: guestCount }).map((_, i) => { const guestId = i + 1; const isPaid = paidGuests.includes(guestId); const isOpen = expandedGuest === guestId; return (<Collapsible key={guestId} open={isOpen} onOpenChange={() => setExpandedGuest(isOpen ? null : guestId)} className={cn("bg-white rounded-[24px] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 overflow-hidden transition-all", isPaid && "opacity-80")}><div className="p-4 flex items-center justify-between"><div className="flex items-center gap-4"><div className="w-12 h-12 rounded-full bg-[#f8fbfe] flex items-center justify-center border border-gray-50"><User className="w-6 h-6 text-[#0066b2]" /></div><div className="flex flex-col"><div className="flex items-center gap-2"><span className="text-[15px] font-black text-[#1a1c2e]">Guest {guestId}</span><CollapsibleTrigger asChild><button className="text-gray-400">{isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}</button></CollapsibleTrigger></div><CurrencyAmount amount={shareAmount} weight="bold" className="text-[11px] text-[#94a3b8]" /></div></div>{isPaid ? (<div className="h-10 px-4 rounded-full bg-[#ecf7ef] text-[#26ab5f] flex items-center gap-2 text-[12px] font-black uppercase"><Check className="w-3.5 h-3.5 stroke-[4px]" />Paid</div>) : (<Button onClick={() => handlePayClick(guestId)} className="h-10 px-6 rounded-full bg-[#0066b2] text-white text-[12px] font-black uppercase shadow-md active:scale-95">Pay</Button>)}</div><CollapsibleContent className="px-5 pb-5"><div className="bg-[#f8fbfe] rounded-[18px] p-4 space-y-3 border border-gray-50/50"><div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]"><span className="uppercase">Service Fee</span><CurrencyAmount amount={shareAmount * 0.1} weight="bold" className="text-[10px]" /></div><div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]"><span className="uppercase">VAT (5%)</span><CurrencyAmount amount={shareAmount * 0.05} weight="bold" className="text-[10px]" /></div><div className="pt-2 border-t border-dashed border-gray-200 flex justify-between items-center"><span className="text-[11px] font-black text-[#1a1c2e] uppercase">Total</span><CurrencyAmount amount={shareAmount} weight="bold" className="text-[16px] text-[#0066b2]" /></div></div></CollapsibleContent></Collapsible>); })}</div></div>)}
+        {isConfirmed && (
+          <div className="pt-2 animate-in fade-in slide-in-from-top-4 duration-500">
+            <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-widest mb-4 block">Select who is paying</span>
+            <div className="space-y-3">
+              {Array.from({ length: guestCount }).map((_, i) => { 
+                const guestId = i + 1; 
+                const isPaid = paidGuests.includes(guestId); 
+                const isOpen = expandedGuest === guestId; 
+                return (
+                  <Collapsible key={guestId} open={isOpen} onOpenChange={() => setExpandedGuest(isOpen ? null : guestId)} className={cn("bg-white rounded-[24px] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 overflow-hidden transition-all", isPaid && "opacity-80")}>
+                    <div className="p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-[#f8fbfe] flex items-center justify-center border border-gray-50">
+                          <User className="w-6 h-6 text-[#0066b2]" />
+                        </div>
+                        <div className="flex flex-col">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[15px] font-black text-[#1a1c2e]">Guest {guestId}</span>
+                            <CollapsibleTrigger asChild>
+                              <button className="text-gray-400">
+                                {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                              </button>
+                            </CollapsibleTrigger>
+                          </div>
+                          <CurrencyAmount amount={shareAmount} weight="bold" className="text-[11px] text-[#94a3b8]" />
+                        </div>
+                      </div>
+                      {isPaid ? (
+                        <div className="h-10 px-4 rounded-full bg-[#ecf7ef] text-[#26ab5f] flex items-center gap-2 text-[12px] font-black uppercase">
+                          <Check className="w-3.5 h-3.5 stroke-[4px]" />Paid
+                        </div>
+                      ) : (
+                        <Button onClick={() => handlePayClick(guestId)} className="h-10 px-6 rounded-full bg-[#0066b2] text-white text-[12px] font-black uppercase shadow-md active:scale-95">Pay</Button>
+                      )}
+                    </div>
+                    <CollapsibleContent className="px-5 pb-5">
+                      <div className="bg-[#f8fbfe] rounded-[18px] p-4 space-y-3 border border-gray-50/50">
+                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                          <span className="uppercase">Item Price (Base)</span>
+                          <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-[10px]" />
+                        </div>
+                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                          <span className="uppercase">Service Charge (10%)</span>
+                          <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-[10px]" />
+                        </div>
+                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                          <span className="uppercase">VAT (5%)</span>
+                          <CurrencyAmount amount={shareVat} weight="bold" className="text-[10px]" />
+                        </div>
+                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                          <span className="uppercase">Additional Charges</span>
+                          <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-[10px]" />
+                        </div>
+                        <div className="pt-2 border-t border-dashed border-gray-200 flex justify-between items-center">
+                          <span className="text-[11px] font-black text-[#1a1c2e] uppercase">Total Share</span>
+                          <CurrencyAmount amount={shareAmount} weight="bold" className="text-[16px] text-[#0066b2]" />
+                        </div>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                ); 
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
@@ -241,7 +312,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                         <span className="text-[22px] font-black text-[#1a1c2e] tabular-nums">{amount}</span>{(!isCustomTipMode && selectedTip === amount) && <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white"><X className="w-3 h-3 text-white stroke-[4px]" /></div>}
                       </button>
                     ))}
-                    <button onClick={handleCustomTipToggle} className={cn("h-[90px] rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,102,178,0.03)] border border-gray-50 transition-all", isCustomTipMode ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white")}>
+                    <button onClick={handleCustomTipToggle} className={cn("h-[90px] rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(102,178,0,0.03)] border border-gray-50 transition-all", isCustomTipMode ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white")}>
                       <Pencil className={cn("w-5 h-5 mb-1", isCustomTipMode ? "text-[#0066b2]" : "text-[#94a3b8]")} /><span className={cn("text-[10px] font-black uppercase", isCustomTipMode ? "text-[#0066b2]" : "text-[#94a3b8]")}>Custom</span>
                     </button>
                   </div>
@@ -257,7 +328,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                   </div>
                 </div>
               </div>
-              <div className="px-6 mt-10 space-y-4"><Button onClick={handleFinalPayment} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)] active:scale-[0.98] transition-all"><CreditCard className="w-5 h-5" />PAY BY CARD</Button><div className="grid grid-cols-2 gap-4"><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button></div></div>
+              <div className="px-6 mt-10 space-y-4"><Button onClick={handleFinalPayment} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(102,178,0,0.25)] active:scale-[0.98] transition-all"><CreditCard className="w-5 h-5" />PAY BY CARD</Button><div className="grid grid-cols-2 gap-4"><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button></div></div>
             </div>
           </div>
         </SheetContent>

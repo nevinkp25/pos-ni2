@@ -95,9 +95,11 @@ export function PayOrderDetailScreen({
     }, 0);
   }, [items]);
 
+  // Breakdown Logic
+  const serviceCharge = subtotal * 0.10;
   const vat = subtotal * 0.05;
-  const extraCharges = subtotal * 0.10; // Service Charge
-  const billAmount = subtotal + vat + extraCharges;
+  const additionalCharges = subtotal * 0.02; // Logical 2% municipal/additional charge
+  const billAmount = subtotal + serviceCharge + vat + additionalCharges;
   
   const currentTipAmount = isCustomTipMode 
     ? (parseFloat(customTipValue) || 0)
@@ -308,12 +310,16 @@ export function PayOrderDetailScreen({
             
             <div className="space-y-3">
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Extra Charges (10%)</span>
-                <CurrencyAmount amount={extraCharges} weight="bold" className="text-[11px]" />
+                <span className="uppercase tracking-tight">Service Charge (10%)</span>
+                <CurrencyAmount amount={serviceCharge} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
                 <span className="uppercase tracking-tight">VAT (5%)</span>
                 <CurrencyAmount amount={vat} weight="bold" className="text-[11px]" />
+              </div>
+              <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
+                <span className="uppercase tracking-tight">Additional Charges</span>
+                <CurrencyAmount amount={additionalCharges} weight="bold" className="text-[11px]" />
               </div>
             </div>
           </div>
@@ -431,7 +437,7 @@ export function PayOrderDetailScreen({
               </div>
 
               <div className="px-6 mt-10 space-y-4">
-                <Button onClick={() => { setIsSettlementOpen(false); onSettle(); }} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)]"><CreditCard className="w-5 h-5" />PAY BY CARD</Button>
+                <Button onClick={() => { setIsSettlementOpen(false); onSettle(); }} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(102,178,0,0.25)]"><CreditCard className="w-5 h-5" />PAY BY CARD</Button>
                 <div className="grid grid-cols-2 gap-4">
                   <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button>
                   <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button>
@@ -451,14 +457,14 @@ export function PayOrderDetailScreen({
               </div>
             </div>
             <div className="flex-1 px-6 pb-10 space-y-4">
-              <button onClick={() => handleSplitTypeSelection('equal')} className={cn("w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all", selectedSplitType === 'equal' ? "shadow-[0_10px_30px_rgba(0,102,178,0.05)] border-[2px] border-[#0066b2]" : "shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50")}>
+              <button onClick={() => handleSplitTypeSelection('equal')} className={cn("w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all", selectedSplitType === 'equal' ? "shadow-[0_10px_30px_rgba(102,178,0,0.05)] border-[2px] border-[#0066b2]" : "shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50")}>
                 <div className="flex items-center gap-5">
                   <div className="w-16 h-16 bg-[#f0f7ff] rounded-[20px] flex items-center justify-center"><Equal className={cn("w-7 h-7 stroke-[3px]", selectedSplitType === 'equal' ? "text-[#0066b2]" : "text-[#94a3b8]")} /></div>
                   <div className="flex flex-col text-left"><h3 className={cn("text-[17px] font-black uppercase mb-1", selectedSplitType === 'equal' ? "text-[#0066b2]" : "text-[#1a1c2e]")}>SPLIT EQUALLY</h3><p className="text-[#94a3b8] text-[14px] font-bold">Divide total among guests</p></div>
                 </div>
                 <ArrowRight className={cn("w-6 h-6 transition-colors", selectedSplitType === 'equal' ? "text-[#0066b2]" : "text-gray-200")} />
               </button>
-              <button onClick={onSplitByItem} className={cn("w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all", selectedSplitType === 'item' ? "shadow-[0_10px_30px_rgba(0,102,178,0.05)] border-[2px] border-[#0066b2]" : "shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50")}>
+              <button onClick={onSplitByItem} className={cn("w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all", selectedSplitType === 'item' ? "shadow-[0_10px_30px_rgba(102,178,0,0.05)] border-[2px] border-[#0066b2]" : "shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50")}>
                 <div className="flex items-center gap-5">
                   <div className="w-16 h-16 bg-[#f0f7ff] rounded-[20px] flex items-center justify-center"><Box className={cn("w-7 h-7 stroke-[2.5px]", selectedSplitType === 'item' ? "text-[#0066b2] fill-[#0066b2]/10" : "text-[#94a3b8]")} /></div>
                   <div className="flex flex-col text-left"><h3 className={cn("text-[17px] font-black uppercase mb-1", selectedSplitType === 'item' ? "text-[#0066b2]" : "text-[#1a1c2e]")}>SPLIT BY ITEM</h3><p className="text-[#94a3b8] text-[14px] font-bold">Select specific items per guest</p></div>
