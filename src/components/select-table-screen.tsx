@@ -116,17 +116,12 @@ export function SelectTableScreen({ onBack, onConfirmSelection, onNavigateToOrde
         </button>
         <h1 className="text-xl font-bold tracking-tight text-[#1a1c2e]">Select a Table</h1>
         
-        {/* Scan QR button only visible for Paying mode */}
-        {mode === 'pay' ? (
-          <button 
-            onClick={onScanQR}
-            className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
-          >
-            <Scan className="w-5 h-5 text-gray-700" />
-          </button>
-        ) : (
-          <div className="w-10" /> 
-        )}
+        <button 
+          onClick={onScanQR}
+          className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
+        >
+          <Scan className="w-5 h-5 text-gray-700" />
+        </button>
       </div>
 
       <div className="flex-1 flex flex-col items-center px-6 pt-4 overflow-y-auto pb-4">
