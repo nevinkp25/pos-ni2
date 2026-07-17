@@ -130,17 +130,11 @@ export default function Page() {
   };
 
   const handleStartSplitByItem = () => {
-    setCurrentScreen('processing');
-    setTimeout(() => {
-      setCurrentScreen('split-by-item');
-    }, 2000);
+    setCurrentScreen('split-by-item');
   };
 
   const handleStartSplitEqually = () => {
-    setCurrentScreen('processing');
-    setTimeout(() => {
-      setCurrentScreen('split-equally');
-    }, 2000);
+    setCurrentScreen('split-equally');
   };
 
   const handleBackToPayOrder = () => {
