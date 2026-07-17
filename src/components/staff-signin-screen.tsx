@@ -66,7 +66,7 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella Cuchina' }:
               onClick={() => onLogin?.(staffId)}
               disabled={isInputEmpty}
               className={cn(
-                "w-full h-14 bg-[#b3d4e8] hover:bg-[#9fc3db] text-white rounded-2xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98]",
+                "w-full h-14 bg-[#0066b2] hover:bg-[#005596] text-white rounded-2xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98]",
                 isInputEmpty ? "opacity-30" : "opacity-100"
               )}
             >
