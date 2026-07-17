@@ -55,16 +55,16 @@ export function SettledScreen({ onBackToHome, guestCount }: SettledScreenProps) 
 
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-[#94a3b8] text-[14px] font-bold">Transaction ID:</span>
+            <span className="text-[#94a3b8] text-[14px] font-bold uppercase tracking-tight">Transaction ID:</span>
             <span className="text-[#1a1c2e] text-[14px] font-black">#TXN-2026-102028</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-[#94a3b8] text-[14px] font-bold">Date:</span>
-            <span className="text-[#1a1c2e] text-[14px] font-black">07/07/2026</span>
+            <span className="text-[#94a3b8] text-[14px] font-bold uppercase tracking-tight">Transaction Ref #:</span>
+            <span className="text-[#1a1c2e] text-[14px] font-black">#REF-992834-POS</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-[#94a3b8] text-[14px] font-bold">Time:</span>
-            <span className="text-[#1a1c2e] text-[14px] font-black">12:23:23 PM</span>
+            <span className="text-[#94a3b8] text-[14px] font-bold uppercase tracking-tight">Date & Time:</span>
+            <span className="text-[#1a1c2e] text-[14px] font-black">07/07/2026, 12:23:23 PM</span>
           </div>
         </div>
       </div>
@@ -126,7 +126,7 @@ export function SettledScreen({ onBackToHome, guestCount }: SettledScreenProps) 
       <div className="w-full max-w-md mt-auto">
         <Button 
           onClick={onBackToHome}
-          className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black shadow-[0_8px_30px_rgba(0,102,178,0.25)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+          className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black shadow-[0_8px_30px_rgba(102,178,0,0.25)] flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
         >
           <Home className="w-5 h-5 text-white fill-current" />
           Back to Home
