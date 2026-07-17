@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { Menu, User, ArrowRight, Lock, ShieldAlert, CircleDollarSign, Settings, FileText, LogOut } from 'lucide-react';
+import { Menu, User, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,77 +18,42 @@ interface StaffSignInScreenProps {
   restaurantName?: string;
 }
 
-export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }: StaffSignInScreenProps) {
+export function StaffSignInScreen({ onLogin, restaurantName = 'Bella Cuchina' }: StaffSignInScreenProps) {
   const [staffId, setStaffId] = useState('');
 
   const initials = useMemo(() => {
     return restaurantName
-      .split('-')
+      .split(' ')
       .map(word => word.charAt(0).toUpperCase())
       .join('')
       .substring(0, 2);
   }, [restaurantName]);
 
-  const terminalMenuItems = [
-    { label: 'Supervisor Menu', icon: <ShieldAlert className="w-5 h-5" />, color: 'text-[#f59e0b]', bgColor: 'bg-[#fffbeb]' },
-    { label: 'Manual Sale', icon: <CircleDollarSign className="w-5 h-5" />, color: 'text-[#3b82f6]', bgColor: 'bg-[#eff6ff]' },
-    { label: 'Settings', icon: <Settings className="w-5 h-5" />, color: 'text-[#64748b]', bgColor: 'bg-[#f8fafc]' },
-    { label: 'Z-Report', icon: <FileText className="w-5 h-5" />, color: 'text-[#10b981]', bgColor: 'bg-[#f0fdf4]', dividerBefore: true },
-    { label: 'Logout', icon: <LogOut className="w-5 h-5" />, color: 'text-[#ef4444]', bgColor: 'bg-[#fef2f2]' },
-  ];
-
   return (
     <div className="flex flex-col min-h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] overflow-y-auto safe-top safe-bottom">
-      {/* Header Section */}
-      <div className="bg-gradient-to-b from-[#0081d3] to-[#005ea1] h-[120px] pt-8 px-6 shrink-0 flex flex-col">
+      {/* Blue Header Section */}
+      <div className="bg-gradient-to-b from-[#0081d3] to-[#015f9e] h-[160px] pt-8 px-6 shrink-0 flex flex-col">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
               <span className="text-[#005ea1] font-bold text-base">{initials}</span>
             </div>
             <h2 className="text-white text-lg font-bold tracking-tight">{restaurantName}</h2>
           </div>
           
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-md active:scale-95 outline-none">
-                <Menu className="w-5 h-5 text-white" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[280px] rounded-[24px] p-2 mt-2 shadow-2xl border-none">
-              <DropdownMenuLabel className="px-4 py-3">
-                <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.25em]">
-                  TERMINAL SYSTEMS
-                </span>
-              </DropdownMenuLabel>
-              
-              <div className="flex flex-col gap-0.5">
-                {terminalMenuItems.map((item, idx) => (
-                  <React.Fragment key={idx}>
-                    {item.dividerBefore && <DropdownMenuSeparator className="my-2 bg-gray-100 mx-2" />}
-                    <DropdownMenuItem className="flex items-center gap-4 p-2 rounded-2xl cursor-pointer focus:bg-gray-50 group">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${item.bgColor} ${item.color}`}>
-                        {item.icon}
-                      </div>
-                      <span className="text-[15px] font-black text-[#1a1c2e] group-hover:text-[#0081d3] transition-colors">
-                        {item.label}
-                      </span>
-                    </DropdownMenuItem>
-                  </React.Fragment>
-                ))}
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-md active:scale-95 outline-none">
+            <Menu className="w-5 h-5 text-white" />
+          </button>
         </div>
       </div>
 
-      {/* Main Card */}
-      <div className="flex-1 -mt-8 bg-white rounded-t-[32px] px-6 pt-8 flex flex-col shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
+      {/* Main Sign In Card */}
+      <div className="flex-1 -mt-12 bg-white rounded-[48px] px-8 pt-10 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.02)] max-h-[360px]">
         <div className="w-full max-w-sm mx-auto flex flex-col h-full">
-          <h1 className="text-[22px] font-bold mb-1 tracking-tight">Staff Sign In</h1>
-          <p className="text-[#94a3b8] text-sm mb-6 font-medium">Enter your Staff ID to unlock actions</p>
+          <h1 className="text-[24px] font-extrabold mb-1 tracking-tight text-[#1a1c2e]">Staff Sign In</h1>
+          <p className="text-[#94a3b8] text-base mb-8 font-medium">Enter your Staff ID to unlock actions</p>
 
-          <div className="space-y-3 mb-8">
+          <div className="space-y-4">
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#cbd5e1]">
                 <User className="w-5 h-5" />
@@ -98,66 +63,59 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella-cuchina' }:
                 placeholder="Staff ID (e.g. ABC1)"
                 value={staffId}
                 onChange={(e) => setStaffId(e.target.value)}
-                className="h-12 rounded-xl border-[#e2e8f0] border-[1.5px] pl-12 text-base placeholder:text-[#cbd5e1] focus-visible:ring-0 focus-visible:border-[#0081d3] transition-all font-medium"
+                className="h-14 rounded-2xl border-[#d1e9ff] border-2 pl-12 text-base placeholder:text-[#cbd5e1] focus-visible:ring-0 focus-visible:border-[#0081d3] transition-all font-medium"
               />
             </div>
 
             <Button 
               onClick={() => onLogin?.(staffId)}
               disabled={!staffId.trim()}
-              className="w-full h-12 bg-[#0081d3] hover:bg-[#005ea1] text-white rounded-xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98] disabled:opacity-25"
+              className="w-full h-14 bg-[#b3d4e8] hover:bg-[#9fc3db] text-white rounded-2xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98] disabled:opacity-50"
             >
               Sign in
               <ArrowRight className="w-5 h-5 stroke-[3px]" />
             </Button>
-
-            {/* Information Note */}
-            <div className="w-full h-12 bg-white text-[#26ab5f] border border-[#26ab5f]/30 rounded-xl text-sm font-bold flex items-center justify-center gap-2 select-none">
-              <Lock className="w-4 h-4 fill-current" />
-              Sign in to enable actions
-            </div>
-          </div>
-
-          {/* Status Section - Refined & Compact */}
-          <div className="flex flex-col items-center mt-auto mb-8 pt-6 border-t border-dashed border-gray-100">
-            <div className="relative w-24 h-24 mb-4 flex items-center justify-center">
-                <div className="absolute inset-0 bg-[#fef3c7] rounded-full opacity-60" />
-                <svg viewBox="0 0 24 24" className="w-12 h-12 text-[#f59e0b] drop-shadow-sm relative z-10" fill="currentColor">
-                  <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clipRule="evenodd" />
-                </svg>
-            </div>
-            <h3 className="text-[17px] font-black mb-1 tracking-tight text-[#1a1c2e]">Staff actions are locked</h3>
-            <p className="text-[#94a3b8] text-[13px] font-bold text-center leading-tight">
-              Available after staff verification
-            </p>
           </div>
         </div>
       </div>
 
-      {/* Footer Branding */}
-      <div className="bg-white py-6 flex flex-col items-center shrink-0">
-        <div className="flex flex-col items-center">
-          <span className="text-[8px] font-bold text-[#cbd5e1] tracking-[0.2em] uppercase mb-1">
-            POWERED BY
-          </span>
-          <div className="mt-1">
-            <svg width="110" height="35" viewBox="0 0 146 47" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M37.4142 14.8083V15.4141C37.4142 15.6408 37.4142 15.8304 37.3944 16.0199H22.4907C22.5104 16.7957 22.6829 17.5167 23.0278 18.2163C23.3727 18.9178 23.7967 19.4846 24.3536 19.9965C24.9106 20.4889 25.5447 20.8857 26.2741 21.1904C27.0035 21.4738 27.7724 21.6066 28.579 21.6066C29.8473 21.6066 30.9414 21.3232 31.8828 20.7918C32.8044 20.2427 33.5158 19.5607 34.053 18.7849L36.6651 20.8485C35.6465 22.1557 34.4949 23.1211 33.1116 23.7464C31.7678 24.3521 30.23 24.655 28.579 24.655C27.1382 24.655 25.8519 24.4283 24.6411 23.9536C23.4302 23.4807 22.3937 22.8359 21.5098 21.9839C20.6457 21.1514 19.954 20.1276 19.4546 18.9355C18.9551 17.7416 18.6857 16.4167 18.6857 14.9589C18.6857 13.5011 18.9354 12.2133 19.415 10.9823C19.8947 9.75122 20.6061 8.72917 21.4505 7.87717C22.3146 7.02517 23.3709 6.34322 24.5423 5.87028C25.7333 5.39734 27.0196 5.15112 28.3652 5.15112C29.7108 5.15112 30.9773 5.37785 32.1109 5.81359C33.2445 6.24934 34.2039 6.89232 34.953 7.72661C35.7399 8.55913 36.3363 9.56346 36.7585 10.7573C37.2202 12.0079 37.4106 13.3328 37.4106 14.8101L37.4142 14.8083ZM33.6308 13.3328C33.611 12.6137 33.496 11.9122 33.2661 11.2692C33.0361 10.6262 32.7092 10.0754 32.287 9.60243C31.8648 9.12949 31.3079 8.76991 30.654 8.48473C30.0018 8.20132 29.2527 8.06847 28.3688 8.06847C27.582 8.06847 26.813 8.20132 26.1412 8.48473C25.4297 8.76814 24.8549 9.12772 24.3159 9.60243C23.8165 10.0754 23.3943 10.6245 23.0476 11.2692C22.7026 11.9122 22.5104 12.5942 22.4907 13.3328H33.6308Z" fill="#0069B1"/>
-              <path d="M74.9627 5.71948L70.7176 19.9785L66.1275 5.71948H62.2093L57.6965 19.9785L53.4136 5.71948H49.3805L55.6413 24.2208H59.502L64.0921 10.3391H64.1693L68.7971 24.2208H72.6775L78.8809 5.71948H74.9627Z" fill="#0069B1"/>
-              <path d="M98.7413 14.9234C98.7413 16.3635 98.4916 17.6689 97.9724 18.8628C97.473 20.0567 96.7238 21.0787 95.84 21.9679C94.9381 22.8199 93.862 23.5213 92.6332 23.9943C91.3846 24.4672 90.0786 24.7134 88.6378 24.7134C87.197 24.7134 85.8712 24.4672 84.6424 23.9943C83.3938 23.5213 82.3374 22.8199 81.4356 21.9679C80.5338 21.1159 79.8223 20.0549 79.3229 18.8628C78.8235 17.6689 78.554 16.3635 78.554 14.9234C78.554 13.4833 78.8037 12.1779 79.3229 11.0035C79.8223 9.80962 80.5338 8.80705 81.4356 7.95505C82.3374 7.10305 83.4136 6.4211 84.6424 5.94816C85.8909 5.47522 87.197 5.229 88.6378 5.229C90.0786 5.229 91.4044 5.47522 92.6332 5.94816C93.8818 6.4211 94.9381 7.08357 95.84 7.95505C96.7418 8.82654 97.473 9.84859 97.9724 11.0035C98.4916 12.1973 98.7413 13.5028 98.7413 14.9234ZM94.8609 14.9411C94.8609 14.0519 94.7261 13.2176 94.4387 12.4223C94.1513 11.6075 93.7668 10.9255 93.2279 10.3198C92.6907 9.71397 92.0368 9.24102 91.2499 8.84248C90.463 8.4829 89.5792 8.29337 88.5803 8.29337C87.5814 8.29337 86.6976 8.4829 85.9107 8.84248C85.1238 9.20206 84.4699 9.69448 83.9327 10.3198C83.3956 10.945 83.0111 11.627 82.7219 12.4223C82.4345 13.2371 82.2997 14.0696 82.2997 14.9411C82.2997 15.8126 82.4345 16.6646 82.7219 17.4599C83.0093 18.2552 83.3938 18.9939 83.9327 19.5997C84.4699 20.2054 85.1238 20.7174 85.9107 21.0769C86.6976 21.4365 87.5814 21.626 88.5803 21.626C89.5792 21.626 90.463 21.4365 91.2499 21.0769C92.0368 20.7174 92.6907 20.2249 93.2279 19.5997C93.765 18.9939 94.1495 18.2747 94.4387 17.4599C94.7459 16.6646 94.8609 15.8321 94.8609 14.9411Z" fill="#0069B1"/>
-              <path d="M116.776 0H113.05V24.2209H116.776V0Z" fill="#0069B1"/>
-              <path d="M47.8998 8.52178V5.71957H43.2127V0H39.5245V18.7476C39.5245 20.6606 40.0041 22.0989 40.9257 23.0837C41.8474 24.0491 43.2109 24.5238 44.9787 24.5238C45.5733 24.5238 46.1123 24.4671 46.6692 24.391C47.1111 24.3148 47.5135 24.2209 47.88 24.0881V21.0574C47.5926 21.1707 47.2854 21.2469 46.9584 21.3408C46.5542 21.4169 46.1895 21.4541 45.8643 21.4541C44.9427 21.4541 44.2511 21.2079 43.8289 20.735C43.4067 20.262 43.2145 19.4667 43.2145 18.349V8.5395L47.9016 8.52001L47.8998 8.52178Z" fill="#0069B1"/>
-              <path d="M109.9 5.22705C108.631 5.22705 107.499 5.56714 106.501 6.23138C105.482 6.89386 104.58 7.76534 104.081 8.86355V5.71948H100.567V24.2208H104.293V14.5052C104.293 13.7293 104.408 12.9712 104.6 12.2521C104.792 11.5329 104.408 12.9712 104.6 12.2521C104.792 11.5329 105.137 10.9271 105.561 10.3585C105.983 9.80944 106.54 9.39318 107.194 9.05131C107.846 8.71122 108.635 8.55889 109.537 8.55889C110.131 8.55889 110.688 8.61557 111.227 8.74842V5.34041C110.843 5.24654 110.421 5.22705 109.901 5.22705H109.9Z" fill="#0069B1"/>
-              <path d="M16.3069 9.81037C16.0194 8.90168 15.5954 8.12408 15.0206 7.42441C14.4259 6.76194 13.7343 6.19335 12.8504 5.81428C11.9863 5.41574 10.9299 5.2085 9.71908 5.2085C9.04719 5.2085 8.3753 5.28466 7.74113 5.49191C7.12673 5.68144 6.53029 5.92765 5.99313 6.25003C5.45598 6.59012 5.01404 6.95147 4.59186 7.38544C4.16968 7.8017 3.74751 8.27464 3.49779 8.76706V5.73635H0V24.2377H3.72595V14.4087C3.72595 12.5718 4.20561 11.0751 5.12722 9.99635C6.04883 8.87865 7.25967 8.32955 8.73819 8.32955C9.60231 8.32955 10.3137 8.49959 10.8706 8.80249C11.4276 9.10538 11.8497 9.52164 12.1569 10.053C12.4641 10.5827 12.6941 11.1707 12.8091 11.8527C12.924 12.5152 12.9815 13.2343 12.9815 13.9924V24.2377H16.7272V12.7614C16.7272 11.7004 16.5925 10.7155 16.3051 9.80682L16.3069 9.81037Z" fill="#0069B1"/>
-              <path d="M124.688 5.71948H129.278L121.366 15.0366L129.163 24.2208H124.573L116.776 15.0366L124.688 5.71948Z" fill="#0069B1"/>
-              <path d="M137.819 5.65869H133.247L141.128 14.9386L133.362 24.0874H137.934L145.7 14.9386L137.819 5.65869Z" fill="#FF2E56"/>
-              <path d="M99.1313 46.9828C97.924 46.9828 96.8695 46.5417 95.9676 45.6578C95.0658 44.7739 94.6149 43.5942 94.6149 42.1152C94.6149 40.6362 95.0658 39.4883 95.9676 38.5991C96.8695 37.71 97.924 37.2654 99.1313 37.2654C100.619 37.2654 101.826 37.9261 102.751 39.2492V33.6235H104.16V46.7844H102.751V44.9086C101.801 46.2902 100.594 46.9828 99.1313 46.9828ZM99.3882 45.7393C100.303 45.7393 101.1 45.3974 101.783 44.7119C102.466 44.0264 102.807 43.155 102.807 42.0975C102.807 41.04 102.466 40.2075 101.783 39.5291C101.1 38.8507 100.303 38.5106 99.3882 38.5106C98.4738 38.5106 97.6456 38.8383 97.0114 39.4937C96.3772 40.149 96.0611 41.0294 96.0611 42.1347C96.0611 43.24 96.3844 44.0725 97.0294 44.7403C97.6761 45.4081 98.4612 45.7411 99.3882 45.7411V45.7393Z" fill="#0069B1"/>
-              <path d="M106.518 35.4257V33.8936H108.128V35.4257H106.518ZM106.61 46.7834V37.4627H108.019V46.7834H106.61Z" fill="#0069B1"/>
-              <path d="M110.469 46.7837V37.463H111.877V39.0856C112.621 37.8722 113.699 37.2646 115.114 37.2646C116.235 37.2646 117.119 37.6047 117.766 38.2832C118.413 38.9616 118.734 39.8667 118.734 40.9968V46.7837H117.326V41.3387C117.326 40.4619 117.098 39.7728 116.64 39.2751C116.183 38.7756 115.54 38.5276 114.71 38.5276C113.88 38.5276 113.217 38.7986 112.68 39.3389C112.143 39.8791 111.875 40.5823 111.875 41.4485V46.7855H110.467L110.469 46.7837Z" fill="#0069B1"/>
-              <path d="M121.751 42.6919C121.848 43.6414 122.211 44.3959 122.84 44.9539C123.467 45.5136 124.214 45.7917 125.08 45.7917C126.213 45.7917 127.207 45.3525 128.06 44.4757L128.939 45.2515C127.879 46.417 126.58 46.9998 125.044 46.9998C123.714 46.9998 122.597 46.5463 121.688 45.6394C120.779 44.7325 120.326 43.5634 120.326 42.1322C120.326 40.701 120.759 39.624 121.625 38.6799C122.491 37.7358 123.569 37.2646 124.862 37.2646C126.156 37.2646 127.288 37.734 128.08 38.6711C128.872 39.6081 129.269 40.786 129.269 42.2048C129.269 42.3855 129.264 42.5467 129.251 42.6919H121.755H121.751ZM121.751 41.5743H127.839C127.753 40.6727 127.453 39.9252 126.934 39.33C126.416 38.7348 125.712 38.4373 124.821 38.4373C124.016 38.4373 123.328 38.7313 122.755 39.3211C122.182 39.911 121.846 40.662 121.749 41.5743H121.751Z" fill="#0069B1"/>
-            </svg>
-          </div>
+      {/* Locked Illustration Section */}
+      <div className="flex flex-col items-center justify-center mt-12 mb-auto">
+        <div className="relative w-32 h-32 mb-6">
+          {/* POS Terminal Illustration SVG */}
+          <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="42" y="32" width="44" height="64" rx="6" fill="#d1e2f3" />
+            <rect x="46" y="38" width="36" height="24" rx="2" fill="#a5c9f3" />
+            <rect x="46" y="68" width="8" height="8" rx="1.5" fill="#94a3b8" />
+            <rect x="60" y="68" width="8" height="8" rx="1.5" fill="#94a3b8" />
+            <rect x="74" y="68" width="8" height="8" rx="1.5" fill="#94a3b8" />
+            <rect x="46" y="80" width="8" height="8" rx="1.5" fill="#94a3b8" />
+            <rect x="60" y="80" width="8" height="8" rx="1.5" fill="#94a3b8" />
+            <rect x="74" y="80" width="8" height="8" rx="1.5" fill="#94a3b8" />
+            <path d="M42 38H86" stroke="#94a3b8" strokeWidth="2" />
+            
+            {/* Lock Overlay */}
+            <circle cx="82" cy="74" r="16" fill="white" />
+            <path d="M82 66C79.7909 66 78 67.7909 78 70V73H76V81H88V73H86V70C86 67.7909 84.2091 66 82 66ZM84 73H80V70C80 68.8954 80.8954 68 82 68C83.1046 68 84 68.8954 84 70V73Z" fill="#f59e0b" />
+          </svg>
         </div>
+        
+        <h3 className="text-[20px] font-black mb-1 tracking-tight text-[#1e293b]">Staff actions are locked</h3>
+        <p className="text-[#94a3b8] text-[15px] font-bold text-center leading-tight">
+          Sign in to enable actions.
+        </p>
+      </div>
+
+      {/* Footer Branding */}
+      <div className="py-12 flex flex-col items-center shrink-0">
+        <span className="text-[10px] font-black text-[#94a3b8] tracking-[0.1em] uppercase mb-1">
+          POWERED BY
+        </span>
+        <div className="flex items-center">
+          <span className="text-[#0066b2] text-[28px] font-black tracking-tighter">network</span>
+          <span className="text-[#ef4444] text-[28px] font-black mx-1 tracking-tighter">&gt;</span>
+        </div>
+        <span className="text-[#0066b2] text-[16px] font-bold -mt-1">dine</span>
       </div>
     </div>
   );
