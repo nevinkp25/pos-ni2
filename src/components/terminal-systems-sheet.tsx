@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState } from 'react';
@@ -112,52 +111,49 @@ export function TerminalSystemsSheet({ isOpen, onOpenChange, onAdminLogout }: Te
   return (
     <>
       <Sheet open={isOpen} onOpenChange={onOpenChange}>
-        <SheetContent side="bottom" className="rounded-t-[40px] border-none p-0 outline-none overflow-hidden h-auto max-h-[85vh] flex flex-col pb-10">
-          <SheetHeader className="px-8 pt-8 pb-4 flex flex-row items-center justify-between shrink-0">
-            <SheetTitle className="text-[#94a3b8] text-[13px] font-black uppercase tracking-[0.15em]">
-              Terminal Systems
-            </SheetTitle>
-            <button 
-              onClick={() => onOpenChange(false)}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#f8fafc] text-[#94a3b8] hover:bg-gray-100 transition-colors"
-            >
-              <X className="w-5 h-5 stroke-[2.5px]" />
-            </button>
-          </SheetHeader>
+        <SheetContent side="bottom" className="rounded-t-[40px] border-none p-0 outline-none overflow-visible h-auto max-h-[85vh] flex flex-col pb-10">
+          <div className="flex flex-col w-full h-full overflow-hidden rounded-t-[40px]">
+            <SheetHeader className="px-8 pt-8 pb-4 flex flex-row items-center justify-between shrink-0">
+              <SheetTitle className="text-[#94a3b8] text-[13px] font-black uppercase tracking-[0.15em]">
+                Terminal Systems
+              </SheetTitle>
+              {/* External Close Button is handled by SheetContent for side="bottom" */}
+            </SheetHeader>
 
-          <div className="flex-1 overflow-y-auto px-6 pt-2">
-            <div className="space-y-1">
-              {menuItems.map((item, index) => (
-                <div key={index}>
-                  <button 
-                    onClick={item.onClick}
-                    className="w-full h-16 flex items-center justify-between px-3 rounded-2xl active:bg-gray-50 transition-colors group"
-                  >
-                    <div className="flex items-center gap-5">
-                      <div className={cn(
-                        "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform group-active:scale-95",
-                        item.iconBg,
-                        item.iconColor
-                      )}>
-                        {item.icon}
+            <div className="flex-1 overflow-y-auto px-6 pt-2">
+              <div className="space-y-1">
+                {menuItems.map((item, index) => (
+                  <div key={index}>
+                    <button 
+                      onClick={item.onClick}
+                      className="w-full h-16 flex items-center justify-between px-3 rounded-2xl active:bg-gray-50 transition-colors group"
+                    >
+                      <div className="flex items-center gap-5">
+                        <div className={cn(
+                          "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform group-active:scale-95",
+                          item.iconBg,
+                          item.iconColor
+                        )}>
+                          {item.icon}
+                        </div>
+                        <span className={cn(
+                          "text-[17px] font-bold tracking-tight",
+                          item.isDestructive ? "text-[#EF4444]" : "text-[#1a1c2e]"
+                        )}>
+                          {item.title}
+                        </span>
                       </div>
-                      <span className={cn(
-                        "text-[17px] font-bold tracking-tight",
-                        item.isDestructive ? "text-[#EF4444]" : "text-[#1a1c2e]"
-                      )}>
-                        {item.title}
-                      </span>
-                    </div>
-                    <ChevronRight className={cn(
-                      "w-5 h-5 stroke-[3px]",
-                      item.isDestructive ? "text-[#EF4444]/30" : "text-[#e2e8f0]"
-                    )} />
-                  </button>
-                  {index !== menuItems.length - 1 && index === menuItems.length - 2 && (
-                    <div className="mx-3 my-4 border-t border-dashed border-gray-100" />
-                  )}
-                </div>
-              ))}
+                      <ChevronRight className={cn(
+                        "w-5 h-5 stroke-[3px]",
+                        item.isDestructive ? "text-[#EF4444]/30" : "text-[#e2e8f0]"
+                      )} />
+                    </button>
+                    {index !== menuItems.length - 1 && index === menuItems.length - 2 && (
+                      <div className="mx-3 my-4 border-t border-dashed border-gray-100" />
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </SheetContent>
