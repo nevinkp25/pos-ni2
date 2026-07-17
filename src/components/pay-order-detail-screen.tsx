@@ -360,6 +360,9 @@ export function PayOrderDetailScreen({
 
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-visible max-h-[92vh] flex flex-col tracking-normal">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Full Payment Settlement</SheetTitle>
+          </SheetHeader>
           <div className="flex flex-col w-full h-full overflow-hidden rounded-t-[32px] bg-white">
             <div className="flex-1 overflow-y-auto pb-10">
               <div className="flex justify-center pt-3 pb-1">
@@ -404,7 +407,7 @@ export function PayOrderDetailScreen({
                         {(!isCustomTipMode && selectedTip === amount) && <div className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#ef4444] rounded-full flex items-center justify-center border-2 border-white"><X className="w-3 h-3 text-white stroke-[4px]" /></div>}
                       </button>
                     ))}
-                    <button onClick={handleCustomTipToggle} className={cn("h-[90px] rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,102,178,0.03)] border border-gray-50 transition-all", isCustomTipMode ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white")}>
+                    <button onClick={handleCustomTipToggle} className={cn("h-[90px] rounded-[24px] flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(102,178,0,0.03)] border border-gray-50 transition-all", isCustomTipMode ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white")}>
                       <Pencil className={cn("w-5 h-5 mb-1", isCustomTipMode ? "text-[#0066b2]" : "text-[#94a3b8]")} />
                       <span className={cn("text-[10px] font-black uppercase", isCustomTipMode ? "text-[#0066b2]" : "text-[#94a3b8]")}>Custom</span>
                     </button>
@@ -450,6 +453,9 @@ export function PayOrderDetailScreen({
 
       <Sheet open={isSplitBillOpen} onOpenChange={setIsSplitBillOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-visible flex flex-col tracking-normal">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Split Bill Options</SheetTitle>
+          </SheetHeader>
           <div className="flex flex-col w-full h-full overflow-hidden rounded-t-[32px] bg-white">
             <div className="bg-white px-6 pt-6 pb-2 shrink-0">
               <div className="flex items-center justify-between mb-6">

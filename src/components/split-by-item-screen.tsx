@@ -220,6 +220,9 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
 
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-visible max-h-[92vh] flex flex-col tracking-normal">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Item Share Settlement</SheetTitle>
+          </SheetHeader>
           <div className="flex flex-col w-full h-full overflow-hidden rounded-t-[32px] bg-white">
             <div className="flex-1 overflow-y-auto pb-10">
               <div className="flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-gray-200 rounded-full" /></div>
@@ -269,6 +272,9 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
 
       <Sheet open={isPartialSuccessOpen} onOpenChange={setIsPartialSuccessOpen}>
         <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-visible h-[400px] flex flex-col tracking-normal">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Partial Payment Success</SheetTitle>
+          </SheetHeader>
           <div className="flex-1 flex flex-col items-center justify-center px-8 text-center pt-8 overflow-hidden rounded-t-[32px] bg-white">
             <div className="w-24 h-24 bg-[#00d084] rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(0,208,132,0.3)] mb-8">
               <Check className="w-12 h-12 text-white stroke-[5px]" />
