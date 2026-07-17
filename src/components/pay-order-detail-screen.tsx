@@ -338,7 +338,7 @@ export function PayOrderDetailScreen({
         <div className="grid grid-cols-2 gap-4">
           <Button 
             onClick={() => setIsSettlementOpen(true)}
-            className="h-[60px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-[16px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_8px_25px_rgba(0,102,178,0.25)]"
+            className="h-[60px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-[16px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_8px_25px_rgba(102,178,0,0.25)]"
           >
             <CreditCard className="w-5 h-5 text-white" />
             Pay Full
@@ -423,8 +423,29 @@ export function PayOrderDetailScreen({
                 </div>
 
                 <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Item Price (Base)</span>
+                      <CurrencyAmount amount={subtotal} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Tax</span>
+                      <CurrencyAmount amount={vat} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Service Charge</span>
+                      <CurrencyAmount amount={serviceCharge} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Additional Charges</span>
+                      <CurrencyAmount amount={additionalCharges} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                  </div>
+                  
+                  <div className="w-full border-t border-dashed border-gray-100 py-1" />
+                  
                   <div className="flex justify-between items-center text-[15px] font-black">
-                    <span className="text-[#94a3b8] uppercase">Bill Amount</span>
+                    <span className="text-[#1a1c2e] uppercase">Bill Amount</span>
                     <CurrencyAmount amount={billAmount} weight="bold" className="text-[15px] text-[#1a1c2e]" />
                   </div>
                   <div className="flex justify-between items-center text-[15px] font-black">

@@ -258,7 +258,26 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                   {isCustomTipMode && (<div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-200"><div className="relative"><Input type="number" placeholder="Enter tip amount" value={customTipValue} onChange={(e) => setCustomTipValue(e.target.value)} className="h-14 rounded-[18px] border-[#0066b2]/20 border-2 px-6 text-lg font-black focus-visible:ring-0 focus-visible:border-[#0066b2]" autoFocus /></div></div>)}
                 </div>
                 <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
-                  <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Bill Amount</span><CurrencyAmount amount={yourShareTotal} weight="bold" className="text-[14px] text-[#1a1c2e]" /></div>
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Item Price (Base)</span>
+                      <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Tax</span>
+                      <CurrencyAmount amount={shareVat} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Service Charge</span>
+                      <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Additional Charges</span>
+                      <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                  </div>
+                  <div className="w-full border-t border-dashed border-gray-100 py-1" />
+                  <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#1a1c2e] uppercase">Bill Amount</span><CurrencyAmount amount={yourShareTotal} weight="bold" className="text-[14px] text-[#1a1c2e]" /></div>
                   <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8] uppercase">Tips</span><div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="bold" className="text-[14px] text-inherit" /></div></div>
                   <div className="w-full border-t border-dashed border-gray-100 py-1" />
                   <div className="flex justify-between items-center"><span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span><CurrencyAmount amount={grandTotal} weight="bold" className="text-[30px] text-[#0066b2]" /></div>
