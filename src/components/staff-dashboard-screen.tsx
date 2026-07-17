@@ -1,9 +1,11 @@
+
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Menu, User, LogOut, List, CreditCard, QrCode, CircleDollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { TerminalSystemsSheet } from './terminal-systems-sheet';
 
 interface StaffDashboardScreenProps {
   onLogout?: () => void;
@@ -12,6 +14,7 @@ interface StaffDashboardScreenProps {
   onScanQR?: () => void;
   restaurantName?: string;
   staffId?: string;
+  onAdminLogout?: () => void;
 }
 
 export function StaffDashboardScreen({ 
@@ -20,8 +23,11 @@ export function StaffDashboardScreen({
   onPayOrder, 
   onScanQR,
   restaurantName = 'Bella-cuchina', 
-  staffId 
+  staffId,
+  onAdminLogout
 }: StaffDashboardScreenProps) {
+  const [isTerminalSheetOpen, setIsTerminalSheetOpen] = useState(false);
+
   const initials = useMemo(() => {
     return restaurantName
       .split('-')
@@ -71,7 +77,10 @@ export function StaffDashboardScreen({
             </div>
             <h2 className="text-white text-lg font-bold tracking-tight">{restaurantName}</h2>
           </div>
-          <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-md">
+          <button 
+            onClick={() => setIsTerminalSheetOpen(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-md"
+          >
             <Menu className="w-5 h-5 text-white" />
           </button>
         </div>
@@ -153,6 +162,12 @@ export function StaffDashboardScreen({
           </div>
         </div>
       </div>
+
+      <TerminalSystemsSheet 
+        isOpen={isTerminalSheetOpen}
+        onOpenChange={setIsTerminalSheetOpen}
+        onAdminLogout={onAdminLogout}
+      />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useMemo, useState } from 'react';
@@ -5,14 +6,17 @@ import { Menu, User, ArrowRight } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { TerminalSystemsSheet } from './terminal-systems-sheet';
 
 interface StaffSignInScreenProps {
   onLogin?: (staffId: string) => void;
   restaurantName?: string;
+  onAdminLogout?: () => void;
 }
 
-export function StaffSignInScreen({ onLogin, restaurantName = 'Bella Cuchina' }: StaffSignInScreenProps) {
+export function StaffSignInScreen({ onLogin, restaurantName = 'Bella Cuchina', onAdminLogout }: StaffSignInScreenProps) {
   const [staffId, setStaffId] = useState('');
+  const [isTerminalSheetOpen, setIsTerminalSheetOpen] = useState(false);
 
   const initials = useMemo(() => {
     return restaurantName
@@ -36,7 +40,10 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella Cuchina' }:
             <h2 className="text-white text-lg font-bold tracking-tight">{restaurantName}</h2>
           </div>
           
-          <button className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-md active:scale-95 outline-none">
+          <button 
+            onClick={() => setIsTerminalSheetOpen(true)}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 transition-all backdrop-blur-md active:scale-95 outline-none"
+          >
             <Menu className="w-5 h-5 text-white" />
           </button>
         </div>
@@ -66,7 +73,7 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella Cuchina' }:
               onClick={() => onLogin?.(staffId)}
               disabled={isInputEmpty}
               className={cn(
-                "w-full h-14 bg-[#0066b2] hover:bg-[#005596] text-white rounded-2xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98]",
+                "w-full h-14 bg-[#0066b2] text-white rounded-2xl text-base font-bold flex items-center justify-center gap-2 shadow-none transition-all active:scale-[0.98]",
                 isInputEmpty ? "opacity-30" : "opacity-100"
               )}
             >
@@ -127,6 +134,12 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella Cuchina' }:
           </svg>
         </div>
       </div>
+
+      <TerminalSystemsSheet 
+        isOpen={isTerminalSheetOpen}
+        onOpenChange={setIsTerminalSheetOpen}
+        onAdminLogout={onAdminLogout}
+      />
     </div>
   );
 }

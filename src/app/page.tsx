@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -44,6 +45,19 @@ export default function Page() {
       title: "Success",
       description: "Successfully logged out",
       duration: 3000,
+    });
+  };
+
+  const handleAdminLogout = () => {
+    // Complete Reset
+    setStaffId('');
+    setRestaurantName('');
+    setSelectedTable('');
+    setCart([]);
+    setCurrentScreen('welcome');
+    toast({
+      title: "Admin Access",
+      description: "System reset successfully",
     });
   };
 
@@ -174,6 +188,7 @@ export default function Page() {
         <StaffSignInScreen 
           restaurantName={restaurantName}
           onLogin={handleLogin} 
+          onAdminLogout={handleAdminLogout}
         />
       )}
       {currentScreen === 'staff-dashboard' && (
@@ -184,6 +199,7 @@ export default function Page() {
           onOrderMenu={handleOrderMenu} 
           onPayOrder={handlePayOrder}
           onScanQR={handleScanQR}
+          onAdminLogout={handleAdminLogout}
         />
       )}
       {currentScreen === 'qr-scanning' && (
