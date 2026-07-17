@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,6 +7,7 @@ import { StaffDashboardScreen } from '@/components/staff-dashboard-screen';
 import { SelectTableScreen } from '@/components/select-table-screen';
 import { OrderMenuScreen } from '@/components/order-menu-screen';
 import { CartScreen } from '@/components/cart-screen';
+import { EditItemPage } from '@/components/edit-item-page';
 import { ProcessingScreen } from '@/components/processing-screen';
 import { OrderSuccessScreen } from '@/components/order-success-screen';
 import { SettledScreen } from '@/components/settled-screen';
@@ -20,12 +20,13 @@ import { CartItem } from '@/lib/types';
 import { getOrderForTable, saveTableOrder, clearTableOrder } from '@/lib/storage';
 
 export default function Page() {
-  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled' | 'split-by-item' | 'split-equally' | 'qr-scanning'>('welcome');
+  const [currentScreen, setCurrentScreen] = useState<'welcome' | 'staff-signin' | 'staff-dashboard' | 'select-table' | 'order-menu' | 'cart' | 'edit-item-page' | 'processing' | 'order-success' | 'select-table-pay' | 'pay-order-detail' | 'settled' | 'split-by-item' | 'split-equally' | 'qr-scanning'>('welcome');
   const [restaurantName, setRestaurantName] = useState<string>('Bella-cuchina');
   const [staffId, setStaffId] = useState<string>('');
   const [selectedTable, setSelectedTable] = useState<string>('');
   const [guestCount, setGuestCount] = useState<number>(1);
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [editingCartItem, setEditingCartItem] = useState<CartItem | null>(null);
   const { toast } = useToast();
 
   const handleStarted = (slug: string) => {
@@ -49,7 +50,6 @@ export default function Page() {
   };
 
   const handleAdminLogout = () => {
-    // Complete Reset
     setStaffId('');
     setRestaurantName('');
     setSelectedTable('');
@@ -80,7 +80,6 @@ export default function Page() {
   const handleStartOrder = (tableNumber: string, count: number) => {
     setSelectedTable(tableNumber);
     setGuestCount(count);
-    // Load existing order if any
     const existingOrder = getOrderForTable(tableNumber);
     if (existingOrder) {
       setCart(existingOrder.items);
@@ -113,7 +112,6 @@ export default function Page() {
   };
 
   const handleOrderSent = () => {
-    // Persist the order
     saveTableOrder(selectedTable, cart);
     setCurrentScreen('processing');
     setTimeout(() => {
@@ -150,7 +148,6 @@ export default function Page() {
   };
 
   const handleFinishOrder = () => {
-    // Clear order from storage on finish
     clearTableOrder(selectedTable);
     setCart([]);
     setSelectedTable('');
@@ -162,7 +159,7 @@ export default function Page() {
     const existingOrder = getOrderForTable(tableId);
     if (existingOrder) {
       setSelectedTable(tableId);
-      setGuestCount(2); // Default mock
+      setGuestCount(2); 
       setCurrentScreen('pay-order-detail');
       toast({
         title: "Table Detected",
@@ -174,9 +171,29 @@ export default function Page() {
         description: `Table #${tableId} has no active orders to settle.`,
         variant: "destructive",
       });
-      // Return to dashboard since QR is ONLY for paying existing orders
       setCurrentScreen('staff-dashboard');
     }
+  };
+
+  const handleEditItemFromCart = (item: CartItem) => {
+    setEditingCartItem(item);
+    setCurrentScreen('edit-item-page');
+  };
+
+  const handleUpdateItem = (updatedItem: CartItem) => {
+    setCart(prev => prev.map(item => item.id === updatedItem.id ? updatedItem : item));
+    setEditingCartItem(null);
+    setCurrentScreen('cart');
+    toast({
+      title: "Success",
+      description: "Item updated successfully",
+      duration: 3000,
+    });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCartItem(null);
+    setCurrentScreen('cart');
   };
 
   return (
@@ -242,6 +259,14 @@ export default function Page() {
           cart={cart}
           setCart={setCart}
           onOrderSent={handleOrderSent}
+          onEditItem={handleEditItemFromCart}
+        />
+      )}
+      {currentScreen === 'edit-item-page' && editingCartItem && (
+        <EditItemPage 
+          item={editingCartItem}
+          onSave={handleUpdateItem}
+          onCancel={handleCancelEdit}
         />
       )}
       {currentScreen === 'pay-order-detail' && (

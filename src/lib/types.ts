@@ -40,3 +40,28 @@ export interface CartItem {
   specialRequests: string;
   flavor?: string;
 }
+
+export interface MenuItemOption {
+  name: string;
+  price: number;
+}
+
+export interface MenuItem {
+  name: string;
+  description: string;
+  allergens: string[];
+  basePrice: number;
+  nutritionalInfo: {
+    kcal: number;
+    protein: string;
+    carbs: string;
+    fat: string;
+  };
+  variations: MenuItemOption[];
+  addons?: MenuItemOption[];
+}
+
+export interface MenuCategory {
+  title: string;
+  items: MenuItem[];
+}

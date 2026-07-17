@@ -13,11 +13,8 @@ import {
   Minus, 
   Trash2, 
   ShoppingCart, 
-  FileEdit,
   Flame,
   AlertTriangle,
-  Pencil,
-  Circle,
   SquarePen,
   MessageCircle,
   FilterX
@@ -37,33 +34,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { CartItem, CartItemAddon } from '@/lib/types';
+import { CartItem, CartItemAddon, MenuItem, MenuItemOption, MenuCategory } from '@/lib/types';
 import { CurrencyAmount } from './CurrencyAmount';
-
-interface MenuItemOption {
-  name: string;
-  price: number;
-}
-
-interface MenuItem {
-  name: string;
-  description: string;
-  allergens: string[];
-  basePrice: number;
-  nutritionalInfo: {
-    kcal: number;
-    protein: string;
-    carbs: string;
-    fat: string;
-  };
-  variations: MenuItemOption[];
-  addons?: MenuItemOption[];
-}
-
-interface MenuCategory {
-  title: string;
-  items: MenuItem[];
-}
+import { menuData } from '@/lib/menu-data';
 
 interface OrderMenuScreenProps {
   tableNumber: string;
@@ -86,12 +59,10 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   const [detailMode, setDetailMode] = useState<'full' | 'compact'>('full');
   const [internalEditingItem, setInternalEditingItem] = useState<CartItem | null>(null);
 
-  // Search & Filter State
   const [isSearching, setIsSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
 
-  // Instruction Dialog State
   const [isInstructionDialogOpen, setIsInstructionDialogOpen] = useState(false);
   const [activeInstructionItem, setActiveInstructionItem] = useState<MenuItem | null>(null);
   const [tempInstruction, setTempInstruction] = useState('');
@@ -103,173 +74,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
       return () => clearTimeout(timer);
     }
   }, [isSearching]);
-
-  const menuData: MenuCategory[] = [
-    { 
-      title: 'STARTERS', 
-      items: [
-        { 
-          name: 'Burrata con Pomodorini', 
-          description: 'Creamy burrata, cherry tomatoes, basil pesto',
-          allergens: ['Dairy'], 
-          basePrice: 65,
-          nutritionalInfo: { kcal: 450, protein: '15g', carbs: '10g', fat: '35g' },
-          variations: [
-            { name: 'Standard', price: 0 },
-            { name: 'Extra Pesto', price: 5 },
-            { name: 'With Focaccia', price: 10 }
-          ],
-          addons: [
-            { name: 'Extra Burrata', price: 25 },
-            { name: 'Extra Pesto', price: 5 },
-            { name: 'Focaccia Bread', price: 8 }
-          ]
-        },
-        { 
-          name: 'Calamari Fritti', 
-          description: 'Crispy fried squid with spicy marinara',
-          allergens: ['Shellfish', 'Gluten'], 
-          basePrice: 55,
-          nutritionalInfo: { kcal: 520, protein: '22g', carbs: '35g', fat: '28g' },
-          variations: [
-            { name: 'Spicy Marinara', price: 0 },
-            { name: 'Garlic Aioli', price: 0 }
-          ],
-          addons: [
-            { name: 'Extra Sauce', price: 5 },
-            { name: 'Side Salad', price: 15 }
-          ]
-        },
-      ] 
-    },
-    { 
-      title: 'PIZZA', 
-      items: [
-        { 
-          name: 'Margherita', 
-          description: 'Tomato sauce, fresh mozzarella, basil',
-          allergens: ['Dairy', 'Gluten'], 
-          basePrice: 75,
-          nutritionalInfo: { kcal: 850, protein: '32g', carbs: '95g', fat: '34g' },
-          variations: [
-            { name: 'Thin Crust', price: 0 },
-            { name: 'Thick Crust', price: 5 },
-            { name: 'Buffalo Mozzarella', price: 15 }
-          ],
-          addons: [
-            { name: 'Olives', price: 5 },
-            { name: 'Mushrooms', price: 8 },
-            { name: 'Hot Salami', price: 12 }
-          ]
-        },
-        { 
-          name: 'Diavola', 
-          description: 'Tomato sauce, mozzarella, spicy salami',
-          allergens: ['Dairy', 'Gluten'], 
-          basePrice: 85,
-          nutritionalInfo: { kcal: 980, protein: '38g', carbs: '92g', fat: '45g' },
-          variations: [
-            { name: 'Standard', price: 0 },
-            { name: 'Extra Spicy', price: 2 }
-          ],
-          addons: [
-            { name: 'Jalapenos', price: 5 },
-            { name: 'Hot Honey', price: 8 }
-          ]
-        },
-      ] 
-    },
-    { 
-      title: 'MAINS', 
-      items: [
-        { 
-          name: 'Osso Buco alla Milanese', 
-          description: 'Veal shank · saffron risotto',
-          allergens: ['Dairy', 'Gluten'], 
-          basePrice: 145,
-          nutritionalInfo: { kcal: 892, protein: '32g', carbs: '98g', fat: '38g' },
-          variations: [
-            { name: 'Classic Saffron', price: 0 },
-            { name: 'Extra Risotto', price: 25 }
-          ],
-          addons: [
-            { name: 'Bone Marrow', price: 30 },
-            { name: 'Asparagus', price: 15 }
-          ]
-        },
-        { 
-          name: 'Spaghetti alle Vongole', 
-          description: 'Fresh clams, garlic, white wine, parsley',
-          allergens: ['Shellfish', 'Gluten'], 
-          basePrice: 98,
-          nutritionalInfo: { kcal: 650, protein: '28g', carbs: '85g', fat: '18g' },
-          variations: [
-            { name: 'Classic', price: 0 },
-            { name: 'Spicy', price: 0 }
-          ],
-          addons: [
-            { name: 'Extra Clams', price: 35 },
-            { name: 'Bottarga', price: 20 }
-          ]
-        },
-        { 
-          name: 'Branzino al Forno', 
-          description: 'Baked whole sea bass, herbs, lemon',
-          allergens: ['Fish'], 
-          basePrice: 130,
-          nutritionalInfo: { kcal: 420, protein: '45g', carbs: '5g', fat: '15g' },
-          variations: [
-            { name: 'Grilled', price: 0 },
-            { name: 'Al Forno', price: 0 }
-          ],
-          addons: [
-            { name: 'Roasted Potatoes', price: 15 },
-            { name: 'Sautéed Spinach', price: 15 }
-          ]
-        },
-      ] 
-    },
-    { 
-      title: 'SIDES & SAUCES', 
-      items: [
-        { 
-          name: 'Patatine Fritte', 
-          description: 'Classic crispy fries',
-          allergens: [], 
-          basePrice: 25,
-          nutritionalInfo: { kcal: 400, protein: '4g', carbs: '48g', fat: '20g' },
-          variations: [
-            { name: 'Classic', price: 0 },
-            { name: 'Truffle Oil & Parmesan', price: 10 }
-          ],
-          addons: [
-            { name: 'Cheese Dip', price: 5 },
-            { name: 'Garlic Mayo', price: 3 }
-          ]
-        },
-      ] 
-    },
-    { 
-      title: 'DESSERTS', 
-      items: [
-        { 
-          name: 'Tiramisu Classico', 
-          description: 'Coffee-soaked ladyfingers with mascarpone',
-          allergens: ['Dairy', 'Gluten', 'Eggs'], 
-          basePrice: 48,
-          nutritionalInfo: { kcal: 580, protein: '8g', carbs: '55g', fat: '32g' },
-          variations: [
-            { name: 'Standard', price: 0 },
-            { name: 'Decaf Version', price: 0 }
-          ],
-          addons: [
-            { name: 'Chocolate Shavings', price: 5 },
-            { name: 'Espresso Shot', price: 8 }
-          ]
-        },
-      ] 
-    },
-  ];
 
   const filteredMenuData = useMemo(() => {
     let result = menuData;
@@ -294,9 +98,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
     }
 
     return result;
-  }, [searchQuery, selectedAllergens, menuData]);
+  }, [searchQuery, selectedAllergens]);
 
-  // Automatically expand categories when searching
   useEffect(() => {
     if (searchQuery || selectedAllergens.length > 0) {
       if (filteredMenuData.length > 0 && !expandedCategory) {
@@ -321,7 +124,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         setIsDetailSheetOpen(true);
       }
     }
-  }, [editingItem, menuData]);
+  }, [editingItem]);
 
   const totalItemsInCart = useMemo(() => {
     return cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -464,7 +267,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
 
   return (
     <div className="flex flex-col h-screen bg-[#fcfdff] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
-      {/* Header */}
       {!isSearching ? (
         <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-10">
           <div className="flex items-center gap-4">
@@ -535,7 +337,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         </div>
       )}
 
-      {/* Allergen Filters (Visible during Search) */}
       {isSearching && (
         <div className="px-6 py-3 bg-[#fcfdff] overflow-x-auto flex gap-2 no-scrollbar border-b border-gray-50 shrink-0">
           {ALLERGENS_LIST.map((allergen) => {
@@ -563,7 +364,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         </div>
       )}
 
-      {/* Main Content Area */}
       <div className="flex-1 px-6 pt-6 overflow-y-auto pb-24">
         {filteredMenuData.length > 0 ? (
           <div className="bg-white rounded-[24px] shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-[#f0f4f8] overflow-hidden">
@@ -646,7 +446,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                                     {hasInstruction ? (
                                       <MessageCircle className="w-3.5 h-3.5 fill-current" />
                                     ) : (
-                                      <SquarePen className="w-3.5 h-3.5" />
+                                      <Plus className="w-3.5 h-3.5" />
                                     )}
                                     <span className={cn(
                                       "border-b border-dotted",
@@ -702,7 +502,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         )}
       </div>
 
-      {/* Instruction Dialog */}
       <Dialog open={isInstructionDialogOpen} onOpenChange={setIsInstructionDialogOpen}>
         <DialogContent className="rounded-[24px] sm:max-w-[360px] p-0 overflow-hidden border-none shadow-2xl">
           <DialogHeader className="px-5 pt-5 pb-1.5 flex flex-row items-center justify-between">
@@ -751,7 +550,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         </DialogContent>
       </Dialog>
 
-      {/* Success Notification */}
       {showSuccess && !editingItem && !isSearching && (
         <div className="absolute bottom-6 inset-x-6 z-50 animate-in slide-in-from-bottom duration-500">
           <div className="bg-white/95 backdrop-blur-md rounded-[20px] p-4 flex items-center gap-4 shadow-[0_10px_40px_rgba(0,0,0,0.08)] border-[1.5px] border-[#00d084]/20 overflow-hidden relative group">
@@ -777,7 +575,6 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         </div>
       )}
 
-      {/* Item Detail Sheet */}
       <ItemDetailSheet 
         isOpen={isDetailSheetOpen}
         onClose={handleCloseSheet}
@@ -859,14 +656,12 @@ function ItemDetailSheet({
     if (!item) return 0;
     let price = item.basePrice;
     if (selectedFlavor) price += selectedFlavor.price;
-    
     if (item.addons) {
       item.addons.forEach(addon => {
         const qty = addonQuantities[addon.name] || 0;
         price += addon.price * qty;
       });
     }
-    
     return price * itemQuantity;
   }, [item, selectedFlavor, addonQuantities, itemQuantity]);
 
@@ -913,7 +708,7 @@ function ItemDetailSheet({
                         <Flame className="w-5 h-5 text-[#f97316] fill-[#f97316]" />
                         <span className="text-[#1a1c2e] text-[15px] font-black tracking-tight">Nutritional Info</span>
                       </div>
-                      <span className="text-[#94a3b8] text[] text-[11px] font-bold">Per serving</span>
+                      <span className="text-[#94a3b8] text-[11px] font-bold">Per serving</span>
                     </div>
                     <div className="grid grid-cols-4 gap-2">
                       {[
@@ -1044,7 +839,7 @@ function ItemDetailSheet({
 
               <div ref={specialRequestsRef} className="bg-[#f8fafc] rounded-[24px] p-5 border border-[#f1f5f9]">
                 <div className="flex items-center gap-2 mb-3">
-                  <Pencil className="w-4 h-4 text-[#94a3b8]" />
+                  <SquarePen className="w-4 h-4 text-[#94a3b8]" />
                   <span className="text-[#1a1c2e] text-[14px] font-black tracking-tight">Special requests</span>
                 </div>
                 <div className="relative">
