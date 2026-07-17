@@ -204,12 +204,14 @@ export function PayOrderDetailScreen({
       </div>
 
       <div className="flex-1 px-4 pt-4 overflow-y-auto pb-52 space-y-4">
-        <div className="bg-white rounded-[24px] p-6 shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center">
-          <h2 className="text-[20px] font-black text-[#1a1c2e] mb-4">Order #{order?.timestamp.toString().slice(-4) || '----'}</h2>
+        <div className="bg-white rounded-[24px] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col pt-[9px] pb-[27px] px-0 items-stretch">
+          <h2 className="text-[13px] font-black text-[#1a1c2e] mb-[11px] px-6 text-left">
+            Order #{order?.timestamp.toString().slice(-4) || '----'}
+          </h2>
           
           <div className="w-full border-t border-gray-100 mb-6 border-dashed" />
           
-          <div className="grid grid-cols-2 w-full relative">
+          <div className="grid grid-cols-2 w-full relative px-6">
             <div className="absolute left-1/2 top-0 bottom-0 w-[1px] bg-gray-100" />
             <div className="flex flex-col items-center pr-4">
               <div className="w-11 h-11 bg-[#f0f7ff] rounded-full flex items-center justify-center mb-2">
