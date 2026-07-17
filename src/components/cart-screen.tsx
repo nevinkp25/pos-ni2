@@ -410,7 +410,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
               )}
             </div>
           </div>
-          <p className="text-[10px] font-bold text-[#94a3b8] text-center mt-0.5 leading-none">
+          <p className="text-[10px] font-bold text-[#364457] text-center mt-0.5 leading-none">
             Prices may include GST and other applicable taxes.
           </p>
         </div>
