@@ -195,6 +195,7 @@ export default function Page() {
           mode="order"
           onBack={handleBackToDashboard} 
           onConfirmSelection={handleStartOrder} 
+          onScanQR={handleScanQR}
         />
       )}
       {currentScreen === 'select-table-pay' && (
@@ -203,6 +204,7 @@ export default function Page() {
           onBack={handleBackToDashboard} 
           onConfirmSelection={handleGoToOrderPay} 
           onNavigateToOrder={handleStartOrder}
+          onScanQR={handleScanQR}
         />
       )}
       {currentScreen === 'order-menu' && (

@@ -11,6 +11,7 @@ interface SelectTableScreenProps {
   onBack?: () => void;
   onConfirmSelection?: (tableNumber: string, guestCount: number) => void;
   onNavigateToOrder?: (tableNumber: string, guestCount: number) => void;
+  onScanQR?: () => void;
   mode?: 'order' | 'pay';
 }
 
@@ -20,7 +21,7 @@ interface TableStatus {
   isAvailable: boolean;
 }
 
-export function SelectTableScreen({ onBack, onConfirmSelection, onNavigateToOrder, mode = 'order' }: SelectTableScreenProps) {
+export function SelectTableScreen({ onBack, onConfirmSelection, onNavigateToOrder, onScanQR, mode = 'order' }: SelectTableScreenProps) {
   const [tableNumber, setTableNumber] = useState<string>('');
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [guestCount, setGuestCount] = useState(1);
@@ -114,7 +115,10 @@ export function SelectTableScreen({ onBack, onConfirmSelection, onNavigateToOrde
           <ChevronLeft className="w-6 h-6 text-[#0066b2] stroke-[2.5px]" />
         </button>
         <h1 className="text-xl font-bold tracking-tight text-[#1a1c2e]">Select a Table</h1>
-        <button className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all">
+        <button 
+          onClick={onScanQR}
+          className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-100 shadow-sm hover:bg-gray-50 active:scale-95 transition-all"
+        >
           <Scan className="w-5 h-5 text-gray-700" />
         </button>
       </div>
