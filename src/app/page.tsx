@@ -157,9 +157,11 @@ export default function Page() {
     } else {
       toast({
         title: "No Order Found",
-        description: `Table #${tableId} has no active orders. Starting new order.`,
+        description: `Table #${tableId} has no active orders to settle.`,
+        variant: "destructive",
       });
-      handleStartOrder(tableId, 1);
+      // Return to dashboard since QR is ONLY for paying existing orders
+      setCurrentScreen('staff-dashboard');
     }
   };
 
