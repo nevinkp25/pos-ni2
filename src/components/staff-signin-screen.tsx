@@ -48,7 +48,7 @@ export function StaffSignInScreen({ onLogin, restaurantName = 'Bella Cuchina' }:
       </div>
 
       {/* Main Sign In Card */}
-      <div className="flex-1 -mt-12 bg-white rounded-[48px] px-8 pt-10 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.02)] max-h-[360px]">
+      <div className="flex-1 -mt-12 bg-white rounded-[48px] px-8 pt-10 pb-[35px] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.02)] max-h-[360px]">
         <div className="w-full max-w-sm mx-auto flex flex-col h-full">
           <h1 className="text-[24px] font-extrabold mb-1 tracking-tight text-[#1a1c2e]">Staff Sign In</h1>
           <p className="text-[#94a3b8] text-base mb-8 font-medium">Enter your Staff ID to unlock actions</p>
