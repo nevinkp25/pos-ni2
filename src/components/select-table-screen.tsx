@@ -45,7 +45,8 @@ export function SelectTableScreen({ onBack, onConfirmSelection, onNavigateToOrde
   }, [tableNumber, tables]);
 
   const handleNumberClick = (num: string) => {
-    if (tableNumber.length < 4) {
+    // Increased limit to 16 characters
+    if (tableNumber.length < 16) {
       const newNum = tableNumber + num;
       setTableNumber(newNum);
       setShowBottomSheet(false);
@@ -105,6 +106,14 @@ export function SelectTableScreen({ onBack, onConfirmSelection, onNavigateToOrde
     { value: 'backspace', type: 'backspace' },
   ];
 
+  // Dynamic font size based on string length to handle 8-16 characters
+  const getDynamicFontSize = () => {
+    if (tableNumber.length <= 4) return 'text-[48px]';
+    if (tableNumber.length <= 8) return 'text-[36px]';
+    if (tableNumber.length <= 12) return 'text-[28px]';
+    return 'text-[22px]';
+  };
+
   return (
     <div className="flex flex-col h-screen bg-[#fcfdff] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
       <div className="bg-white px-6 h-16 flex items-center justify-between shrink-0 shadow-sm rounded-b-[24px] z-10">
@@ -131,15 +140,18 @@ export function SelectTableScreen({ onBack, onConfirmSelection, onNavigateToOrde
         )}>
           {tableNumber ? (
             <>
-              <div className="flex items-center gap-1">
-                <span className="text-[#1E293B] text-[48px] font-bold leading-none animate-in fade-in zoom-in-95">
+              <div className="flex items-center gap-1 px-4 text-center">
+                <span className={cn(
+                  "text-[#1E293B] font-bold leading-none animate-in fade-in zoom-in-95 break-all",
+                  getDynamicFontSize()
+                )}>
                   {tableNumber}
                 </span>
-                <div className="w-[3px] h-10 bg-[#0066b2] ml-1 rounded-full animate-pulse" />
+                <div className="w-[3px] h-10 bg-[#0066b2] ml-1 rounded-full animate-pulse shrink-0" />
               </div>
               <button 
                 onClick={handleClear}
-                className="absolute right-6 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-[#f0f7ff] text-[#1E293B]/60 hover:bg-[#d1e9ff] transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-[#f0f7ff] text-[#1E293B]/60 hover:bg-[#d1e9ff] transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
