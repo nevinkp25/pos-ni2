@@ -418,11 +418,11 @@ export function PayOrderDetailScreen({
                       <CurrencyAmount amount={subtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Tax</span>
+                      <span className="text-[#94a3b8] uppercase">TAX (5%)</span>
                       <CurrencyAmount amount={vat} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Service Charge</span>
+                      <span className="text-[#94a3b8] uppercase">Service Charge (10%)</span>
                       <CurrencyAmount amount={serviceCharge} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">

@@ -104,7 +104,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
 
     toast({
       title: "Payment Success",
-      description: "Items paid. Please settle remaining balance.",
+      description: "Guest payment confirmed. Please settle remaining shares.",
     });
 
     const allPaid = (order?.items || []).every(item => newPaidItems.includes(item.id));
@@ -284,11 +284,11 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                       <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Tax</span>
+                      <span className="text-[#94a3b8] uppercase">TAX (5%)</span>
                       <CurrencyAmount amount={shareVat} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Service Charge</span>
+                      <span className="text-[#94a3b8] uppercase">Service Charge (10%)</span>
                       <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
