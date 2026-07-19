@@ -96,24 +96,21 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
 
   const handleFinalPayment = () => {
     setIsSettlementOpen(false);
-    setIsProcessing(true);
+    
+    // Immediate success loop via toast
+    const newPaidItems = [...paidItemIds, ...selectedItemIds];
+    setPaidItemIds(newPaidItems);
+    setSelectedItemIds([]);
 
-    setTimeout(() => {
-      setIsProcessing(false);
-      const newPaidItems = [...paidItemIds, ...selectedItemIds];
-      setPaidItemIds(newPaidItems);
-      setSelectedItemIds([]);
+    toast({
+      title: "Payment Success",
+      description: "Items paid. Please settle remaining balance.",
+    });
 
-      const allPaid = (order?.items || []).every(item => newPaidItems.includes(item.id));
-      if (allPaid) {
-        onPay();
-      } else {
-        toast({
-          title: "Payment Success",
-          description: "Items paid. Please settle remaining balance.",
-        });
-      }
-    }, 3000);
+    const allPaid = (order?.items || []).every(item => newPaidItems.includes(item.id));
+    if (allPaid) {
+      onPay();
+    }
   };
 
   const handleTipClick = (amount: number) => {
@@ -308,7 +305,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                     width={327} 
                     height={41}
                     data-ai-hint={paymentBanner.imageHint}
-                    className="w-full h-auto"
+                    className="w-full h-auto px-0"
                   />
                 </div>
               )}

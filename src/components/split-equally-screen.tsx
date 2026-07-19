@@ -358,7 +358,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                     width={327} 
                     height={41}
                     data-ai-hint={paymentBanner.imageHint}
-                    className="w-full h-auto"
+                    className="w-full h-auto px-0"
                   />
                 </div>
               )}

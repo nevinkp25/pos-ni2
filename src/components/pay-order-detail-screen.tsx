@@ -489,14 +489,14 @@ export function PayOrderDetailScreen({
                   setIsSplitBillOpen(false);
                   onSplitByItem?.();
                 }}
-                className="w-full h-20 bg-[#f0f7ff] rounded-[24px] px-6 flex items-center gap-5 active:scale-[0.98] transition-all"
+                className="w-full h-20 bg-[#f0f7ff] rounded-[24px] px-6 flex items-center gap-5 active:scale-[0.98] transition-all text-left"
               >
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#0066b2] shadow-sm">
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#0066b2] shadow-sm shrink-0">
                   <List className="w-6 h-6" />
                 </div>
-                <div className="flex flex-col items-start">
-                  <span className="text-[17px] font-bold text-[#1a1c2e]">Split by Item</span>
-                  <span className="text-[13px] text-[#94a3b8] font-medium">Select specific items for each guest</span>
+                <div className="flex flex-col items-start min-w-0">
+                  <span className="text-[17px] font-bold text-[#1a1c2e] leading-tight">Split by Item</span>
+                  <span className="text-[13px] text-[#94a3b8] font-medium leading-tight">Select specific items for each guest</span>
                 </div>
               </button>
 
@@ -505,14 +505,14 @@ export function PayOrderDetailScreen({
                   setIsSplitBillOpen(false);
                   onSplitEqually?.();
                 }}
-                className="w-full h-20 bg-[#f0f7ff] rounded-[24px] px-6 flex items-center gap-5 active:scale-[0.98] transition-all"
+                className="w-full h-20 bg-[#f0f7ff] rounded-[24px] px-6 flex items-center gap-5 active:scale-[0.98] transition-all text-left"
               >
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#0066b2] shadow-sm">
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#0066b2] shadow-sm shrink-0">
                   <Split className="w-6 h-6" />
                 </div>
-                <div className="flex flex-col items-start">
-                  <span className="text-[17px] font-bold text-[#1a1c2e]">Split Equally</span>
-                  <span className="text-[13px] text-[#94a3b8] font-medium">Divide total amount by number of guests</span>
+                <div className="flex flex-col items-start min-w-0">
+                  <span className="text-[17px] font-bold text-[#1a1c2e] leading-tight">Split Equally</span>
+                  <span className="text-[13px] text-[#94a3b8] font-medium leading-tight">Divide total amount by number of guests</span>
                 </div>
               </button>
             </div>
