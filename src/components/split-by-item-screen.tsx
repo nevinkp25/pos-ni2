@@ -29,6 +29,7 @@ import {
 import { CurrencyAmount } from './CurrencyAmount';
 import { getOrderForTable, TableOrder } from '@/lib/storage';
 import placeholderData from '@/app/lib/placeholder-images.json';
+import { useToast } from '@/hooks/use-toast';
 
 interface SplitByItemScreenProps {
   tableNumber: string;
@@ -40,12 +41,12 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [paidItemIds, setPaidItemIds] = useState<string[]>([]);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
-  const [isPartialSuccessOpen, setIsPartialSuccessOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [selectedTip, setSelectedTip] = useState<number | null>(10);
   const [isCustomTipMode, setIsCustomTipMode] = useState(false);
   const [customTipValue, setCustomTipValue] = useState('');
   const [order, setOrder] = useState<TableOrder | null>(null);
+  const { toast } = useToast();
 
   const paymentBanner = placeholderData.placeholderImages.find(img => img.id === 'payment-banner');
 
@@ -111,7 +112,10 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
       if (allPaid) {
         onPay();
       } else {
-        setIsPartialSuccessOpen(true);
+        toast({
+          title: "Payment Success",
+          description: "Items paid. Please settle remaining balance.",
+        });
       }
     }, 3000);
   };
@@ -300,7 +304,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                 <div className="grid grid-cols-2 gap-4"><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button></div>
                 
                 {paymentBanner && (
-                  <div className="flex justify-center mt-8">
+                  <div className="flex justify-center mt-8 pb-4">
                     <Image 
                       src={paymentBanner.imageUrl} 
                       alt="Supported Payment Methods" 
@@ -313,22 +317,6 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                 )}
               </div>
             </div>
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      <Sheet open={isPartialSuccessOpen} onOpenChange={setIsPartialSuccessOpen}>
-        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-visible h-[400px] flex flex-col tracking-normal">
-          <SheetHeader className="sr-only">
-            <SheetTitle>Partial Payment Success</SheetTitle>
-          </SheetHeader>
-          <div className="flex-1 flex flex-col items-center justify-center px-8 text-center pt-8 overflow-hidden rounded-t-[32px] bg-white">
-            <div className="w-24 h-24 bg-[#00d084] rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(0,208,132,0.3)] mb-8">
-              <Check className="w-12 h-12 text-white stroke-[5px]" />
-            </div>
-            <h2 className="text-[24px] font-black text-[#1a1c2e] uppercase mb-4 leading-tight">PAYMENT IN PROGRESS</h2>
-            <p className="text-[#94a3b8] text-[16px] font-bold leading-tight mb-8">Some items have been paid. Please pay for remaining items.</p>
-            <Button onClick={() => setIsPartialSuccessOpen(false)} className="w-full h-16 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[16px] font-black uppercase shadow-lg active:scale-95 transition-all">Continue</Button>
           </div>
         </SheetContent>
       </Sheet>
