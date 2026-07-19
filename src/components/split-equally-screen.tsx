@@ -11,10 +11,10 @@ import {
   ChevronUp,
   CreditCard,
   X,
-  Loader2,
   ArrowRight,
   Pencil,
-  Landmark
+  Landmark,
+  Loader2
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -48,7 +48,6 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
   const [isConfirming, setIsConfirming] = useState(false);
   const [paidGuests, setPaidGuests] = useState<number[]>([]);
   const [expandedGuest, setExpandedGuest] = useState<number | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
   const [activePayingGuest, setActivePayingGuest] = useState<number | null>(null);
 
@@ -258,26 +257,14 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                       )}
                     </div>
                     <CollapsibleContent className="px-5 pb-5">
-                      <div className="bg-[#f8fbfe] rounded-[18px] p-4 space-y-3 border border-gray-50/50">
-                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                          <span className="uppercase">Item Price (Base)</span>
-                          <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-[10px]" />
+                      <div className="bg-[#f8fbfe]/40 rounded-[24px] p-5 space-y-3 border border-[#0066b2]/10">
+                        <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
+                          <span className="uppercase tracking-tight">BASE PRICE</span>
+                          <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                          <span className="uppercase">Service Charge (10%)</span>
-                          <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-[10px]" />
-                        </div>
-                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                          <span className="uppercase">VAT (5%)</span>
-                          <CurrencyAmount amount={shareVat} weight="bold" className="text-[10px]" />
-                        </div>
-                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                          <span className="uppercase">Additional Charges</span>
-                          <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-[10px]" />
-                        </div>
-                        <div className="pt-2 border-t border-dashed border-gray-200 flex justify-between items-center">
-                          <span className="text-[11px] font-black text-[#1a1c2e] uppercase">Total Share</span>
-                          <CurrencyAmount amount={shareAmount} weight="bold" className="text-[16px] text-[#0066b2]" />
+                          <span className="uppercase tracking-tight">S. CHARGE (10%) + VAT (5%) + ADD.</span>
+                          <CurrencyAmount amount={shareServiceCharge + shareVat + shareAdditionalCharges} weight="bold" className="text-inherit" />
                         </div>
                       </div>
                     </CollapsibleContent>
@@ -363,7 +350,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                 <div className="grid grid-cols-2 gap-4"><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button></div>
                 
                 {paymentBanner && (
-                  <div className="w-full mt-8 pb-4">
+                  <div className="w-full mt-8">
                     <Image 
                       src={paymentBanner.imageUrl} 
                       alt="Supported Payment Methods" 

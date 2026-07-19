@@ -4,17 +4,13 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { 
   ChevronLeft, 
   Check, 
-  Plus, 
   Box, 
   X, 
   CreditCard, 
   Pencil, 
   Landmark, 
   Loader2,
-  ArrowRight,
   User,
-  MoreVertical,
-  Equal
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -219,13 +215,13 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
 
       <div className="absolute bottom-0 inset-x-0 bg-white px-5 pt-3 pb-8 shadow-[0_-10px_30px_rgba(0,0,0,0.04)] z-30 flex flex-col gap-3 border-t border-gray-50">
         {yourShareSubtotal > 0 && (
-          <div className="bg-[#f0f7ff] rounded-[18px] p-4 border border-[#0066b2]/10 space-y-2 mb-1">
-            <div className="flex justify-between items-center text-[11px] font-black text-[#94a3b8]">
-              <span className="uppercase">Base Price</span>
+          <div className="bg-[#f0f7ff]/40 rounded-[24px] p-5 border border-[#0066b2]/10 space-y-3 mb-1">
+            <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
+              <span className="uppercase tracking-tight">BASE PRICE</span>
               <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-inherit" />
             </div>
-            <div className="flex justify-between items-center text-[11px] font-black text-[#94a3b8]">
-              <span className="uppercase">S. Charge (10%) + VAT (5%) + Add.</span>
+            <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+              <span className="uppercase tracking-tight">S. CHARGE (10%) + VAT (5%) + ADD.</span>
               <CurrencyAmount amount={shareServiceCharge + shareVat + shareAdditionalCharges} weight="bold" className="text-inherit" />
             </div>
           </div>
@@ -304,7 +300,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                 <div className="grid grid-cols-2 gap-4"><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button></div>
                 
                 {paymentBanner && (
-                  <div className="w-full mt-8 pb-4">
+                  <div className="w-full mt-8">
                     <Image 
                       src={paymentBanner.imageUrl} 
                       alt="Supported Payment Methods" 

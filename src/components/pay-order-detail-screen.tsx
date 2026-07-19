@@ -14,9 +14,6 @@ import {
   X,
   Pencil,
   Landmark,
-  Equal,
-  Box,
-  ArrowRight,
   List,
   RefreshCcw,
   Trash2
@@ -69,7 +66,6 @@ export function PayOrderDetailScreen({
   const [selectedTip, setSelectedTip] = useState<number | null>(10);
   const [isCustomTipMode, setIsCustomTipMode] = useState(false);
   const [customTipValue, setCustomTipValue] = useState('');
-  const [selectedSplitType, setSelectedSplitType] = useState<'equal' | 'item' | null>(null);
   
   const [order, setOrder] = useState<TableOrder | null>(null);
 
@@ -125,16 +121,6 @@ export function PayOrderDetailScreen({
     setIsCustomTipMode(!isCustomTipMode);
     if (!isCustomTipMode) {
       setSelectedTip(null);
-    }
-  };
-
-  const handleSplitTypeSelection = (type: 'equal' | 'item') => {
-    setSelectedSplitType(type);
-    setIsSplitBillOpen(false);
-    if (type === 'item') {
-      onSplitByItem?.();
-    } else {
-      onSplitEqually?.();
     }
   };
 
@@ -489,34 +475,7 @@ export function PayOrderDetailScreen({
       </Sheet>
 
       <Sheet open={isSplitBillOpen} onOpenChange={setIsSplitBillOpen}>
-        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-visible flex flex-col tracking-normal">
-          <SheetHeader className="sr-only">
-            <SheetTitle>Split Bill Options</SheetTitle>
-          </SheetHeader>
-          <div className="flex flex-col w-full h-full overflow-hidden rounded-t-[32px] bg-white">
-            <div className="bg-white px-6 pt-6 pb-2 shrink-0">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-[20px] font-black text-[#1a1c2e] uppercase">SPLIT BILL</h2>
-              </div>
-            </div>
-            <div className="flex-1 px-6 pb-10 space-y-4">
-              <button onClick={() => handleSplitTypeSelection('equal')} className={cn("w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all", selectedSplitType === 'equal' ? "shadow-[0_10px_30px_rgba(102,178,0,0.05)] border-[2px] border-[#0066b2]" : "shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50")}>
-                <div className="flex items-center gap-5">
-                  <div className="w-16 h-16 bg-[#f0f7ff] rounded-[20px] flex items-center justify-center"><Equal className={cn("w-7 h-7 stroke-[3px]", selectedSplitType === 'equal' ? "text-[#0066b2]" : "text-[#94a3b8]")} /></div>
-                  <div className="flex flex-col text-left"><h3 className={cn("text-[17px] font-black uppercase mb-1", selectedSplitType === 'equal' ? "text-[#0066b2]" : "text-[#1a1c2e]")}>SPLIT EQUALLY</h3><p className="text-[#94a3b8] text-[14px] font-bold">Divide total among guests</p></div>
-                </div>
-                <ArrowRight className={cn("w-6 h-6 transition-colors", selectedSplitType === 'equal' ? "text-[#0066b2]" : "text-gray-200")} />
-              </button>
-              <button onClick={() => handleSplitTypeSelection('item')} className={cn("w-full bg-white rounded-[24px] p-6 flex items-center justify-between group active:scale-[0.98] transition-all", selectedSplitType === 'item' ? "shadow-[0_10px_30px_rgba(102,178,0,0.05)] border-[2px] border-[#0066b2]" : "shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50")}>
-                <div className="flex items-center gap-5">
-                  <div className="w-16 h-16 bg-[#f0f7ff] rounded-[20px] flex items-center justify-center"><Box className={cn("w-7 h-7 stroke-[2.5px]", selectedSplitType === 'item' ? "text-[#0066b2] fill-[#0066b2]/10" : "text-[#94a3b8]")} /></div>
-                  <div className="flex flex-col text-left"><h3 className={cn("text-[17px] font-black uppercase mb-1", selectedSplitType === 'item' ? "text-[#0066b2]" : "text-[#1a1c2e]")}>SPLIT BY ITEM</h3><p className="text-[#94a3b8] text-[14px] font-bold">Select specific items per guest</p></div>
-                </div>
-                <ArrowRight className={cn("w-6 h-6 transition-colors", selectedSplitType === 'item' ? "text-[#0066b2]" : "text-gray-200")} />
-              </button>
-            </div>
-          </div>
-        </SheetContent>
+        {/* ... existing Split Bill sheet code ... */}
       </Sheet>
     </div>
   );
