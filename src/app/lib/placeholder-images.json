@@ -3,8 +3,8 @@
   "placeholderImages": [
     {
       "id": "payment-banner",
-      "description": "Payment method logos banner featuring JCB, Google Pay, Amex, Apple Pay, and Visa",
-      "imageUrl": "https://picsum.photos/seed/pospayment/327/41",
+      "description": "Payment method logos banner featuring JCB, UnionPay, Google Pay, Apple Pay, and Visa",
+      "imageUrl": "https://i.postimg.cc/tJL352jD/payment.png",
       "imageHint": "payment logos"
     }
   ]
