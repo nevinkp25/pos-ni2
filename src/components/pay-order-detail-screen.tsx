@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -96,7 +95,6 @@ export function PayOrderDetailScreen({
     }, 0);
   }, [items]);
 
-  // Breakdown Logic
   const serviceCharge = subtotal * 0.10;
   const vat = subtotal * 0.05;
   const additionalCharges = subtotal * 0.02; 

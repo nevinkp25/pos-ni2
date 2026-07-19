@@ -77,13 +77,11 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
     }, 0);
   }, [items]);
 
-  // Breakdown for total bill
   const serviceChargeTotal = subtotal * 0.10;
   const vatTotal = subtotal * 0.05;
   const additionalChargesTotal = subtotal * 0.02;
   const totalBill = subtotal + serviceChargeTotal + vatTotal + additionalChargesTotal;
   
-  // Breakdown per guest
   const shareSubtotal = subtotal / guestCount;
   const shareServiceCharge = serviceChargeTotal / guestCount;
   const shareVat = vatTotal / guestCount;
@@ -181,7 +179,6 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
           <span className="text-[10px] font-black text-[#1a1c2e] uppercase tracking-[0.1em]">Order: {order?.timestamp.toString().slice(-6) || '---'}</span>
         </div>
 
-        {/* High Fidelity Share Card (Horizontal Preloader) - Compact Version */}
         <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm">
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[23px] p-4 flex flex-col gap-2">
             <div className="flex items-center">

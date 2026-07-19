@@ -76,7 +76,6 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
       }, 0);
   }, [selectedItemIds, items]);
 
-  // Breakdown Logic for Share
   const shareServiceCharge = yourShareSubtotal * 0.10;
   const shareVat = yourShareSubtotal * 0.05;
   const shareAdditionalCharges = yourShareSubtotal * 0.02;
@@ -156,7 +155,6 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
       </div>
 
       <div className="flex-1 px-4 pt-4 overflow-y-auto pb-64 space-y-4">
-        {/* High Fidelity Share Card (Horizontal Preloader) - Compact Version */}
         <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm">
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[23px] p-4 flex flex-col gap-2">
             <div className="flex items-center justify-between">
@@ -229,19 +227,6 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
           </div>
         )}
         <Button onClick={handlePayClick} disabled={yourShareSubtotal === 0} className={cn("w-full h-14 rounded-[18px] text-[16px] font-black shadow-[0_8px_25px_rgba(102,178,0,0.2)] transition-all active:scale-[0.98]", yourShareSubtotal > 0 ? "bg-[#0066b2] hover:bg-[#005596] text-white" : "bg-gray-100 text-gray-400 shadow-none pointer-events-none")}>Pay Your Items (<CurrencyAmount amount={yourShareTotal} weight="bold" className="text-inherit" />)</Button>
-        
-        {paymentBanner && (
-          <div className="flex justify-center mt-4 mb-2">
-            <Image 
-              src={paymentBanner.imageUrl} 
-              alt="Supported Payment Methods" 
-              width={327} 
-              height={41}
-              data-ai-hint={paymentBanner.imageHint}
-              className="h-auto w-auto opacity-80"
-            />
-          </div>
-        )}
       </div>
 
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
