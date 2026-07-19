@@ -263,8 +263,16 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                           <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">S. CHARGE (10%) + VAT (5%) + ADD.</span>
-                          <CurrencyAmount amount={shareServiceCharge + shareVat + shareAdditionalCharges} weight="bold" className="text-inherit" />
+                          <span className="uppercase tracking-tight">SERVICE CHARGE (10%)</span>
+                          <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-inherit" />
+                        </div>
+                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                          <span className="uppercase tracking-tight">TAX (5%)</span>
+                          <CurrencyAmount amount={shareVat} weight="bold" className="text-inherit" />
+                        </div>
+                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                          <span className="uppercase tracking-tight">ADDITIONAL CHARGES</span>
+                          <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-inherit" />
                         </div>
                       </div>
                     </CollapsibleContent>
@@ -346,7 +354,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                 </div>
               </div>
               <div className="px-6 mt-10 space-y-4 pb-0">
-                <Button onClick={handleFinalPayment} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(102,178,0,0.25)] active:scale-[0.98] transition-all"><CreditCard className="w-5 h-5" />PAY BY CARD</Button>
+                <Button onClick={handleFinalPayment} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)] active:scale-[0.98] transition-all"><CreditCard className="w-5 h-5" />PAY BY CARD</Button>
                 <div className="grid grid-cols-2 gap-4"><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button></div>
               </div>
 

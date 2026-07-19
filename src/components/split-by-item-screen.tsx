@@ -218,8 +218,16 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
               <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-inherit" />
             </div>
             <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">S. CHARGE (10%) + VAT (5%) + ADD.</span>
-              <CurrencyAmount amount={shareServiceCharge + shareVat + shareAdditionalCharges} weight="bold" className="text-inherit" />
+              <span className="uppercase tracking-tight">SERVICE CHARGE (10%)</span>
+              <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-inherit" />
+            </div>
+            <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+              <span className="uppercase tracking-tight">TAX (5%)</span>
+              <CurrencyAmount amount={shareVat} weight="bold" className="text-inherit" />
+            </div>
+            <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+              <span className="uppercase tracking-tight">ADDITIONAL CHARGES</span>
+              <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-inherit" />
             </div>
           </div>
         )}
@@ -237,7 +245,10 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
               <div className="px-6 flex items-center justify-between mb-3">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-[#f0f7ff] rounded-2xl flex items-center justify-center"><CreditCard className="w-6 h-6 text-[#0066b2]" /></div>
-                  <div className="flex flex-col"><h2 className="text-[17px] font-black text-[#1a1c2e] leading-none uppercase">CHECK SETTLEMENT</h2><span className="text-[11px] font-bold text-[#94a3b8] uppercase mt-1.5 tracking-wider">Final Review</span></div>
+                  <div className="flex flex-col">
+                    <h2 className="text-[17px] font-black text-[#1a1c2e] leading-none uppercase">CHECK SETTLEMENT</h2>
+                    <span className="text-[11px] font-bold text-[#94a3b8] uppercase mt-1.5 tracking-wider">Final Review</span>
+                  </div>
                 </div>
               </div>
 
