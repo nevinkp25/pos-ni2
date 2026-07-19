@@ -449,7 +449,7 @@ export function PayOrderDetailScreen({
                 </div>
               </div>
 
-              <div className="px-6 mt-10 space-y-4 pb-12">
+              <div className="px-6 mt-10 space-y-4 pb-0">
                 <Button onClick={() => { setIsSettlementOpen(false); onSettle(); }} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)]"><CreditCard className="w-5 h-5" />PAY BY CARD</Button>
                 <div className="grid grid-cols-2 gap-4">
                   <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button>
