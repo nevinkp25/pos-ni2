@@ -135,10 +135,12 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
   };
 
   const progressPercent = totalBillSubtotal > 0 ? (yourShareSubtotal / totalBillSubtotal) * 100 : 0;
-  const circleSize = 240;
-  const center = circleSize / 2;
-  const radius = 100;
-  const circumference = 2 * Math.PI * radius;
+  
+  // High-fidelity Ring Design parameters
+  const ringSize = 220;
+  const ringCenter = ringSize / 2;
+  const ringRadius = 92;
+  const ringCircumference = 2 * Math.PI * ringRadius;
 
   if (isProcessing) {
     return (
@@ -167,15 +169,49 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
           </p>
         </div>
 
-        <div className="flex justify-center py-2">
-          <div className="relative flex items-center justify-center" style={{ width: circleSize, height: circleSize }}>
-            <svg className="absolute w-full h-full -rotate-90" viewBox={ `0 0 ${circleSize} ${circleSize}` }>
-              <circle cx={center} cy={center} r={radius} fill="none" stroke="#eef2f8" strokeWidth="14" />
-              <circle cx={center} cy={center} r={radius} fill="none" stroke="#0066b2" strokeWidth="14" strokeDasharray={circumference} strokeDashoffset={circumference - (circumference * progressPercent) / 100} strokeLinecap="round" className="transition-all duration-700 ease-out" />
-            </svg>
-            <div className="flex flex-col items-center justify-center z-10 px-6 text-center">
-              <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-[0.15em] mb-2">Your Share (Base)</span>
-              <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-[34px] text-[#1a1c2e] leading-none" />
+        {/* High Fidelity Share Ring */}
+        <div className="flex justify-center py-6">
+          <div className="relative flex items-center justify-center p-4">
+            {/* Background Elevation Card */}
+            <div className="absolute inset-0 rounded-full bg-white shadow-[0_15px_45px_rgba(0,102,178,0.08)] scale-[0.85]" />
+            
+            <div className="relative flex items-center justify-center" style={{ width: ringSize, height: ringSize }}>
+              <svg className="absolute w-full h-full -rotate-90" viewBox={`0 0 ${ringSize} ${ringSize}`}>
+                {/* Background Ring Track */}
+                <circle 
+                  cx={ringCenter} 
+                  cy={ringCenter} 
+                  r={ringRadius} 
+                  fill="none" 
+                  stroke="#f1f5f9" 
+                  strokeWidth="16" 
+                />
+                {/* Active Progress Ring */}
+                <circle 
+                  cx={ringCenter} 
+                  cy={ringCenter} 
+                  r={ringRadius} 
+                  fill="none" 
+                  stroke="#0066b2" 
+                  strokeWidth="16" 
+                  strokeDasharray={ringCircumference} 
+                  strokeDashoffset={ringCircumference - (ringCircumference * progressPercent) / 100} 
+                  strokeLinecap="round" 
+                  className="transition-all duration-1000 ease-out" 
+                />
+              </svg>
+              
+              <div className="flex flex-col items-center justify-center z-10 px-6 text-center">
+                <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.12em] mb-2 leading-none">
+                  Your Share (Base)
+                </span>
+                <CurrencyAmount 
+                  amount={yourShareSubtotal} 
+                  weight="bold" 
+                  className="text-[36px] text-[#1a1c2e] tracking-tighter leading-none" 
+                  symbolSize="0.8em"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -220,6 +256,19 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
           </div>
         )}
         <Button onClick={handlePayClick} disabled={yourShareSubtotal === 0} className={cn("w-full h-14 rounded-[18px] text-[16px] font-black shadow-[0_8px_25px_rgba(102,178,0,0.2)] transition-all active:scale-[0.98]", yourShareSubtotal > 0 ? "bg-[#0066b2] hover:bg-[#005596] text-white" : "bg-gray-100 text-gray-400 shadow-none pointer-events-none")}>Pay Your Items (<CurrencyAmount amount={yourShareTotal} weight="bold" className="text-inherit" />)</Button>
+        
+        {paymentBanner && (
+          <div className="flex justify-center mt-4 mb-2">
+            <Image 
+              src={paymentBanner.imageUrl} 
+              alt="Supported Payment Methods" 
+              width={327} 
+              height={41}
+              data-ai-hint={paymentBanner.imageHint}
+              className="h-auto w-auto opacity-80"
+            />
+          </div>
+        )}
       </div>
 
       <Sheet open={isSettlementOpen} onOpenChange={setIsSettlementOpen}>
