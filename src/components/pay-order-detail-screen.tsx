@@ -458,7 +458,7 @@ export function PayOrderDetailScreen({
               </div>
 
               {paymentBanner && (
-                <div className="w-full mt-8 flex justify-center">
+                <div className="w-full mt-8 flex justify-center mb-[7px]">
                   <Image 
                     src={paymentBanner.imageUrl} 
                     alt="Supported Payment Methods" 

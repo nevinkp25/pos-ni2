@@ -257,7 +257,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                       )}
                     </div>
                     <CollapsibleContent className="px-5 pb-5">
-                      <div className="bg-[#f8fbfe]/40 rounded-[24px] p-5 space-y-3 border border-[#0066b2]/10">
+                      <div className="bg-[#f0f7ff]/40 rounded-[24px] p-5 border border-[#0066b2]/10 space-y-3">
                         <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
                           <span className="uppercase tracking-tight">BASE PRICE</span>
                           <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-inherit" />
@@ -351,7 +351,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
               </div>
 
               {paymentBanner && (
-                <div className="w-full mt-8 flex justify-center">
+                <div className="w-full mt-8 flex justify-center mb-[7px]">
                   <Image 
                     src={paymentBanner.imageUrl} 
                     alt="Supported Payment Methods" 
