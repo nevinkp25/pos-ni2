@@ -327,7 +327,7 @@ export function PayOrderDetailScreen({
         <div className="grid grid-cols-2 gap-4">
           <Button 
             onClick={() => setIsSettlementOpen(true)}
-            className="h-[60px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-[16px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_8px_25px_rgba(102,178,0,0.25)]"
+            className="h-[60px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-[16px] font-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all shadow-[0_8px_25px_rgba(0,102,178,0.25)]"
           >
             <CreditCard className="w-5 h-5 text-white" />
             Pay Full
@@ -353,7 +353,7 @@ export function PayOrderDetailScreen({
             <SheetTitle>Full Payment Settlement</SheetTitle>
           </SheetHeader>
           <div className="flex flex-col w-full h-full overflow-hidden rounded-t-[32px] bg-white">
-            <div className="flex-1 overflow-y-auto pb-10">
+            <div className="flex-1 overflow-y-auto pb-0">
               <div className="flex justify-center pt-3 pb-1">
                 <div className="w-10 h-1 bg-gray-200 rounded-full" />
               </div>
@@ -449,33 +449,75 @@ export function PayOrderDetailScreen({
                 </div>
               </div>
 
-              <div className="px-6 mt-10 space-y-4">
-                <Button onClick={() => { setIsSettlementOpen(false); onSettle(); }} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(102,178,0,0.25)]"><CreditCard className="w-5 h-5" />PAY BY CARD</Button>
+              <div className="px-6 mt-10 space-y-4 pb-12">
+                <Button onClick={() => { setIsSettlementOpen(false); onSettle(); }} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)]"><CreditCard className="w-5 h-5" />PAY BY CARD</Button>
                 <div className="grid grid-cols-2 gap-4">
                   <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button>
                   <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button>
                 </div>
-
-                {paymentBanner && (
-                  <div className="w-full mt-8">
-                    <Image 
-                      src={paymentBanner.imageUrl} 
-                      alt="Supported Payment Methods" 
-                      width={327} 
-                      height={41}
-                      data-ai-hint={paymentBanner.imageHint}
-                      className="w-full h-auto"
-                    />
-                  </div>
-                )}
               </div>
+
+              {paymentBanner && (
+                <div className="w-full mt-4 bg-[#f8fafc] py-4">
+                  <Image 
+                    src={paymentBanner.imageUrl} 
+                    alt="Supported Payment Methods" 
+                    width={327} 
+                    height={41}
+                    data-ai-hint={paymentBanner.imageHint}
+                    className="w-full h-auto px-0"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </SheetContent>
       </Sheet>
 
       <Sheet open={isSplitBillOpen} onOpenChange={setIsSplitBillOpen}>
-        {/* ... existing Split Bill sheet code ... */}
+        <SheetContent side="bottom" className="rounded-t-[32px] border-none p-0 outline-none overflow-visible h-auto max-h-[85vh] flex flex-col pb-10">
+          <div className="flex flex-col w-full h-full overflow-hidden rounded-t-[32px] bg-white">
+            <SheetHeader className="px-8 pt-8 pb-4 flex flex-row items-center justify-between shrink-0">
+              <SheetTitle className="text-[#94a3b8] text-[13px] font-black uppercase tracking-[0.15em]">
+                Split Options
+              </SheetTitle>
+            </SheetHeader>
+
+            <div className="px-6 space-y-4">
+              <button 
+                onClick={() => {
+                  setIsSplitBillOpen(false);
+                  onSplitByItem?.();
+                }}
+                className="w-full h-20 bg-[#f0f7ff] rounded-[24px] px-6 flex items-center gap-5 active:scale-[0.98] transition-all"
+              >
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#0066b2] shadow-sm">
+                  <List className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-[17px] font-bold text-[#1a1c2e]">Split by Item</span>
+                  <span className="text-[13px] text-[#94a3b8] font-medium">Select specific items for each guest</span>
+                </div>
+              </button>
+
+              <button 
+                onClick={() => {
+                  setIsSplitBillOpen(false);
+                  onSplitEqually?.();
+                }}
+                className="w-full h-20 bg-[#f0f7ff] rounded-[24px] px-6 flex items-center gap-5 active:scale-[0.98] transition-all"
+              >
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#0066b2] shadow-sm">
+                  <Split className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-[17px] font-bold text-[#1a1c2e]">Split Equally</span>
+                  <span className="text-[13px] text-[#94a3b8] font-medium">Divide total amount by number of guests</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </SheetContent>
       </Sheet>
     </div>
   );
