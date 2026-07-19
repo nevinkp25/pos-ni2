@@ -234,14 +234,14 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
           <div className="flex flex-col w-full h-full overflow-hidden rounded-t-[32px] bg-white">
             <div className="flex-1 overflow-y-auto pb-0">
               <div className="flex justify-center pt-3 pb-1"><div className="w-10 h-1 bg-gray-200 rounded-full" /></div>
-              <div className="px-6 flex items-center justify-between mb-8">
+              <div className="px-6 flex items-center justify-between mb-3">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-[#f0f7ff] rounded-2xl flex items-center justify-center"><CreditCard className="w-6 h-6 text-[#0066b2]" /></div>
                   <div className="flex flex-col"><h2 className="text-[17px] font-black text-[#1a1c2e] leading-none uppercase">CHECK SETTLEMENT</h2><span className="text-[11px] font-bold text-[#94a3b8] uppercase mt-1.5 tracking-wider">Final Review</span></div>
                 </div>
               </div>
 
-              <div className="w-full border-t border-gray-50 mb-8" />
+              <div className="w-full border-t border-gray-50 mb-6" />
               <div className="px-6 space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
@@ -298,7 +298,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
               </div>
               
               {paymentBanner && (
-                <div className="w-full mt-4 bg-[#f8fafc] py-4">
+                <div className="w-full mt-8 flex justify-center">
                   <Image 
                     src={paymentBanner.imageUrl} 
                     alt="Supported Payment Methods" 

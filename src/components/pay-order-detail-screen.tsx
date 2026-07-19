@@ -358,7 +358,7 @@ export function PayOrderDetailScreen({
                 <div className="w-10 h-1 bg-gray-200 rounded-full" />
               </div>
 
-              <div className="px-6 flex items-center justify-between mb-8">
+              <div className="px-6 flex items-center justify-between mb-3">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-[#f0f7ff] rounded-2xl flex items-center justify-center">
                     <CreditCard className="w-6 h-6 text-[#0066b2]" />
@@ -370,7 +370,7 @@ export function PayOrderDetailScreen({
                 </div>
               </div>
 
-              <div className="w-full border-t border-gray-50 mb-8" />
+              <div className="w-full border-t border-gray-50 mb-6" />
 
               <div className="px-6 space-y-6">
                 <div className="grid grid-cols-2 gap-4">
@@ -458,7 +458,7 @@ export function PayOrderDetailScreen({
               </div>
 
               {paymentBanner && (
-                <div className="w-full mt-4 bg-[#f8fafc] py-4">
+                <div className="w-full mt-8 flex justify-center">
                   <Image 
                     src={paymentBanner.imageUrl} 
                     alt="Supported Payment Methods" 
@@ -495,8 +495,8 @@ export function PayOrderDetailScreen({
                   <List className="w-6 h-6" />
                 </div>
                 <div className="flex flex-col items-start min-w-0">
-                  <span className="text-[17px] font-bold text-[#1a1c2e] leading-tight">Split by Item</span>
-                  <span className="text-[13px] text-[#94a3b8] font-medium leading-tight">Select specific items for each guest</span>
+                  <span className="text-[17px] font-bold text-[#1a1c2e] leading-tight text-left">Split by Item</span>
+                  <span className="text-[13px] text-[#94a3b8] font-medium leading-tight text-left">Select specific items for each guest</span>
                 </div>
               </button>
 
@@ -511,8 +511,8 @@ export function PayOrderDetailScreen({
                   <Split className="w-6 h-6" />
                 </div>
                 <div className="flex flex-col items-start min-w-0">
-                  <span className="text-[17px] font-bold text-[#1a1c2e] leading-tight">Split Equally</span>
-                  <span className="text-[13px] text-[#94a3b8] font-medium leading-tight">Divide total amount by number of guests</span>
+                  <span className="text-[17px] font-bold text-[#1a1c2e] leading-tight text-left">Split Equally</span>
+                  <span className="text-[13px] text-[#94a3b8] font-medium leading-tight text-left">Divide total amount by number of guests</span>
                 </div>
               </button>
             </div>
