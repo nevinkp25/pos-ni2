@@ -135,12 +135,6 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
   };
 
   const progressPercent = totalBillSubtotal > 0 ? (yourShareSubtotal / totalBillSubtotal) * 100 : 0;
-  
-  // High-fidelity Ring Design parameters
-  const ringSize = 220;
-  const ringCenter = ringSize / 2;
-  const ringRadius = 92;
-  const ringCircumference = 2 * Math.PI * ringRadius;
 
   if (isProcessing) {
     return (
@@ -162,61 +156,41 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
         <h1 className="text-[17px] font-black leading-none text-[#1a1c2e] uppercase">Split By Item</h1>
       </div>
 
-      <div className="flex-1 px-4 pt-2 overflow-y-auto pb-64 space-y-4">
-        <div className="text-center px-4 mt-2">
-          <p className="text-[#94a3b8] text-[14px] font-bold leading-tight">
-            Remaining balance is <CurrencyAmount amount={totalBillSubtotal} weight="bold" className="text-inherit" />.<br />Select items to include in your share.
-          </p>
-        </div>
-
-        {/* High Fidelity Share Ring */}
-        <div className="flex justify-center py-6">
-          <div className="relative flex items-center justify-center p-4">
-            {/* Background Elevation Card */}
-            <div className="absolute inset-0 rounded-full bg-white shadow-[0_15px_45px_rgba(0,102,178,0.08)] scale-[0.85]" />
-            
-            <div className="relative flex items-center justify-center" style={{ width: ringSize, height: ringSize }}>
-              <svg className="absolute w-full h-full -rotate-90" viewBox={`0 0 ${ringSize} ${ringSize}`}>
-                {/* Background Ring Track */}
-                <circle 
-                  cx={ringCenter} 
-                  cy={ringCenter} 
-                  r={ringRadius} 
-                  fill="none" 
-                  stroke="#f1f5f9" 
-                  strokeWidth="16" 
-                />
-                {/* Active Progress Ring */}
-                <circle 
-                  cx={ringCenter} 
-                  cy={ringCenter} 
-                  r={ringRadius} 
-                  fill="none" 
-                  stroke="#0066b2" 
-                  strokeWidth="16" 
-                  strokeDasharray={ringCircumference} 
-                  strokeDashoffset={ringCircumference - (ringCircumference * progressPercent) / 100} 
-                  strokeLinecap="round" 
-                  className="transition-all duration-1000 ease-out" 
-                />
-              </svg>
-              
-              <div className="flex flex-col items-center justify-center z-10 px-6 text-center">
-                <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-[0.12em] mb-2 leading-none">
-                  Your Share (Base)
-                </span>
-                <CurrencyAmount 
-                  amount={yourShareSubtotal} 
-                  weight="bold" 
-                  className="text-[36px] text-[#1a1c2e] tracking-tighter leading-none" 
-                  symbolSize="0.8em"
-                />
-              </div>
+      <div className="flex-1 px-4 pt-6 overflow-y-auto pb-64 space-y-6">
+        {/* High Fidelity Share Card (Horizontal Preloader) */}
+        <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-tr from-[#6366f1]/25 via-[#3b82f6]/25 to-[#a855f7]/25 shadow-[0_12px_40px_rgba(102,178,0,0.04)]">
+          <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[31px] p-6 flex flex-col gap-5">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-black text-[#475569] uppercase tracking-[0.12em]">Your Share (Base)</span>
+              <span className="text-[18px] font-black text-[#94a3b8] text-right">
+                {Math.round(progressPercent)}%
+              </span>
             </div>
+            
+            <div className="flex justify-center">
+              <CurrencyAmount 
+                amount={yourShareSubtotal} 
+                weight="bold" 
+                className="text-[36px] text-[#1a1c2e] tracking-tighter leading-none" 
+                symbolSize="0.8em"
+              />
+            </div>
+            
+            <div className="w-full h-[14px] bg-[#f1f5f9] rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-gradient-to-r from-[#f59e0b] to-[#0066b2] transition-all duration-1000 ease-out rounded-full"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            
+            <p className="text-[14px] font-bold text-[#94a3b8] text-center leading-tight">
+               Remaining balance is <CurrencyAmount amount={totalBillSubtotal} weight="bold" className="text-inherit" />
+            </p>
           </div>
         </div>
 
         <div className="space-y-2.5 pb-8">
+          <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-widest px-1">Select items to include</span>
           {items.map((item) => {
             const isSelected = selectedItemIds.includes(item.id);
             const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
