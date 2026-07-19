@@ -72,55 +72,58 @@ export function SettledScreen({ onBackToHome, guestCount }: SettledScreenProps) 
       {/* Horizontal Divider */}
       <div className="w-full border-t border-dotted border-gray-200 mb-6" />
 
-      {/* Primary Print Actions */}
-      <div className="w-full max-w-md space-y-3 mb-8">
+      {/* Printing Actions Container */}
+      <div className="w-full max-w-md flex flex-col">
+        {/* Merchant Receipt Button */}
         <Button 
           variant="outline"
-          className="w-full h-14 rounded-[18px] border-gray-100 bg-white text-[#1a1c2e] text-[15px] font-black shadow-sm flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+          className="w-full h-14 rounded-[18px] border-gray-100 bg-white text-[#1a1c2e] text-[15px] font-black shadow-sm flex items-center justify-center gap-3 active:scale-[0.98] transition-all mb-8"
         >
           <Printer className="w-5 h-5 text-[#1a1c2e] stroke-[2.5px]" />
           Print Merchant Receipt
         </Button>
+
+        {/* Print Per Guest Section - Dynamic */}
+        {guestCount > 1 && (
+          <div className="w-full mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[#94a3b8] text-[11px] font-black uppercase tracking-widest">Print per Guest</span>
+              <div className="bg-[#f0f7ff] rounded-md px-2 py-1 flex items-center justify-center">
+                <span className="text-[#0066b2] text-[10px] font-black uppercase">{guestCount} Guests</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-3">
+              {Array.from({ length: buttonsToDisplay }).map((_, i) => (
+                <button 
+                  key={i}
+                  className="h-14 bg-white rounded-xl border border-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all animate-in fade-in zoom-in-95 duration-200"
+                >
+                  <User className="w-4 h-4 text-[#1a1c2e]" />
+                  <span className="text-[12px] font-black text-[#1a1c2e]">Guest {i + 1}</span>
+                </button>
+              ))}
+              {showMoreButton && (
+                <button 
+                  onClick={() => setShowAll(true)}
+                  className="h-14 bg-white rounded-xl border border-[#d1e9ff] shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-[#f0f7ff] active:scale-95 transition-all"
+                >
+                  <span className="text-[#0066b2] text-[12px] font-black">+ {remainingCount} More</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Customer Receipt Button */}
         <Button 
           variant="outline"
-          className="w-full h-14 rounded-[18px] border-gray-100 bg-white text-[#1a1c2e] text-[15px] font-black shadow-sm flex items-center justify-center gap-3 active:scale-[0.98] transition-all"
+          className="w-full h-14 rounded-[18px] border-gray-100 bg-white text-[#1a1c2e] text-[15px] font-black shadow-sm flex items-center justify-center gap-3 active:scale-[0.98] transition-all mb-8"
         >
           <Printer className="w-5 h-5 text-[#1a1c2e] stroke-[2.5px]" />
           Print Customer Receipt
         </Button>
       </div>
-
-      {/* Print Per Guest Section - Dynamic */}
-      {guestCount > 1 && (
-        <div className="w-full max-w-md mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-[#94a3b8] text-[11px] font-black uppercase tracking-widest">Print per Guest</span>
-            <div className="bg-[#f0f7ff] rounded-md px-2 py-1 flex items-center justify-center">
-              <span className="text-[#0066b2] text-[10px] font-black uppercase">{guestCount} Guests</span>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-3">
-            {Array.from({ length: buttonsToDisplay }).map((_, i) => (
-              <button 
-                key={i}
-                className="h-14 bg-white rounded-xl border border-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all animate-in fade-in zoom-in-95 duration-200"
-              >
-                <User className="w-4 h-4 text-[#1a1c2e]" />
-                <span className="text-[12px] font-black text-[#1a1c2e]">Guest {i + 1}</span>
-              </button>
-            ))}
-            {showMoreButton && (
-              <button 
-                onClick={() => setShowAll(true)}
-                className="h-14 bg-white rounded-xl border border-[#d1e9ff] shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-[#f0f7ff] active:scale-95 transition-all"
-              >
-                <span className="text-[#0066b2] text-[12px] font-black">+ {remainingCount} More</span>
-              </button>
-            )}
-          </div>
-        </div>
-      )}
 
       {/* Back to Home Action */}
       <div className="w-full max-w-md mt-auto">
