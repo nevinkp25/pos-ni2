@@ -121,25 +121,20 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
 
   const handleFinalPayment = () => {
     setIsSettlementOpen(false);
-    setIsProcessing(true);
+    toast({
+      title: "Payment Success",
+      description: "Guest payment confirmed. Please settle remaining shares.",
+    });
+    
+    if (activePayingGuest !== null) {
+      const newPaid = [...paidGuests, activePayingGuest];
+      setPaidGuests(newPaid);
+      setActivePayingGuest(null);
 
-    setTimeout(() => {
-      setIsProcessing(false);
-      if (activePayingGuest !== null) {
-        const newPaid = [...paidGuests, activePayingGuest];
-        setPaidGuests(newPaid);
-        setActivePayingGuest(null);
-
-        if (newPaid.length === guestCount) {
-          onPay(guestCount);
-        } else {
-          toast({
-            title: "Payment Success",
-            description: "Guest payment confirmed. Please settle remaining shares.",
-          });
-        }
+      if (newPaid.length === guestCount) {
+        onPay(guestCount);
       }
-    }, 3000);
+    }
   };
 
   const handleTipClick = (amount: number) => {
@@ -158,18 +153,11 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
     }
   };
 
-  if (isProcessing) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen bg-white font-sans">
-        <div className="relative flex items-center justify-center">
-          <div className="w-24 h-24 border-4 border-[#f1f5f9] rounded-full" />
-          <Loader2 className="w-24 h-24 text-[#0066b2] animate-spin absolute" />
-        </div>
-        <h2 className="mt-8 text-[22px] font-black text-[#1a1c2e] tracking-tight uppercase">Processing Payment...</h2>
-        <p className="mt-2 text-[#94a3b8] text-[14px] font-bold">Please tap card on terminal</p>
-      </div>
-    );
-  }
+  const handleClearSplits = () => {
+    setIsConfirmed(false);
+    setPaidGuests([]);
+    setExpandedGuest(null);
+  };
 
   return (
     <div className="flex flex-col h-screen bg-[#f8fbfe] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative tracking-normal">
@@ -223,7 +211,20 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
 
         {isConfirmed && (
           <div className="pt-2 animate-in fade-in slide-in-from-top-4 duration-500">
-            <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-widest mb-4 block">Select who is paying</span>
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-widest">Select who is paying</span>
+              {paidGuests.length === 0 && (
+                <button 
+                  onClick={handleClearSplits}
+                  className="flex items-center gap-1 text-[#ef4444] active:scale-95 transition-all group"
+                >
+                  <X className="w-4 h-4 stroke-[3px]" />
+                  <span className="text-[12px] font-black uppercase tracking-tight border-b border-dotted border-[#ef4444]/60 group-hover:border-[#ef4444]">
+                    Clear Splits
+                  </span>
+                </button>
+              )}
+            </div>
             <div className="space-y-3">
               {Array.from({ length: guestCount }).map((_, i) => { 
                 const guestId = i + 1; 
