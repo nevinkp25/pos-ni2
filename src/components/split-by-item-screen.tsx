@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -156,13 +155,13 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
         <h1 className="text-[17px] font-black leading-none text-[#1a1c2e] uppercase">Split By Item</h1>
       </div>
 
-      <div className="flex-1 px-4 pt-6 overflow-y-auto pb-64 space-y-6">
-        {/* High Fidelity Share Card (Horizontal Preloader) */}
-        <div className="relative p-[1.5px] rounded-[32px] bg-gradient-to-tr from-[#6366f1]/25 via-[#3b82f6]/25 to-[#a855f7]/25 shadow-[0_12px_40px_rgba(102,178,0,0.04)]">
-          <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[31px] p-6 flex flex-col gap-5">
+      <div className="flex-1 px-4 pt-4 overflow-y-auto pb-64 space-y-4">
+        {/* High Fidelity Share Card (Horizontal Preloader) - Compact Version */}
+        <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm">
+          <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[23px] p-4 flex flex-col gap-2">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-black text-[#475569] uppercase tracking-[0.12em]">Your Share (Base)</span>
-              <span className="text-[18px] font-black text-[#94a3b8] text-right">
+              <span className="text-[10px] font-black text-[#475569] uppercase tracking-[0.1em]">Your Share (Base)</span>
+              <span className="text-[14px] font-black text-[#94a3b8]">
                 {Math.round(progressPercent)}%
               </span>
             </div>
@@ -171,20 +170,20 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
               <CurrencyAmount 
                 amount={yourShareSubtotal} 
                 weight="bold" 
-                className="text-[36px] text-[#1a1c2e] tracking-tighter leading-none" 
+                className="text-[26px] text-[#1a1c2e] tracking-tighter leading-none" 
                 symbolSize="0.8em"
               />
             </div>
             
-            <div className="w-full h-[14px] bg-[#f1f5f9] rounded-full overflow-hidden">
+            <div className="w-full h-2 bg-[#f1f5f9] rounded-full overflow-hidden">
               <div 
                 className="h-full bg-gradient-to-r from-[#f59e0b] to-[#0066b2] transition-all duration-1000 ease-out rounded-full"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
             
-            <p className="text-[14px] font-bold text-[#94a3b8] text-center leading-tight">
-               Remaining balance is <CurrencyAmount amount={totalBillSubtotal} weight="bold" className="text-inherit" />
+            <p className="text-[12px] font-bold text-[#94a3b8] text-center leading-tight">
+               Remaining balance: <CurrencyAmount amount={totalBillSubtotal} weight="bold" className="text-inherit" />
             </p>
           </div>
         </div>
