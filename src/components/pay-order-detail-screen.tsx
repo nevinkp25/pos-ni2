@@ -471,14 +471,14 @@ export function PayOrderDetailScreen({
                 </div>
 
                 {paymentBanner && (
-                  <div className="flex justify-center mt-8">
+                  <div className="w-full mt-8">
                     <Image 
                       src={paymentBanner.imageUrl} 
                       alt="Supported Payment Methods" 
                       width={327} 
                       height={41}
                       data-ai-hint={paymentBanner.imageHint}
-                      className="h-auto w-auto"
+                      className="w-full h-auto"
                     />
                   </div>
                 )}

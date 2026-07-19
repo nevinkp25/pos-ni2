@@ -363,14 +363,14 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                 <div className="grid grid-cols-2 gap-4"><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button><Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button></div>
                 
                 {paymentBanner && (
-                  <div className="flex justify-center mt-8 pb-4">
+                  <div className="w-full mt-8 pb-4">
                     <Image 
                       src={paymentBanner.imageUrl} 
                       alt="Supported Payment Methods" 
                       width={327} 
                       height={41}
                       data-ai-hint={paymentBanner.imageHint}
-                      className="h-auto w-auto"
+                      className="w-full h-auto"
                     />
                   </div>
                 )}
