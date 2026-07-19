@@ -74,9 +74,9 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
   }, [selectedItemIds, items]);
 
   const shareServiceCharge = yourShareSubtotal * 0.10;
-  const shareVat = yourShareSubtotal * 0.05;
+  const shareTax = yourShareSubtotal * 0.05;
   const shareAdditionalCharges = yourShareSubtotal * 0.02;
-  const yourShareTotal = yourShareSubtotal + shareServiceCharge + shareVat + shareAdditionalCharges;
+  const yourShareTotal = yourShareSubtotal + shareServiceCharge + shareTax + shareAdditionalCharges;
 
   const currentTipAmount = isCustomTipMode 
     ? (parseFloat(customTipValue) || 0)
@@ -97,7 +97,6 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
   const handleFinalPayment = () => {
     setIsSettlementOpen(false);
     
-    // Immediate success loop via toast
     const newPaidItems = [...paidItemIds, ...selectedItemIds];
     setPaidItemIds(newPaidItems);
     setSelectedItemIds([]);
@@ -152,7 +151,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
       </div>
 
       <div className="flex-1 px-4 pt-4 overflow-y-auto pb-64 space-y-4">
-        <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm">
+        <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm shrink-0">
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[23px] p-4 flex flex-col gap-2">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black text-[#475569] uppercase tracking-[0.1em]">Your Share (Base)</span>
@@ -223,7 +222,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
             </div>
             <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
               <span className="uppercase tracking-tight">TAX (5%)</span>
-              <CurrencyAmount amount={shareVat} weight="bold" className="text-inherit" />
+              <CurrencyAmount amount={shareTax} weight="bold" className="text-inherit" />
             </div>
             <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
               <span className="uppercase tracking-tight">ADDITIONAL CHARGES</span>
@@ -285,7 +284,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">TAX (5%)</span>
-                      <CurrencyAmount amount={shareVat} weight="bold" className="text-[#1a1c2e]" />
+                      <CurrencyAmount amount={shareTax} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Service Charge (10%)</span>

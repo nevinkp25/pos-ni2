@@ -92,9 +92,9 @@ export function PayOrderDetailScreen({
   }, [items]);
 
   const serviceCharge = subtotal * 0.10;
-  const vat = subtotal * 0.05;
+  const tax = subtotal * 0.05;
   const additionalCharges = subtotal * 0.02; 
-  const billAmount = subtotal + serviceCharge + vat + additionalCharges;
+  const billAmount = subtotal + serviceCharge + tax + additionalCharges;
   
   const currentTipAmount = isCustomTipMode 
     ? (parseFloat(customTipValue) || 0)
@@ -303,8 +303,8 @@ export function PayOrderDetailScreen({
                 <CurrencyAmount amount={serviceCharge} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">VAT (5%)</span>
-                <CurrencyAmount amount={vat} weight="bold" className="text-[11px]" />
+                <span className="uppercase tracking-tight">TAX (5%)</span>
+                <CurrencyAmount amount={tax} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
                 <span className="uppercase tracking-tight">Additional Charges</span>
@@ -419,7 +419,7 @@ export function PayOrderDetailScreen({
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">TAX (5%)</span>
-                      <CurrencyAmount amount={vat} weight="bold" className="text-[#1a1c2e]" />
+                      <CurrencyAmount amount={tax} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Service Charge (10%)</span>
@@ -487,22 +487,6 @@ export function PayOrderDetailScreen({
               <button 
                 onClick={() => {
                   setIsSplitBillOpen(false);
-                  onSplitByItem?.();
-                }}
-                className="w-full h-20 bg-[#f0f7ff] rounded-[24px] px-6 flex items-center gap-5 active:scale-[0.98] transition-all text-left"
-              >
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#0066b2] shadow-sm shrink-0">
-                  <List className="w-6 h-6" />
-                </div>
-                <div className="flex flex-col items-start min-w-0">
-                  <span className="text-[17px] font-bold text-[#1a1c2e] leading-tight text-left">Split by Item</span>
-                  <span className="text-[13px] text-[#94a3b8] font-medium leading-tight text-left">Select specific items for each guest</span>
-                </div>
-              </button>
-
-              <button 
-                onClick={() => {
-                  setIsSplitBillOpen(false);
                   onSplitEqually?.();
                 }}
                 className="w-full h-20 bg-[#f0f7ff] rounded-[24px] px-6 flex items-center gap-5 active:scale-[0.98] transition-all text-left"
@@ -513,6 +497,22 @@ export function PayOrderDetailScreen({
                 <div className="flex flex-col items-start min-w-0">
                   <span className="text-[17px] font-bold text-[#1a1c2e] leading-tight text-left">Split Equally</span>
                   <span className="text-[13px] text-[#94a3b8] font-medium leading-tight text-left">Divide total amount by number of guests</span>
+                </div>
+              </button>
+
+              <button 
+                onClick={() => {
+                  setIsSplitBillOpen(false);
+                  onSplitByItem?.();
+                }}
+                className="w-full h-20 bg-[#f0f7ff] rounded-[24px] px-6 flex items-center gap-5 active:scale-[0.98] transition-all text-left"
+              >
+                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#0066b2] shadow-sm shrink-0">
+                  <List className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col items-start min-w-0">
+                  <span className="text-[17px] font-bold text-[#1a1c2e] leading-tight text-left">Split by Item</span>
+                  <span className="text-[13px] text-[#94a3b8] font-medium leading-tight text-left">Select specific items for each guest</span>
                 </div>
               </button>
             </div>

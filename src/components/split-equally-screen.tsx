@@ -14,7 +14,8 @@ import {
   ArrowRight,
   Pencil,
   Landmark,
-  Loader2
+  Loader2,
+  Split
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -78,13 +79,13 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
   }, [items]);
 
   const serviceChargeTotal = subtotal * 0.10;
-  const vatTotal = subtotal * 0.05;
+  const taxTotal = subtotal * 0.05;
   const additionalChargesTotal = subtotal * 0.02;
-  const totalBill = subtotal + serviceChargeTotal + vatTotal + additionalChargesTotal;
+  const totalBill = subtotal + serviceChargeTotal + taxTotal + additionalChargesTotal;
   
   const shareSubtotal = subtotal / guestCount;
   const shareServiceCharge = serviceChargeTotal / guestCount;
-  const shareVat = vatTotal / guestCount;
+  const shareTax = taxTotal / guestCount;
   const shareAdditionalCharges = additionalChargesTotal / guestCount;
   const shareAmount = totalBill / guestCount;
   
@@ -170,7 +171,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
           <span className="text-[10px] font-black text-[#1a1c2e] uppercase tracking-[0.1em]">Order: {order?.timestamp.toString().slice(-6) || '---'}</span>
         </div>
 
-        <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm">
+        <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm shrink-0">
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[23px] p-4 flex flex-col gap-2">
             <div className="flex items-center">
               <span className="text-[9px] font-black text-[#475569] w-[80px] shrink-0 uppercase tracking-tight">Total Bill</span>
@@ -268,7 +269,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
                           <span className="uppercase tracking-tight">TAX (5%)</span>
-                          <CurrencyAmount amount={shareVat} weight="bold" className="text-inherit" />
+                          <CurrencyAmount amount={shareTax} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
                           <span className="uppercase tracking-tight">ADDITIONAL CHARGES</span>
@@ -332,7 +333,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">TAX (5%)</span>
-                      <CurrencyAmount amount={shareVat} weight="bold" className="text-[#1a1c2e]" />
+                      <CurrencyAmount amount={shareTax} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Service Charge (10%)</span>
