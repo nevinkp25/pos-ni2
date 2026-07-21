@@ -81,12 +81,14 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
   const serviceChargeTotal = subtotal * 0.10;
   const taxTotal = subtotal * 0.05;
   const additionalChargesTotal = subtotal * 0.02;
-  const totalBill = subtotal + serviceChargeTotal + taxTotal + additionalChargesTotal;
+  const convenienceFeeTotal = subtotal * 0.01;
+  const totalBill = subtotal + serviceChargeTotal + taxTotal + additionalChargesTotal + convenienceFeeTotal;
   
   const shareSubtotal = subtotal / guestCount;
   const shareServiceCharge = serviceChargeTotal / guestCount;
   const shareTax = taxTotal / guestCount;
   const shareAdditionalCharges = additionalChargesTotal / guestCount;
+  const shareConvenienceFee = convenienceFeeTotal / guestCount;
   const shareAmount = totalBill / guestCount;
   
   const currentTipAmount = isCustomTipMode 
@@ -260,7 +262,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                     <CollapsibleContent className="px-5 pb-5">
                       <div className="bg-[#f0f7ff]/40 rounded-[24px] p-5 border border-[#0066b2]/10 space-y-3">
                         <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">BASE PRICE</span>
+                          <span className="uppercase tracking-tight">BASE PRICE (EXCLUSIVE)</span>
                           <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
@@ -274,6 +276,10 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
                           <span className="uppercase tracking-tight">ADDITIONAL CHARGES</span>
                           <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-inherit" />
+                        </div>
+                        <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                          <span className="uppercase tracking-tight">CONVENIENCE FEE</span>
+                          <CurrencyAmount amount={shareConvenienceFee} weight="bold" className="text-inherit" />
                         </div>
                       </div>
                     </CollapsibleContent>
@@ -328,7 +334,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                 <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                   <div className="space-y-2.5">
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Item Price (Base)</span>
+                      <span className="text-[#94a3b8] uppercase">Item Price (Base) (Exclusive)</span>
                       <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
@@ -342,6 +348,10 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Additional Charges</span>
                       <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Convenience Fee</span>
+                      <CurrencyAmount amount={shareConvenienceFee} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                   </div>
                   <div className="w-full border-t border-dashed border-gray-100 py-1" />

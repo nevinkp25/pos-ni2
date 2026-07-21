@@ -94,7 +94,8 @@ export function PayOrderDetailScreen({
   const serviceCharge = subtotal * 0.10;
   const tax = subtotal * 0.05;
   const additionalCharges = subtotal * 0.02; 
-  const billAmount = subtotal + serviceCharge + tax + additionalCharges;
+  const convenienceFee = subtotal * 0.01;
+  const billAmount = subtotal + serviceCharge + tax + additionalCharges + convenienceFee;
   
   const currentTipAmount = isCustomTipMode 
     ? (parseFloat(customTipValue) || 0)
@@ -295,7 +296,7 @@ export function PayOrderDetailScreen({
             
             <div className="space-y-3">
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Item Price (Base)</span>
+                <span className="uppercase tracking-tight">Item Price (Base) (Exclusive)</span>
                 <CurrencyAmount amount={subtotal} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
@@ -309,6 +310,10 @@ export function PayOrderDetailScreen({
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
                 <span className="uppercase tracking-tight">Additional Charges</span>
                 <CurrencyAmount amount={additionalCharges} weight="bold" className="text-[11px]" />
+              </div>
+              <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
+                <span className="uppercase tracking-tight">Convenience Fee</span>
+                <CurrencyAmount amount={convenienceFee} weight="bold" className="text-[11px]" />
               </div>
             </div>
           </div>
@@ -414,7 +419,7 @@ export function PayOrderDetailScreen({
                 <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                   <div className="space-y-2.5">
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Item Price (Base)</span>
+                      <span className="text-[#94a3b8] uppercase">Item Price (Base) (Exclusive)</span>
                       <CurrencyAmount amount={subtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
@@ -428,6 +433,10 @@ export function PayOrderDetailScreen({
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Additional Charges</span>
                       <CurrencyAmount amount={additionalCharges} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Convenience Fee</span>
+                      <CurrencyAmount amount={convenienceFee} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                   </div>
                   
