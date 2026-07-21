@@ -14,7 +14,6 @@ import {
   ChevronsRight,
   Check,
   Pencil,
-  SquarePen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CartItem } from '@/lib/types';
@@ -273,7 +272,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
 
                       {/* Bottom Action Row: Note, Edit, Qty */}
                       <div className="flex items-center justify-between mt-2">
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                           <button 
                             onClick={() => openInstructionDialog(item.id, item.specialRequests)}
                             className={cn(
@@ -283,16 +282,16 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
                           >
                             <MessageCircle className={cn("w-3.5 h-3.5", hasInstructions ? "fill-current" : "")} />
                             <span className="border-b border-dotted border-current">
-                              {hasInstructions ? "Edit Note" : "Add Note"}
+                              Note
                             </span>
                           </button>
                           
                           <button 
                             onClick={() => onEditItem(item)}
-                            className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all"
+                            className="w-8 h-8 rounded-full bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all flex items-center justify-center shadow-sm"
+                            title="Edit Item"
                           >
-                            <Pencil className="w-3 h-3" />
-                            <span className="text-[10px] font-black uppercase tracking-tight">Edit</span>
+                            <Pencil className="w-3.5 h-3.5" />
                           </button>
                         </div>
 
