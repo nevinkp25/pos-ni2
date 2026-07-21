@@ -40,7 +40,7 @@ interface SplitByItemScreenProps {
 export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScreenProps) {
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [paidItemIds, setPaidItemIds] = useState<string[]>([]);
-  const [guestCount, setGuestCount] = useState(2);
+  const [completedPayments, setCompletedPayments] = useState(0);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isBreakdownExpanded, setIsBreakdownExpanded] = useState(false);
@@ -113,8 +113,11 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
     setIsSettlementOpen(false);
     
     const newPaidItems = [...paidItemIds, ...selectedItemIds];
+    const nextPaymentCount = completedPayments + 1;
+    
     setPaidItemIds(newPaidItems);
     setSelectedItemIds([]);
+    setCompletedPayments(nextPaymentCount);
 
     toast({
       title: "Payment Success",
@@ -123,7 +126,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
 
     const allPaid = (order?.items || []).every(item => newPaidItems.includes(item.id));
     if (allPaid) {
-      onPay(guestCount);
+      onPay(nextPaymentCount);
     }
   };
 
@@ -199,26 +202,6 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                Total amount to be paid: <CurrencyAmount amount={overallTotalSubtotal} weight="bold" className="text-inherit" />
             </p>
           </div>
-        </div>
-
-        {/* Guest Count Selector */}
-        <div className="flex items-center justify-between bg-white rounded-[24px] p-3 shadow-sm border border-gray-50 transition-all">
-          <button 
-            onClick={() => setGuestCount(Math.max(1, guestCount - 1))} 
-            className="w-12 h-12 rounded-full bg-white shadow-sm border border-gray-50 flex items-center justify-center active:scale-90 transition-all"
-          >
-            <Minus className="w-5 h-5 text-[#1a1c2e] stroke-[3px]" />
-          </button>
-          <div className="flex flex-col items-center">
-            <span className="text-[24px] font-black text-[#1a1c2e] leading-none">{guestCount}</span>
-            <span className="text-[9px] font-black text-[#94a3b8] uppercase tracking-widest mt-1">Guests</span>
-          </div>
-          <button 
-            onClick={() => setGuestCount(guestCount + 1)} 
-            className="w-12 h-12 rounded-full bg-[#0066b2] shadow-sm flex items-center justify-center active:scale-90 transition-all"
-          >
-            <Plus className="w-5 h-5 text-white stroke-[3px]" />
-          </button>
         </div>
 
         <div className="space-y-2.5 pb-8">
