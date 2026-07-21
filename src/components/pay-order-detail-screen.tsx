@@ -224,7 +224,7 @@ export function PayOrderDetailScreen({
         <div className="bg-white rounded-[24px] p-5 shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-50 space-y-5">
           <div className="flex items-center gap-2 mb-1">
             <ReceiptText className="w-4 h-4 text-[#94a3b8]" />
-            <span className="text-[11px] font-black text-[#94a3b8] uppercase">Current Orders</span>
+            <span className="text-[11px] font-black text-[#94a3b8]">Current Orders</span>
           </div>
 
           {displayedItems.map((item) => {
@@ -289,7 +289,7 @@ export function PayOrderDetailScreen({
         <div className="bg-[#f0f7ff] rounded-[24px] p-0 border-[2px] border-[#0066b2] overflow-hidden shadow-sm">
           <div className="p-5 space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-[15px] font-black text-[#0066b2] uppercase">SUBTOTAL</span>
+              <span className="text-[15px] font-black text-[#0066b2]">Subtotal</span>
               <CurrencyAmount amount={subtotal} weight="bold" className="text-[22px] text-[#0066b2]" />
             </div>
             
@@ -321,8 +321,8 @@ export function PayOrderDetailScreen({
 
           <div className="bg-white p-5 flex items-end justify-between border-t border-[#0066b2]/10">
             <div className="flex flex-col gap-1">
-              <span className="text-[11px] font-black text-[#94a3b8] uppercase leading-none tracking-tight">Total Balance Due</span>
-              <span className="text-[11px] font-black text-[#0066b2] uppercase leading-none tracking-tight">Order #{order?.timestamp.toString().slice(-4) || '----'}</span>
+              <span className="text-[11px] font-black text-[#94a3b8] leading-none tracking-tight">Total Balance Due</span>
+              <span className="text-[11px] font-black text-[#0066b2] leading-none tracking-tight">Order #{order?.timestamp.toString().slice(-4) || '----'}</span>
             </div>
             <CurrencyAmount amount={billAmount} weight="bold" className="text-[38px] text-[#0066b2] leading-none" />
           </div>
@@ -370,8 +370,8 @@ export function PayOrderDetailScreen({
                     <CreditCard className="w-6 h-6 text-[#0066b2]" />
                   </div>
                   <div className="flex flex-col">
-                    <h2 className="text-[17px] font-black text-[#1a1c2e] leading-none uppercase">CHECK SETTLEMENT</h2>
-                    <span className="text-[11px] font-bold text-[#94a3b8] uppercase mt-1.5">Final Review</span>
+                    <h2 className="text-[17px] font-black text-[#1a1c2e] leading-none">Check Settlement</h2>
+                    <span className="text-[11px] font-bold text-[#94a3b8] mt-1.5">Final Review</span>
                   </div>
                 </div>
               </div>
@@ -384,17 +384,17 @@ export function PayOrderDetailScreen({
                     <div className="w-10 h-10 bg-[#f8fafc] rounded-full flex items-center justify-center mb-2 border border-gray-50">
                       <User className="w-5 h-5 text-[#94a3b8]" />
                     </div>
-                    <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-1">Waiter ID:</span>
+                    <span className="text-[9px] font-black text-[#94a3b8] mb-1">Waiter ID:</span>
                     <span className="text-[15px] font-black text-[#1a1c2e]">#123456</span>
                   </div>
                   <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[140px]">
-                    <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-2">Bill Amount</span>
+                    <span className="text-[9px] font-black text-[#94a3b8] mb-2">Bill Amount</span>
                     <CurrencyAmount amount={billAmount} weight="bold" className="text-[24px] text-[#0066b2]" />
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-normal">Add tips for your waiter</span>
+                  <span className="text-[11px] font-black text-[#94a3b8] tracking-normal">Add tips for your waiter</span>
                   <div className="grid grid-cols-4 gap-3">
                     {[5, 10, 20].map((amount) => (
                       <button key={amount} onClick={() => handleTipClick(amount)} className={cn("relative h-[90px] rounded-[24px] flex flex-col items-center justify-center transition-all shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50", (!isCustomTipMode && selectedTip === amount) ? "bg-[#f0f7ff] border-[#0066b2] border-2" : "bg-white")}>
@@ -444,23 +444,23 @@ export function PayOrderDetailScreen({
                   <div className="w-full border-t border-dashed border-gray-100 py-1" />
                   
                   <div className="flex justify-between items-center text-[15px] font-black">
-                    <span className="text-[#1a1c2e] uppercase">Bill Amount</span>
+                    <span className="text-[#1a1c2e]">Bill Amount</span>
                     <CurrencyAmount amount={billAmount} weight="bold" className="text-[15px] text-[#1a1c2e]" />
                   </div>
                   <div className="flex justify-between items-center text-[15px] font-black">
-                    <span className="text-[#94a3b8] uppercase">Tips</span>
+                    <span className="text-[#94a3b8]">Tips</span>
                     <div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="bold" className="text-[15px] text-inherit" /></div>
                   </div>
                   <div className="w-full border-t border-dashed border-gray-100 py-1" />
                   <div className="flex justify-between items-center">
-                    <span className="text-[13px] font-black text-[#94a3b8] uppercase">Grand Total</span>
-                    <CurrencyAmount amount={grandTotal} weight="bold" className="text-[34px] text-[#0066b2]" />
+                    <span className="text-[13px] font-black text-[#94a3b8]">Grand Total</span>
+                    <CurrencyAmount amount={grandTotal} weight="bold" className="text-[34px] text-[#0066b2] leading-none" />
                   </div>
                 </div>
               </div>
 
               <div className="px-6 mt-10 space-y-4 pb-0">
-                <Button onClick={() => { setIsSettlementOpen(false); onSettle(); }} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)]"><CreditCard className="w-5 h-5" />PAY BY CARD</Button>
+                <Button onClick={() => { setIsSettlementOpen(false); onSettle(); }} className="w-full h-[64px] bg-[#0066b2] hover:bg-[#005596] text-white rounded-[20px] text-[17px] font-black flex items-center justify-center gap-3 shadow-[0_10px_30px_rgba(0,102,178,0.25)]"><CreditCard className="w-5 h-5" />Pay By Card</Button>
                 <div className="grid grid-cols-2 gap-4">
                   <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black flex items-center justify-center gap-2"><Landmark className="w-4 h-4 text-[#94a3b8]" />PAY BY CASH</Button>
                   <Button variant="outline" className="h-[60px] rounded-[20px] border-gray-200 text-[#1a1c2e] text-[15px] font-black">OTHER OPTIONS</Button>
@@ -468,7 +468,7 @@ export function PayOrderDetailScreen({
               </div>
 
               {paymentBanner && (
-                <div className="w-full mt-1 flex justify-center mb-[7px]">
+                <div className="w-full mt-10 mb-10 flex justify-center px-4">
                   <Image 
                     src={paymentBanner.imageUrl} 
                     alt="Supported Payment Methods" 
