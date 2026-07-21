@@ -297,23 +297,23 @@ export function PayOrderDetailScreen({
             
             <div className="space-y-3">
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Item Price (Base)</span>
+                <span>Item Price (Base)</span>
                 <CurrencyAmount amount={subtotal} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Service Charge (10%) (INCLUSIVE)</span>
+                <span>Service Charge (10%) (Inclusive)</span>
                 <CurrencyAmount amount={serviceCharge} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">TAX (5%) (INCLUSIVE)</span>
+                <span>Tax (5%) (Inclusive)</span>
                 <CurrencyAmount amount={tax} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Additional Charges (EXCLUSIVE)</span>
+                <span>Additional Charges (Exclusive)</span>
                 <CurrencyAmount amount={additionalCharges} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Convenience Fee (EXCLUSIVE)</span>
+                <span>Convenience Fee (Exclusive)</span>
                 <CurrencyAmount amount={convenienceFee} weight="bold" className="text-[11px]" />
               </div>
             </div>
@@ -420,23 +420,23 @@ export function PayOrderDetailScreen({
                 <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                   <div className="space-y-2.5">
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Item Price (Base)</span>
+                      <span className="text-[#94a3b8]">Item Price (Base)</span>
                       <CurrencyAmount amount={subtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Service Charge (10%) (INCLUSIVE)</span>
+                      <span className="text-[#94a3b8]">Service Charge (10%) (Inclusive)</span>
                       <CurrencyAmount amount={serviceCharge} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">TAX (5%) (INCLUSIVE)</span>
+                      <span className="text-[#94a3b8]">Tax (5%) (Inclusive)</span>
                       <CurrencyAmount amount={tax} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Additional Charges (EXCLUSIVE)</span>
+                      <span className="text-[#94a3b8]">Additional Charges (Exclusive)</span>
                       <CurrencyAmount amount={additionalCharges} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Convenience Fee (EXCLUSIVE)</span>
+                      <span className="text-[#94a3b8]">Convenience Fee (Exclusive)</span>
                       <CurrencyAmount amount={convenienceFee} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                   </div>
