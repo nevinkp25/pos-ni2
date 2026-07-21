@@ -73,6 +73,125 @@ export const menuData: MenuCategory[] = [
           { name: 'Hot Honey', price: 8 }
         ]
       },
+      { 
+        name: 'Quattro Formaggi', 
+        description: 'Mozzarella, gorgonzola, parmesan, fontina',
+        allergens: ['Dairy', 'Gluten'], 
+        basePrice: 95,
+        nutritionalInfo: { kcal: 1100, protein: '45g', carbs: '88g', fat: '55g' },
+        variations: [
+          { name: 'White Base', price: 0 },
+          { name: 'Red Base', price: 0 }
+        ],
+        addons: [
+          { name: 'Walnuts', price: 10 },
+          { name: 'Truffle Oil', price: 15 }
+        ]
+      },
+      { 
+        name: 'Capricciosa', 
+        description: 'Ham, mushrooms, artichokes, olives',
+        allergens: ['Dairy', 'Gluten'], 
+        basePrice: 90,
+        nutritionalInfo: { kcal: 920, protein: '35g', carbs: '94g', fat: '42g' },
+        variations: [
+          { name: 'Classic', price: 0 },
+          { name: 'Well Done', price: 0 }
+        ],
+        addons: [
+          { name: 'Anchovies', price: 12 },
+          { name: 'Fried Egg', price: 8 }
+        ]
+      },
+      { 
+        name: 'Prosciutto e Funghi', 
+        description: 'Cooked ham and fresh mushrooms',
+        allergens: ['Dairy', 'Gluten'], 
+        basePrice: 88,
+        nutritionalInfo: { kcal: 890, protein: '34g', carbs: '90g', fat: '38g' },
+        variations: [
+          { name: 'Thin Crust', price: 0 },
+          { name: 'Stuffed Crust', price: 15 }
+        ],
+        addons: [
+          { name: 'Extra Ham', price: 12 },
+          { name: 'Rocket Leaves', price: 6 }
+        ]
+      },
+      { 
+        name: 'Marinara', 
+        description: 'Tomato, garlic, oregano, extra virgin olive oil',
+        allergens: ['Gluten'], 
+        basePrice: 60,
+        nutritionalInfo: { kcal: 650, protein: '18g', carbs: '110g', fat: '15g' },
+        variations: [
+          { name: 'Traditional', price: 0 }
+        ],
+        addons: [
+          { name: 'Anchovies', price: 12 },
+          { name: 'Capers', price: 5 },
+          { name: 'Chili Flakes', price: 2 }
+        ]
+      },
+      { 
+        name: 'Vegetariana', 
+        description: 'Peppers, zucchini, eggplant, spinach',
+        allergens: ['Dairy', 'Gluten'], 
+        basePrice: 85,
+        nutritionalInfo: { kcal: 780, protein: '28g', carbs: '95g', fat: '30g' },
+        variations: [
+          { name: 'Classic Mozzarella', price: 0 },
+          { name: 'Vegan Cheese', price: 10 }
+        ],
+        addons: [
+          { name: 'Sun-dried Tomatoes', price: 8 },
+          { name: 'Corn', price: 5 }
+        ]
+      },
+      { 
+        name: 'Napoletana', 
+        description: 'Anchovies, capers, olives, oregano',
+        allergens: ['Fish', 'Dairy', 'Gluten'], 
+        basePrice: 82,
+        nutritionalInfo: { kcal: 840, protein: '30g', carbs: '92g', fat: '35g' },
+        variations: [
+          { name: 'Standard', price: 0 }
+        ],
+        addons: [
+          { name: 'Extra Anchovies', price: 15 },
+          { name: 'Garlic Oil', price: 3 }
+        ]
+      },
+      { 
+        name: 'Hawaii', 
+        description: 'Ham, pineapple, mozzarella',
+        allergens: ['Dairy', 'Gluten'], 
+        basePrice: 85,
+        nutritionalInfo: { kcal: 880, protein: '32g', carbs: '105g', fat: '34g' },
+        variations: [
+          { name: 'Classic', price: 0 },
+          { name: 'Spicy Hawaii', price: 5 }
+        ],
+        addons: [
+          { name: 'Bacon Bit', price: 10 },
+          { name: 'Extra Pineapple', price: 5 }
+        ]
+      },
+      { 
+        name: 'BBQ Chicken', 
+        description: 'Chicken breast, BBQ sauce, red onion',
+        allergens: ['Dairy', 'Gluten'], 
+        basePrice: 92,
+        nutritionalInfo: { kcal: 1050, protein: '48g', carbs: '98g', fat: '40g' },
+        variations: [
+          { name: 'Smoky BBQ', price: 0 },
+          { name: 'Spicy BBQ', price: 0 }
+        ],
+        addons: [
+          { name: 'Sweetcorn', price: 5 },
+          { name: 'Coriander', price: 2 }
+        ]
+      },
     ] 
   },
   { 

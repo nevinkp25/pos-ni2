@@ -268,7 +268,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
   return (
     <div className="flex flex-col h-screen bg-[#fcfdff] font-sans text-[#1a1c2e] safe-top safe-bottom overflow-hidden relative">
       {!isSearching ? (
-        <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-10">
+        <div className="bg-white px-6 h-20 flex items-center justify-between shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-20">
           <div className="flex items-center gap-4">
             <button 
               onClick={onBack}
@@ -312,7 +312,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
           </div>
         </div>
       ) : (
-        <div className="bg-white px-6 h-20 flex items-center gap-4 shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-20 transition-all animate-in slide-in-from-top-2 duration-300">
+        <div className="bg-white px-6 h-20 flex items-center gap-4 shrink-0 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-b-[32px] z-30 transition-all animate-in slide-in-from-top-2 duration-300">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94a3b8]" />
             <input 
@@ -372,12 +372,12 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
               const categoryItemsInCart = getCategoryCartCount(category);
 
               return (
-                <div key={index} className={cn(index !== filteredMenuData.length - 1 && "border-b border-[#f0f4f8]")}>
+                <div key={index} className={cn("relative", index !== filteredMenuData.length - 1 && "border-b border-[#f0f4f8]")}>
                   <button 
                     onClick={() => toggleCategory(category.title)}
                     className={cn(
-                      "w-full h-16 px-6 flex items-center justify-between transition-colors active:bg-gray-50",
-                      isExpanded && "bg-[#fcfdff]"
+                      "w-full h-16 px-6 flex items-center justify-between transition-colors active:bg-gray-50 sticky top-0 z-10",
+                      isExpanded ? "bg-white shadow-sm" : "bg-white"
                     )}
                   >
                     <span className="text-[14px] font-black text-[#334155] tracking-wide">
