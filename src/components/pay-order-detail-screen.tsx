@@ -96,7 +96,7 @@ export function PayOrderDetailScreen({
   const additionalCharges = subtotal * 0.02; 
   const convenienceFee = subtotal * 0.01;
   
-  // Base Prices for breakdown clarity
+  // High-fidelity breakdown values
   const basePriceExclusive = subtotal;
   const basePriceInclusive = subtotal + tax;
 

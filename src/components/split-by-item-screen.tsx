@@ -219,11 +219,11 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
         {yourShareSubtotal > 0 && (
           <div className="bg-[#f0f7ff]/40 rounded-[24px] p-5 border border-[#0066b2]/10 space-y-3 mb-1">
             <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">ITEM PRICE (BASE) (EXCLUSIVE)</span>
+              <span className="uppercase tracking-tight">Item Price (Base) (Exclusive)</span>
               <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-inherit" />
             </div>
             <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">ITEM PRICE (BASE) (INCLUSIVE)</span>
+              <span className="uppercase tracking-tight">Item Price (Base) (Inclusive)</span>
               <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-inherit" />
             </div>
             <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">

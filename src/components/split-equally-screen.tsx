@@ -88,7 +88,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
   const shareAdditionalCharges = additionalChargesTotal / guestCount;
   const shareConvenienceFee = convenienceFeeTotal / guestCount;
 
-  // Accurate Inclusive/Exclusive logic for breakdown display
+  // Breakdown specific pricing logic
   const basePriceExclusive = shareSubtotal;
   const basePriceInclusive = shareSubtotal + shareTax;
 
@@ -265,11 +265,11 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                     <CollapsibleContent className="px-5 pb-5">
                       <div className="bg-[#f0f7ff]/40 rounded-[24px] p-5 border border-[#0066b2]/10 space-y-3">
                         <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">ITEM PRICE (BASE) (EXCLUSIVE)</span>
+                          <span className="uppercase tracking-tight">Item Price (Base) (Exclusive)</span>
                           <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">ITEM PRICE (BASE) (INCLUSIVE)</span>
+                          <span className="uppercase tracking-tight">Item Price (Base) (Inclusive)</span>
                           <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
@@ -396,12 +396,6 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
           </div>
         </SheetContent>
       </Sheet>
-
-      <TerminalSystemsSheet 
-        isOpen={isTerminalSheetOpen}
-        onOpenChange={setIsTerminalSheetOpen}
-        onAdminLogout={onAdminLogout}
-      />
     </div>
   );
 }
