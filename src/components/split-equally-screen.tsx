@@ -71,9 +71,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
   const subtotal = useMemo(() => {
     return items.reduce((sum, item) => {
       let itemTotal = item.basePrice;
-      item.addons.forEach(a => {
-        itemTotal += a.price * a.quantity;
-      });
+      itemTotal += item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
       return sum + (itemTotal * item.quantity);
     }, 0);
   }, [items]);
@@ -89,6 +87,11 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
   const shareTax = taxTotal / guestCount;
   const shareAdditionalCharges = additionalChargesTotal / guestCount;
   const shareConvenienceFee = convenienceFeeTotal / guestCount;
+
+  // Accurate Inclusive/Exclusive logic for breakdown display
+  const basePriceExclusive = shareSubtotal;
+  const basePriceInclusive = shareSubtotal + shareTax;
+
   const shareAmount = totalBill / guestCount;
   
   const currentTipAmount = isCustomTipMode 
@@ -262,12 +265,12 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                     <CollapsibleContent className="px-5 pb-5">
                       <div className="bg-[#f0f7ff]/40 rounded-[24px] p-5 border border-[#0066b2]/10 space-y-3">
                         <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">BASE PRICE (EXCLUSIVE)</span>
-                          <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-inherit" />
+                          <span className="uppercase tracking-tight">ITEM PRICE (BASE) (EXCLUSIVE)</span>
+                          <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">BASE PRICE (INCLUSIVE)</span>
-                          <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-inherit" />
+                          <span className="uppercase tracking-tight">ITEM PRICE (BASE) (INCLUSIVE)</span>
+                          <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
                           <span className="uppercase tracking-tight">SERVICE CHARGE (10%)</span>
@@ -306,7 +309,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
               <div className="px-6 flex items-center justify-between mb-3">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-[#f0f7ff] rounded-2xl flex items-center justify-center shadow-sm"><CreditCard className="w-6 h-6 text-[#0066b2]" /></div>
-                  <div className="flex flex-col"><h2 className="text-[17px] font-black text-[#1a1c2e] leading-none uppercase">Guest {activePayingGuest} Payment</h2><span className="text-[11px] font-bold text-[#94a3b8] uppercase mt-1.5 tracking-wider">Final Review</span></div>
+                  <div className="flex flex-col"><h2 className="text-[17px] font-black text-[#1a1c2e] leading-none uppercase">CHECK SETTLEMENT</h2><span className="text-[11px] font-bold text-[#94a3b8] uppercase mt-1.5 tracking-wider">Final Review</span></div>
                 </div>
               </div>
 
@@ -314,7 +317,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
               <div className="px-6 space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
-                    <div className="w-10 h-10 bg-[#f8fbfe] rounded-full flex items-center justify-center mb-2 border border-gray-50"><User className="w-5 h-5 text-[#94a3b8]" /></div>
+                    <div className="w-10 h-10 bg-[#f8fafc] rounded-full flex items-center justify-center mb-2 border border-gray-50"><User className="w-5 h-5 text-[#94a3b8]" /></div>
                     <span className="text-[9px] font-black text-[#94a3b8] uppercase mb-1 tracking-tight">Waiter ID:</span><span className="text-[15px] font-black text-[#1a1c2e]">#123456</span>
                   </div>
                   <div className="bg-white rounded-[24px] p-5 shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center justify-center min-h-[120px]">
@@ -339,11 +342,11 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                   <div className="space-y-2.5">
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Item Price (Base) (Exclusive)</span>
-                      <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-[#1a1c2e]" />
+                      <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Item Price (Base) (Inclusive)</span>
-                      <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-[#1a1c2e]" />
+                      <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">TAX (5%)</span>
@@ -393,6 +396,12 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
           </div>
         </SheetContent>
       </Sheet>
+
+      <TerminalSystemsSheet 
+        isOpen={isTerminalSheetOpen}
+        onOpenChange={setIsTerminalSheetOpen}
+        onAdminLogout={onAdminLogout}
+      />
     </div>
   );
 }

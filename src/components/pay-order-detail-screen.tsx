@@ -95,6 +95,11 @@ export function PayOrderDetailScreen({
   const tax = subtotal * 0.05;
   const additionalCharges = subtotal * 0.02; 
   const convenienceFee = subtotal * 0.01;
+  
+  // Base Prices for breakdown clarity
+  const basePriceExclusive = subtotal;
+  const basePriceInclusive = subtotal + tax;
+
   const billAmount = subtotal + serviceCharge + tax + additionalCharges + convenienceFee;
   
   const currentTipAmount = isCustomTipMode 
@@ -297,11 +302,11 @@ export function PayOrderDetailScreen({
             <div className="space-y-3">
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
                 <span className="uppercase tracking-tight">Item Price (Base) (Exclusive)</span>
-                <CurrencyAmount amount={subtotal} weight="bold" className="text-[11px]" />
+                <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
                 <span className="uppercase tracking-tight">Item Price (Base) (Inclusive)</span>
-                <CurrencyAmount amount={subtotal} weight="bold" className="text-[11px]" />
+                <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
                 <span className="uppercase tracking-tight">Service Charge (10%)</span>
@@ -424,11 +429,11 @@ export function PayOrderDetailScreen({
                   <div className="space-y-2.5">
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Item Price (Base) (Exclusive)</span>
-                      <CurrencyAmount amount={subtotal} weight="bold" className="text-[#1a1c2e]" />
+                      <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Item Price (Base) (Inclusive)</span>
-                      <CurrencyAmount amount={subtotal} weight="bold" className="text-[#1a1c2e]" />
+                      <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">TAX (5%)</span>
