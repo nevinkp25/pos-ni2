@@ -88,10 +88,6 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
   const shareAdditionalCharges = additionalChargesTotal / guestCount;
   const shareConvenienceFee = convenienceFeeTotal / guestCount;
 
-  // Breakdown specific pricing logic
-  const basePriceExclusive = shareSubtotal;
-  const basePriceInclusive = shareSubtotal + shareTax;
-
   const shareAmount = totalBill / guestCount;
   
   const currentTipAmount = isCustomTipMode 
@@ -265,27 +261,23 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                     <CollapsibleContent className="px-5 pb-5">
                       <div className="bg-[#f0f7ff]/40 rounded-[24px] p-5 border border-[#0066b2]/10 space-y-3">
                         <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">Item Price (Base) (Exclusive)</span>
-                          <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-inherit" />
-                        </div>
-                        <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">Item Price (Base) (Inclusive)</span>
-                          <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-inherit" />
+                          <span className="uppercase tracking-tight">Item Price (Base)</span>
+                          <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">SERVICE CHARGE (10%)</span>
+                          <span className="uppercase tracking-tight">SERVICE CHARGE (10%) (INCLUSIVE)</span>
                           <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">TAX (5%)</span>
+                          <span className="uppercase tracking-tight">TAX (5%) (INCLUSIVE)</span>
                           <CurrencyAmount amount={shareTax} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">ADDITIONAL CHARGES</span>
+                          <span className="uppercase tracking-tight">ADDITIONAL CHARGES (EXCLUSIVE)</span>
                           <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-inherit" />
                         </div>
                         <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-                          <span className="uppercase tracking-tight">CONVENIENCE FEE</span>
+                          <span className="uppercase tracking-tight">CONVENIENCE FEE (EXCLUSIVE)</span>
                           <CurrencyAmount amount={shareConvenienceFee} weight="bold" className="text-inherit" />
                         </div>
                       </div>
@@ -341,27 +333,23 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
                 <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                   <div className="space-y-2.5">
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Item Price (Base) (Exclusive)</span>
-                      <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-[#1a1c2e]" />
+                      <span className="text-[#94a3b8] uppercase">Item Price (Base)</span>
+                      <CurrencyAmount amount={shareSubtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Item Price (Base) (Inclusive)</span>
-                      <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-[#1a1c2e]" />
-                    </div>
-                    <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">TAX (5%)</span>
-                      <CurrencyAmount amount={shareTax} weight="bold" className="text-[#1a1c2e]" />
-                    </div>
-                    <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Service Charge (10%)</span>
+                      <span className="text-[#94a3b8] uppercase">Service Charge (10%) (INCLUSIVE)</span>
                       <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Additional Charges</span>
+                      <span className="text-[#94a3b8] uppercase">TAX (5%) (INCLUSIVE)</span>
+                      <CurrencyAmount amount={shareTax} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Additional Charges (EXCLUSIVE)</span>
                       <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Convenience Fee</span>
+                      <span className="text-[#94a3b8] uppercase">Convenience Fee (EXCLUSIVE)</span>
                       <CurrencyAmount amount={shareConvenienceFee} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                   </div>

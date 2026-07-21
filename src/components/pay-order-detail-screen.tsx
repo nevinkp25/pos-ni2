@@ -96,10 +96,6 @@ export function PayOrderDetailScreen({
   const additionalCharges = subtotal * 0.02; 
   const convenienceFee = subtotal * 0.01;
   
-  // High-fidelity breakdown values
-  const basePriceExclusive = subtotal;
-  const basePriceInclusive = subtotal + tax;
-
   const billAmount = subtotal + serviceCharge + tax + additionalCharges + convenienceFee;
   
   const currentTipAmount = isCustomTipMode 
@@ -301,27 +297,23 @@ export function PayOrderDetailScreen({
             
             <div className="space-y-3">
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Item Price (Base) (Exclusive)</span>
-                <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-[11px]" />
+                <span className="uppercase tracking-tight">Item Price (Base)</span>
+                <CurrencyAmount amount={subtotal} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Item Price (Base) (Inclusive)</span>
-                <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-[11px]" />
-              </div>
-              <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Service Charge (10%)</span>
+                <span className="uppercase tracking-tight">Service Charge (10%) (INCLUSIVE)</span>
                 <CurrencyAmount amount={serviceCharge} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">TAX (5%)</span>
+                <span className="uppercase tracking-tight">TAX (5%) (INCLUSIVE)</span>
                 <CurrencyAmount amount={tax} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Additional Charges</span>
+                <span className="uppercase tracking-tight">Additional Charges (EXCLUSIVE)</span>
                 <CurrencyAmount amount={additionalCharges} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
-                <span className="uppercase tracking-tight">Convenience Fee</span>
+                <span className="uppercase tracking-tight">Convenience Fee (EXCLUSIVE)</span>
                 <CurrencyAmount amount={convenienceFee} weight="bold" className="text-[11px]" />
               </div>
             </div>
@@ -428,27 +420,23 @@ export function PayOrderDetailScreen({
                 <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                   <div className="space-y-2.5">
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Item Price (Base) (Exclusive)</span>
-                      <CurrencyAmount amount={basePriceExclusive} weight="bold" className="text-[#1a1c2e]" />
+                      <span className="text-[#94a3b8] uppercase">Item Price (Base)</span>
+                      <CurrencyAmount amount={subtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Item Price (Base) (Inclusive)</span>
-                      <CurrencyAmount amount={basePriceInclusive} weight="bold" className="text-[#1a1c2e]" />
-                    </div>
-                    <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">TAX (5%)</span>
-                      <CurrencyAmount amount={tax} weight="bold" className="text-[#1a1c2e]" />
-                    </div>
-                    <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Service Charge (10%)</span>
+                      <span className="text-[#94a3b8] uppercase">Service Charge (10%) (INCLUSIVE)</span>
                       <CurrencyAmount amount={serviceCharge} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Additional Charges</span>
+                      <span className="text-[#94a3b8] uppercase">TAX (5%) (INCLUSIVE)</span>
+                      <CurrencyAmount amount={tax} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Additional Charges (EXCLUSIVE)</span>
                       <CurrencyAmount amount={additionalCharges} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Convenience Fee</span>
+                      <span className="text-[#94a3b8] uppercase">Convenience Fee (EXCLUSIVE)</span>
                       <CurrencyAmount amount={convenienceFee} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                   </div>
