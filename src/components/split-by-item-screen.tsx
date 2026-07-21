@@ -11,6 +11,8 @@ import {
   Landmark, 
   Loader2,
   User,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -38,6 +40,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
   const [paidItemIds, setPaidItemIds] = useState<string[]>([]);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isBreakdownExpanded, setIsBreakdownExpanded] = useState(false);
   const [selectedTip, setSelectedTip] = useState<number | null>(10);
   const [isCustomTipMode, setIsCustomTipMode] = useState(false);
   const [customTipValue, setCustomTipValue] = useState('');
@@ -159,7 +162,6 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
         <h1 className="text-[17px] font-black leading-none text-[#1a1c2e] uppercase">Split By Item</h1>
       </div>
 
-      {/* Increased padding-bottom to ensure clearance for the breakdown footer */}
       <div className="flex-1 px-4 pt-4 overflow-y-auto pb-[420px] space-y-4">
         <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm shrink-0">
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[23px] p-4 flex flex-col gap-2">
@@ -219,30 +221,48 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
         </div>
       </div>
 
-      <div className="absolute bottom-0 inset-x-0 bg-white px-5 pt-3 pb-8 shadow-[0_-10px_30px_rgba(0,0,0,0.04)] z-30 flex flex-col gap-3 border-t border-gray-50">
+      <div className="absolute bottom-0 inset-x-0 bg-white px-5 pt-3 pb-8 shadow-[0_-10px_30px_rgba(0,0,0,0.04)] z-30 flex flex-col gap-1 border-t border-gray-50">
         {yourShareSubtotal > 0 && (
-          <div className="bg-[#f0f7ff]/40 rounded-[24px] p-5 border border-[#0066b2]/10 space-y-3 mb-1">
-            <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">Item Price (Base)</span>
-              <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-inherit" />
-            </div>
-            <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">SERVICE CHARGE (10%) (INCLUSIVE)</span>
-              <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-inherit" />
-            </div>
-            <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">TAX (5%) (INCLUSIVE)</span>
-              <CurrencyAmount amount={shareTax} weight="bold" className="text-inherit" />
-            </div>
-            <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">ADDITIONAL CHARGES (EXCLUSIVE)</span>
-              <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-inherit" />
-            </div>
-            <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
-              <span className="uppercase tracking-tight">CONVENIENCE FEE (EXCLUSIVE)</span>
-              <CurrencyAmount amount={shareConvenienceFee} weight="bold" className="text-inherit" />
-            </div>
-          </div>
+          <>
+            <button 
+              onClick={() => setIsBreakdownExpanded(!isBreakdownExpanded)}
+              className="w-full flex items-center justify-center gap-1.5 py-1.5 mb-1 active:scale-95 transition-all group"
+            >
+              <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-widest group-hover:text-[#0066b2] transition-colors">
+                {isBreakdownExpanded ? 'Hide Breakdown' : 'View Breakdown'}
+              </span>
+              {isBreakdownExpanded ? (
+                <ChevronDown className="w-3 h-3 text-[#94a3b8] group-hover:text-[#0066b2]" />
+              ) : (
+                <ChevronUp className="w-3 h-3 text-[#94a3b8] group-hover:text-[#0066b2]" />
+              )}
+            </button>
+
+            {isBreakdownExpanded && (
+              <div className="bg-[#f0f7ff]/40 rounded-[24px] p-5 border border-[#0066b2]/10 space-y-3 mb-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
+                  <span className="uppercase tracking-tight">Item Price (Base)</span>
+                  <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-inherit" />
+                </div>
+                <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                  <span className="uppercase tracking-tight">SERVICE CHARGE (10%) (INCLUSIVE)</span>
+                  <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-inherit" />
+                </div>
+                <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                  <span className="uppercase tracking-tight">TAX (5%) (INCLUSIVE)</span>
+                  <CurrencyAmount amount={shareTax} weight="bold" className="text-inherit" />
+                </div>
+                <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                  <span className="uppercase tracking-tight">ADDITIONAL CHARGES (EXCLUSIVE)</span>
+                  <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-inherit" />
+                </div>
+                <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                  <span className="uppercase tracking-tight">CONVENIENCE FEE (EXCLUSIVE)</span>
+                  <CurrencyAmount amount={shareConvenienceFee} weight="bold" className="text-inherit" />
+                </div>
+              </div>
+            )}
+          </>
         )}
         <Button onClick={handlePayClick} disabled={yourShareSubtotal === 0} className={cn("w-full h-14 rounded-[18px] text-[16px] font-black shadow-[0_8px_25px_rgba(0,102,178,0.2)] transition-all active:scale-[0.98]", yourShareSubtotal > 0 ? "bg-[#0066b2] hover:bg-[#005596] text-white" : "bg-gray-100 text-gray-400 shadow-none pointer-events-none")}>Pay Your Items (<CurrencyAmount amount={yourShareTotal} weight="bold" className="text-inherit" />)</Button>
       </div>
