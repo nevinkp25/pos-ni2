@@ -64,6 +64,13 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
     }, 0);
   }, [items]);
 
+  const overallTotalSubtotal = useMemo(() => {
+    return (order?.items || []).reduce((sum, item) => {
+      const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
+      return sum + (itemBasePlusAddons * item.quantity);
+    }, 0);
+  }, [order]);
+
   const yourShareSubtotal = useMemo(() => {
     return items
       .filter(item => selectedItemIds.includes(item.id))
@@ -179,7 +186,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
             </div>
             
             <p className="text-[12px] font-bold text-[#94a3b8] text-center leading-tight">
-               Total amount to be paid: <CurrencyAmount amount={totalBillSubtotal} weight="bold" className="text-inherit" />
+               Total amount to be paid: <CurrencyAmount amount={overallTotalSubtotal} weight="bold" className="text-inherit" />
             </p>
           </div>
         </div>
