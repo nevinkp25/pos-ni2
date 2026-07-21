@@ -179,7 +179,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
             </div>
             
             <p className="text-[12px] font-bold text-[#94a3b8] text-center leading-tight">
-               Remaining balance: <CurrencyAmount amount={totalBillSubtotal} weight="bold" className="text-inherit" />
+               Total amount to be paid: <CurrencyAmount amount={totalBillSubtotal} weight="bold" className="text-inherit" />
             </p>
           </div>
         </div>
