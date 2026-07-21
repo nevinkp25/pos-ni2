@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
@@ -97,6 +96,12 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
       setIsInstructionDialogOpen(false);
       setActiveItemId(null);
     }
+  };
+
+  const clearItemInstruction = (id: string) => {
+    setCart(prev => prev.map(item => 
+      item.id === id ? { ...item, specialRequests: '' } : item
+    ));
   };
 
   const openKitchenDialog = () => {
@@ -219,7 +224,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
                   className={cn(
                     "relative transition-all duration-300 p-5",
                     index !== cart.length - 1 && "border-b border-gray-50",
-                    hasInstructions && "bg-[#fffbeb]/40"
+                    hasInstructions && "bg-[#eff6ff]/30"
                   )}
                 >
                   <div className="flex items-start gap-4">
@@ -253,10 +258,16 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
 
                       {/* Special Instruction Text */}
                       {hasInstructions && (
-                        <div className="bg-[#fef3c7] rounded-xl p-3 border border-[#fef3c7] animate-in fade-in duration-300">
-                          <p className="text-[#92400e] text-[13px] font-semibold leading-snug">
+                        <div className="bg-[#eff6ff] rounded-[18px] p-3.5 border border-[#eff6ff] animate-in fade-in zoom-in-95 duration-300 relative group/note">
+                          <p className="text-[#0169b1] text-[13px] font-black leading-snug pr-6">
                             {item.specialRequests}
                           </p>
+                          <button 
+                            onClick={() => clearItemInstruction(item.id)}
+                            className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/50 text-[#0169b1] flex items-center justify-center active:scale-90 transition-all opacity-0 group-hover/note:opacity-100"
+                          >
+                            <X className="w-3.5 h-3.5 stroke-[3px]" />
+                          </button>
                         </div>
                       )}
 
@@ -267,7 +278,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
                             onClick={() => openInstructionDialog(item.id, item.specialRequests)}
                             className={cn(
                               "text-[12px] font-black tracking-tight flex items-center gap-1.5 transition-all active:scale-95",
-                              hasInstructions ? "text-[#f59e0b]" : "text-[#0066b2]"
+                              hasInstructions ? "text-[#0169b1]" : "text-[#0066b2]"
                             )}
                           >
                             <MessageCircle className={cn("w-3.5 h-3.5", hasInstructions ? "fill-current" : "")} />
@@ -333,12 +344,12 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
             {kitchenInstructions ? (
               <button 
                 onClick={openKitchenDialog}
-                className="w-full bg-[#FFF9EA] rounded-[18px] p-4 text-left animate-in fade-in duration-200 border border-[#fef3c7]"
+                className="w-full bg-[#eff6ff] rounded-[18px] p-4 text-left animate-in fade-in duration-200 border border-[#eff6ff]"
               >
-                <span className="text-[#B45309] text-[11px] font-black uppercase tracking-wider block mb-1">
+                <span className="text-[#0169b1] text-[11px] font-black uppercase tracking-wider block mb-1">
                   ORDER INSTRUCTIONS
                 </span>
-                <p className="text-[#948D72] text-[14px] font-semibold leading-snug">
+                <p className="text-[#0169b1]/60 text-[14px] font-semibold leading-snug">
                   {kitchenInstructions}
                 </p>
               </button>
@@ -423,10 +434,24 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
               </span>
             </div>
           </div>
-          <div className="px-6 pb-6 pt-2">
+          <div className="px-6 pb-6 pt-2 flex gap-3">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                if (activeItemId) {
+                  clearItemInstruction(activeItemId);
+                  setIsInstructionDialogOpen(false);
+                  setActiveItemId(null);
+                }
+              }}
+              className="flex-1 h-12 border-[#fee2e2] bg-[#fff1f2]/30 text-[#ef4444] hover:bg-[#fff1f2] rounded-[18px] text-sm font-black flex items-center justify-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              Clear
+            </Button>
             <Button 
               onClick={saveInstruction}
-              className="w-full h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-sm font-black shadow-md uppercase tracking-wide"
+              className="flex-[2] h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-sm font-black shadow-md uppercase tracking-wide"
             >
               Save Note
             </Button>
@@ -462,10 +487,21 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
               </span>
             </div>
           </div>
-          <div className="px-6 pb-6 pt-2">
+          <div className="px-6 pb-6 pt-2 flex gap-3">
+             <Button 
+              variant="outline"
+              onClick={() => {
+                setKitchenInstructions('');
+                setIsKitchenDialogOpen(false);
+              }}
+              className="flex-1 h-12 border-[#fee2e2] bg-[#fff1f2]/30 text-[#ef4444] hover:bg-[#fff1f2] rounded-[18px] text-sm font-black flex items-center justify-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              Clear
+            </Button>
             <Button 
               onClick={saveKitchenInstruction}
-              className="w-full h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-sm font-black shadow-md uppercase tracking-wide"
+              className="flex-[2] h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-sm font-black shadow-md uppercase tracking-wide"
             >
               Save Note
             </Button>
