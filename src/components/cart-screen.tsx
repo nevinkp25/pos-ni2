@@ -350,19 +350,31 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
             style={{ maxHeight: isFooterExpanded ? '160px' : '0' }}
           >
             {kitchenInstructions ? (
-              <button 
-                onClick={openKitchenDialog}
-                className="w-full bg-[#eff6ff] rounded-[18px] p-4 text-left animate-in fade-in duration-200 border border-[#eff6ff]"
-              >
-                <div className="flex flex-col gap-1">
-                  <p className="text-[#0169b1] text-[15px] font-black leading-snug">
-                    {kitchenInstructions}
-                  </p>
-                  <span className="text-[#0169b1]/50 text-[10px] italic font-medium">
-                    Kitchen Instructions
-                  </span>
-                </div>
-              </button>
+              <div className="relative group/kitchen">
+                <button 
+                  onClick={openKitchenDialog}
+                  className="w-full bg-[#eff6ff] rounded-[18px] p-4 text-left animate-in fade-in duration-200 border border-[#eff6ff]"
+                >
+                  <div className="flex flex-col gap-1">
+                    <p className="text-[#0169b1] text-[15px] font-black leading-snug pr-8">
+                      {kitchenInstructions}
+                    </p>
+                    <span className="text-[#0169b1]/50 text-[10px] italic font-medium">
+                      Kitchen Instructions
+                    </span>
+                  </div>
+                </button>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setKitchenInstructions('');
+                  }}
+                  className="absolute top-4 right-4 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm text-[#ef4444] shadow-sm flex items-center justify-center active:scale-90 transition-all border border-red-50"
+                  title="Clear instructions"
+                >
+                  <X className="w-4 h-4 stroke-[3px]" />
+                </button>
+              </div>
             ) : (
               <button 
                 onClick={openKitchenDialog}
