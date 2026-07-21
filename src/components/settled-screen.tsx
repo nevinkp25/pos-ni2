@@ -99,7 +99,6 @@ export function SettledScreen({ onBackToHome, guestCount }: SettledScreenProps) 
                   key={i}
                   className="h-14 bg-white rounded-xl border border-gray-50 shadow-[0_4px_12px_rgba(0,0,0,0.02)] flex items-center justify-center gap-2 hover:bg-gray-50 active:scale-95 transition-all animate-in fade-in zoom-in-95 duration-200"
                 >
-                  <User className="w-4 h-4 text-[#1a1c2e]" />
                   <span className="text-[12px] font-black text-[#1a1c2e]">Guest {i + 1}</span>
                 </button>
               ))}
