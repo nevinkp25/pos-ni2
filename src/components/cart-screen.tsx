@@ -328,8 +328,14 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
         onTouchStart={handleFooterTouchStart}
         onTouchEnd={handleFooterTouchEnd}
       >
-        <div className="w-full flex justify-center py-1.5 mb-1.5 shrink-0">
-          <div className="w-8 h-1 bg-[#e2e8f0] rounded-full opacity-60" />
+        <div 
+          onClick={() => setIsFooterExpanded(!isFooterExpanded)}
+          className="w-full flex justify-center py-2 mb-1 shrink-0 cursor-pointer active:scale-95 transition-all"
+        >
+          <div className={cn(
+            "w-10 h-1.5 rounded-full transition-all duration-300",
+            isFooterExpanded ? "bg-[#0066b2]/20" : "bg-gray-200"
+          )} />
         </div>
         
         <div className="flex flex-col gap-3">
@@ -345,12 +351,14 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
                 onClick={openKitchenDialog}
                 className="w-full bg-[#eff6ff] rounded-[18px] p-4 text-left animate-in fade-in duration-200 border border-[#eff6ff]"
               >
-                <span className="text-[#0169b1] text-[11px] font-black uppercase tracking-wider block mb-1">
-                  ORDER INSTRUCTIONS
-                </span>
-                <p className="text-[#0169b1]/60 text-[14px] font-semibold leading-snug">
-                  {kitchenInstructions}
-                </p>
+                <div className="flex flex-col gap-1">
+                  <p className="text-[#0169b1] text-[15px] font-black leading-snug">
+                    {kitchenInstructions}
+                  </p>
+                  <span className="text-[#0169b1]/50 text-[10px] italic font-medium">
+                    Kitchen Instructions
+                  </span>
+                </div>
               </button>
             ) : (
               <button 
