@@ -57,19 +57,19 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
     return (order?.items || []).filter(item => !paidItemIds.includes(item.id));
   }, [order, paidItemIds]);
 
-  const totalBillSubtotal = useMemo(() => {
-    return items.reduce((sum, item) => {
-      const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
-      return sum + (itemBasePlusAddons * item.quantity);
-    }, 0);
-  }, [items]);
-
   const overallTotalSubtotal = useMemo(() => {
     return (order?.items || []).reduce((sum, item) => {
       const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
       return sum + (itemBasePlusAddons * item.quantity);
     }, 0);
   }, [order]);
+
+  const totalBillSubtotal = useMemo(() => {
+    return items.reduce((sum, item) => {
+      const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
+      return sum + (itemBasePlusAddons * item.quantity);
+    }, 0);
+  }, [items]);
 
   const yourShareSubtotal = useMemo(() => {
     return items
@@ -159,7 +159,8 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
         <h1 className="text-[17px] font-black leading-none text-[#1a1c2e] uppercase">Split By Item</h1>
       </div>
 
-      <div className="flex-1 px-4 pt-4 overflow-y-auto pb-64 space-y-4">
+      {/* Increased padding-bottom to ensure clearance for the breakdown footer */}
+      <div className="flex-1 px-4 pt-4 overflow-y-auto pb-[420px] space-y-4">
         <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm shrink-0">
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[23px] p-4 flex flex-col gap-2">
             <div className="flex items-center justify-between">
@@ -296,7 +297,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                       <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Service Charge (10%) (INCLUSIVE)</span>
+                      <span className="text-[#94a3b8] uppercase">SERVICE CHARGE (10%) (INCLUSIVE)</span>
                       <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
@@ -304,11 +305,11 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                       <CurrencyAmount amount={shareTax} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Additional Charges (EXCLUSIVE)</span>
+                      <span className="text-[#94a3b8] uppercase">ADDITIONAL CHARGES (EXCLUSIVE)</span>
                       <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8] uppercase">Convenience Fee (EXCLUSIVE)</span>
+                      <span className="text-[#94a3b8] uppercase">CONVENIENCE FEE (EXCLUSIVE)</span>
                       <CurrencyAmount amount={shareConvenienceFee} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                   </div>
