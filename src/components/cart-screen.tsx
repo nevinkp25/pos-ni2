@@ -5,7 +5,6 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { 
   ChevronLeft, 
   Trash2, 
-  ChevronUp, 
   ChevronDown, 
   Plus, 
   Minus, 
@@ -16,6 +15,7 @@ import {
   ChevronsRight,
   Check,
   Pencil,
+  SquarePen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CartItem } from '@/lib/types';
@@ -39,7 +39,6 @@ interface CartScreenProps {
 }
 
 export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, onEditItem }: CartScreenProps) {
-  const [expandedItems, setExpandedItems] = useState<string[]>(cart.map(i => i.id));
   const [isFooterExpanded, setIsFooterExpanded] = useState(true);
   const footerTouchStartY = useRef(0);
   
@@ -66,12 +65,6 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
       return sum + (itemTotal * item.quantity);
     }, 0);
   }, [cart]);
-
-  const toggleItem = (id: string) => {
-    setExpandedItems(prev => 
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
-  };
 
   const handleClearCart = () => {
     if (window.confirm('Clear all items from the order?')) {
@@ -216,121 +209,98 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
         ) : (
           <div className="bg-white rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.04)] border border-[#f0f4f8] overflow-hidden mb-6">
             {cart.map((item, index) => {
-              const isExpanded = expandedItems.includes(item.id);
               const hasInstructions = !!item.specialRequests;
-              const singleItemPrice = item.basePrice + item.addons.reduce((acc, addon) => acc + (addon.price * addon.quantity), 0);
-              const itemDisplayTotal = singleItemPrice * item.quantity;
-              const hasAddons = item.addons.length > 0;
+              const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
+              const itemTotal = itemBasePlusAddons * item.quantity;
 
               return (
                 <div 
                   key={item.id} 
                   className={cn(
-                    "relative transition-all duration-300",
-                    index !== cart.length - 1 && "border-b border-gray-100",
-                    hasInstructions && "bg-orange-50/10"
+                    "relative transition-all duration-300 p-5",
+                    index !== cart.length - 1 && "border-b border-gray-50",
+                    hasInstructions && "bg-[#fffbeb]/40"
                   )}
                 >
-                  <div className="p-5">
-                    {/* Item Top Row: Info & Primary Actions */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex flex-col gap-1 min-w-0 flex-1">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <h3 className="text-[16px] font-black text-[#1a1c2e] leading-tight truncate">
-                            {item.name}
-                          </h3>
-                          {hasInstructions && (
-                            <div className="w-4 h-4 bg-[#fef3c7] rounded-full flex items-center justify-center shrink-0">
-                              <MessageCircle className="w-2.5 h-2.5 text-[#f59e0b] fill-current" />
-                            </div>
-                          )}
-                        </div>
-                        <CurrencyAmount amount={itemDisplayTotal} weight="bold" className="text-[14px] text-[#0066b2]" />
-                      </div>
-                      
-                      <div className="flex items-center gap-2 shrink-0">
-                        <button 
-                          onClick={() => onEditItem(item)}
-                          className="flex items-center gap-1.5 px-3 h-8 rounded-full bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all"
-                        >
-                          <Pencil className="w-3.5 h-3.5" />
-                          <span className="text-[11px] font-black uppercase tracking-tight">Edit</span>
-                        </button>
-                        {hasAddons && (
-                          <button 
-                            onClick={() => toggleItem(item.id)}
-                            className={cn(
-                              "w-8 h-8 rounded-full bg-[#f8fafc] flex items-center justify-center text-[#94a3b8] transition-transform",
-                              isExpanded ? "rotate-180" : ""
-                            )}
-                          >
-                            <ChevronDown className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
+                  <div className="flex items-start gap-4">
+                    {/* Left: Quantity Badge */}
+                    <div className="w-8 h-8 rounded-full bg-[#f0f7ff] flex items-center justify-center shrink-0 mt-0.5">
+                      <span className="text-[#0066b2] text-[13px] font-black">{item.quantity}x</span>
                     </div>
 
-                    {/* Addons List */}
-                    {isExpanded && hasAddons && (
-                      <div className="mt-3 flex flex-wrap gap-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                        {item.addons.map((addon, idx) => (
-                          <div 
-                            key={idx}
-                            className="bg-[#f8fafc] border border-gray-100 rounded-lg px-2.5 py-1 flex items-center gap-1.5"
+                    {/* Middle: Content */}
+                    <div className="flex-1 flex flex-col gap-3 min-w-0">
+                      <div className="flex justify-between items-start gap-2">
+                        <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight truncate">
+                          {item.name}
+                        </h3>
+                        <CurrencyAmount amount={itemTotal} weight="bold" className="text-[16px] text-[#1a1c2e] shrink-0" />
+                      </div>
+
+                      {/* Addons List with Dotted Lines */}
+                      {item.addons.length > 0 && (
+                        <div className="space-y-2">
+                          {item.addons.map((addon, idx) => (
+                            <div key={idx} className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                              <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
+                              <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">{addon.name}</span>
+                              <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
+                              <CurrencyAmount amount={addon.price * addon.quantity} weight="bold" className="text-[#94a3b8] text-[12px]" />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Special Instruction Text */}
+                      {hasInstructions && (
+                        <div className="bg-[#fef3c7] rounded-xl p-3 border border-[#fef3c7] animate-in fade-in duration-300">
+                          <p className="text-[#92400e] text-[13px] font-semibold leading-snug">
+                            {item.specialRequests}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Bottom Action Row: Note, Edit, Qty */}
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex items-center gap-4">
+                          <button 
+                            onClick={() => openInstructionDialog(item.id, item.specialRequests)}
+                            className={cn(
+                              "text-[12px] font-black tracking-tight flex items-center gap-1.5 transition-all active:scale-95",
+                              hasInstructions ? "text-[#f59e0b]" : "text-[#0066b2]"
+                            )}
                           >
-                            <span className="text-[#475569] text-[10px] font-black tracking-tight">
-                              + {addon.name}{addon.quantity > 1 ? ` x${addon.quantity}` : ''}
+                            <MessageCircle className={cn("w-3.5 h-3.5", hasInstructions ? "fill-current" : "")} />
+                            <span className="border-b border-dotted border-current">
+                              {hasInstructions ? "Edit Note" : "Add Note"}
                             </span>
-                            <CurrencyAmount amount={addon.price * addon.quantity} weight="bold" className="text-[#94a3b8] text-[9px]" />
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                          </button>
+                          
+                          <button 
+                            onClick={() => onEditItem(item)}
+                            className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all"
+                          >
+                            <Pencil className="w-3 h-3" />
+                            <span className="text-[10px] font-black uppercase tracking-tight">Edit</span>
+                          </button>
+                        </div>
 
-                    {/* Special Instruction Box */}
-                    {hasInstructions && (
-                      <div className="mt-4 bg-[#FFF9EA] rounded-[18px] p-4 border border-[#fef3c7] relative overflow-hidden animate-in fade-in duration-300">
-                        <div className="absolute left-0 top-0 bottom-0 w-[4px] bg-[#f59e0b]" />
-                        <span className="text-[#B45309] text-[10px] font-black uppercase tracking-wider block mb-1">
-                          SPECIAL INSTRUCTION
-                        </span>
-                        <p className="text-[#948D72] text-[14px] font-semibold leading-snug">
-                          {item.specialRequests}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Bottom Actions Row: Note & Qty */}
-                    <div className="flex items-center justify-between mt-5">
-                      <button 
-                        onClick={() => openInstructionDialog(item.id, item.specialRequests)}
-                        className={cn(
-                          "flex items-center gap-2 px-3.5 h-10 rounded-full border-[1.5px] border-dotted transition-all active:scale-95",
-                          hasInstructions 
-                            ? "bg-[#FFF9EA] border-[#B45309]/40 text-[#B45309]" 
-                            : "bg-white border-[#0066b2]/20 text-[#0066b2]"
-                        )}
-                      >
-                        <MessageCircle className={cn("w-4 h-4", hasInstructions ? "fill-current" : "")} />
-                        <span className="text-[11px] font-black">
-                          {hasInstructions ? "Edit Note" : "Add Note"}
-                        </span>
-                      </button>
-
-                      <div className="flex items-center bg-[#f8fbfe] rounded-full p-1 shadow-sm h-[44px] min-w-[100px] justify-between border border-gray-100">
-                        <button 
-                          onClick={() => updateQty(item.id, -1)}
-                          className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#ef4444] shadow-sm active:scale-90 transition-all"
-                        >
-                          {item.quantity === 1 ? <Trash2 className="w-4 h-4" /> : <Minus className="w-4 h-4 stroke-[3px]" />}
-                        </button>
-                        <span className="text-[16px] font-black text-[#1a1c2e] px-2 tabular-nums">{item.quantity}</span>
-                        <button 
-                          onClick={() => updateQty(item.id, 1)}
-                          className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-md active:scale-90 transition-all"
-                        >
-                          <Plus className="w-4 h-4 stroke-[3px]" />
-                        </button>
+                        {/* Integrated Quantity Controls */}
+                        <div className="flex items-center bg-[#f8fbfe] rounded-full p-0.5 border border-gray-100 shadow-sm h-10 min-w-[90px] justify-between">
+                          <button 
+                            onClick={() => updateQty(item.id, -1)}
+                            className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#ef4444] shadow-sm active:scale-90 transition-all"
+                          >
+                            {item.quantity === 1 ? <Trash2 className="w-3.5 h-3.5" /> : <Minus className="w-3.5 h-3.5 stroke-[3px]" />}
+                          </button>
+                          <span className="text-[14px] font-black text-[#1a1c2e] px-1 tabular-nums">{item.quantity}</span>
+                          <button 
+                            onClick={() => updateQty(item.id, 1)}
+                            className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-md active:scale-90 transition-all"
+                          >
+                            <Plus className="w-3.5 h-3.5 stroke-[3px]" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
