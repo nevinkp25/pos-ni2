@@ -278,7 +278,7 @@ export default function Page() {
         <SplitByItemScreen 
           tableNumber={selectedTable}
           onBack={handleBackToPayOrder}
-          onPay={() => handleSettleOrder()}
+          onPay={(count) => handleSettleOrder(count)}
         />
       )}
       {currentScreen === 'split-equally' && (

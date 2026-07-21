@@ -12,7 +12,9 @@ import {
   Loader2,
   User,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Plus,
+  Minus
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -32,12 +34,13 @@ import { useToast } from '@/hooks/use-toast';
 interface SplitByItemScreenProps {
   tableNumber: string;
   onBack: () => void;
-  onPay: () => void;
+  onPay: (guestCount: number) => void;
 }
 
 export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScreenProps) {
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [paidItemIds, setPaidItemIds] = useState<string[]>([]);
+  const [guestCount, setGuestCount] = useState(2);
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isBreakdownExpanded, setIsBreakdownExpanded] = useState(false);
@@ -120,7 +123,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
 
     const allPaid = (order?.items || []).every(item => newPaidItems.includes(item.id));
     if (allPaid) {
-      onPay();
+      onPay(guestCount);
     }
   };
 
@@ -163,6 +166,10 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
       </div>
 
       <div className="flex-1 px-4 pt-4 overflow-y-auto pb-[420px] space-y-4">
+        <div className="text-center">
+          <span className="text-[10px] font-black text-[#1a1c2e] uppercase tracking-[0.1em]">Order: #{order?.timestamp.toString().slice(-4) || '----'}</span>
+        </div>
+
         <div className="relative p-[1px] rounded-[24px] bg-gradient-to-tr from-[#6366f1]/20 via-[#3b82f6]/20 to-[#a855f7]/20 shadow-sm shrink-0">
           <div className="bg-gradient-to-br from-white to-[#fcfdff] rounded-[23px] p-4 flex flex-col gap-2">
             <div className="flex items-center justify-between">
@@ -192,6 +199,26 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                Total amount to be paid: <CurrencyAmount amount={overallTotalSubtotal} weight="bold" className="text-inherit" />
             </p>
           </div>
+        </div>
+
+        {/* Guest Count Selector */}
+        <div className="flex items-center justify-between bg-white rounded-[24px] p-3 shadow-sm border border-gray-50 transition-all">
+          <button 
+            onClick={() => setGuestCount(Math.max(1, guestCount - 1))} 
+            className="w-12 h-12 rounded-full bg-white shadow-sm border border-gray-50 flex items-center justify-center active:scale-90 transition-all"
+          >
+            <Minus className="w-5 h-5 text-[#1a1c2e] stroke-[3px]" />
+          </button>
+          <div className="flex flex-col items-center">
+            <span className="text-[24px] font-black text-[#1a1c2e] leading-none">{guestCount}</span>
+            <span className="text-[9px] font-black text-[#94a3b8] uppercase tracking-widest mt-1">Guests</span>
+          </div>
+          <button 
+            onClick={() => setGuestCount(guestCount + 1)} 
+            className="w-12 h-12 rounded-full bg-[#0066b2] shadow-sm flex items-center justify-center active:scale-90 transition-all"
+          >
+            <Plus className="w-5 h-5 text-white stroke-[3px]" />
+          </button>
         </div>
 
         <div className="space-y-2.5 pb-8">
