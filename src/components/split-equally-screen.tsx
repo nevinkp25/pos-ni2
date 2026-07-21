@@ -369,7 +369,7 @@ export function SplitEquallyScreen({ tableNumber, onBack, onPay }: SplitEquallyS
               </div>
 
               {paymentBanner && (
-                <div className="w-full mt-8 flex justify-center mb-[7px]">
+                <div className="w-full mt-1 flex justify-center mb-[7px]">
                   <Image 
                     src={paymentBanner.imageUrl} 
                     alt="Supported Payment Methods" 
