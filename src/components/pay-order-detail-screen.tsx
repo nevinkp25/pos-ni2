@@ -300,6 +300,10 @@ export function PayOrderDetailScreen({
                 <CurrencyAmount amount={subtotal} weight="bold" className="text-[11px]" />
               </div>
               <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
+                <span className="uppercase tracking-tight">Item Price (Base) (Inclusive)</span>
+                <CurrencyAmount amount={subtotal} weight="bold" className="text-[11px]" />
+              </div>
+              <div className="flex items-center justify-between text-[13px] font-black text-[#94a3b8]">
                 <span className="uppercase tracking-tight">Service Charge (10%)</span>
                 <CurrencyAmount amount={serviceCharge} weight="bold" className="text-[11px]" />
               </div>
@@ -420,6 +424,10 @@ export function PayOrderDetailScreen({
                   <div className="space-y-2.5">
                     <div className="flex justify-between items-center text-[13px] font-black">
                       <span className="text-[#94a3b8] uppercase">Item Price (Base) (Exclusive)</span>
+                      <CurrencyAmount amount={subtotal} weight="bold" className="text-[#1a1c2e]" />
+                    </div>
+                    <div className="flex justify-between items-center text-[13px] font-black">
+                      <span className="text-[#94a3b8] uppercase">Item Price (Base) (Inclusive)</span>
                       <CurrencyAmount amount={subtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                     <div className="flex justify-between items-center text-[13px] font-black">
