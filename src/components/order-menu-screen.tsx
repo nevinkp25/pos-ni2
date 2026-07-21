@@ -364,13 +364,12 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         </div>
       )}
 
-      <div className="flex-1 px-6 pt-6 overflow-y-auto pb-24">
+      <div className="flex-1 px-6 pt-0 overflow-y-auto pb-24">
         {filteredMenuData.length > 0 ? (
           <div className="bg-white rounded-[24px] shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-[#f0f4f8]">
             {filteredMenuData.map((category, index) => {
               const isExpanded = expandedCategory === category.title;
               const categoryItemsInCart = getCategoryCartCount(category);
-              // Sticky logic: if expanded and more than 8 items
               const shouldBeSticky = isExpanded && category.items.length > 8;
 
               return (
