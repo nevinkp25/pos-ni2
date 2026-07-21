@@ -202,6 +202,14 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
     }
   };
 
+  const handleClearInstruction = (itemName: string) => {
+    setCart(prev => prev.map(ci => 
+      ci.name === itemName 
+        ? { ...ci, specialRequests: '' }
+        : ci
+    ));
+  };
+
   const saveInstruction = () => {
     if (activeInstructionItem) {
       setCart(prev => prev.map(ci => 
@@ -437,25 +445,39 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                             <div className="flex flex-col items-end gap-1 shrink-0">
                               {quantity > 0 ? (
                                 <>
-                                  <button 
-                                    className={cn(
-                                      "flex items-center gap-1.5 text-[12px] font-black tracking-tight mb-2 whitespace-nowrap transition-all relative",
-                                      hasInstruction ? "text-[#f59e0b]" : "text-[#0066b2]"
+                                  <div className="flex items-center gap-2 mb-2">
+                                    <button 
+                                      className={cn(
+                                        "flex items-center gap-1.5 text-[12px] font-black tracking-tight whitespace-nowrap transition-all relative",
+                                        hasInstruction ? "text-[#f59e0b]" : "text-[#0066b2]"
+                                      )}
+                                      onClick={(e) => handleInstructionClick(e, item)}
+                                    >
+                                      {hasInstruction ? (
+                                        <MessageCircle className="w-3.5 h-3.5 fill-current" />
+                                      ) : (
+                                        <Plus className="w-3.5 h-3.5" />
+                                      )}
+                                      <span className={cn(
+                                        "border-b border-dotted",
+                                        hasInstruction ? "border-[#f59e0b]" : "border-[#0066b2]"
+                                      )}>
+                                        {hasInstruction ? "Instruction Saved" : "Instruction"}
+                                      </span>
+                                    </button>
+                                    {hasInstruction && (
+                                      <button 
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleClearInstruction(item.name);
+                                        }}
+                                        className="w-6 h-6 rounded-full bg-red-50 text-[#ef4444] border border-red-100 flex items-center justify-center active:scale-90 transition-all shadow-sm"
+                                        title="Clear Instruction"
+                                      >
+                                        <X className="w-3.5 h-3.5 stroke-[4.5px]" />
+                                      </button>
                                     )}
-                                    onClick={(e) => handleInstructionClick(e, item)}
-                                  >
-                                    {hasInstruction ? (
-                                      <MessageCircle className="w-3.5 h-3.5 fill-current" />
-                                    ) : (
-                                      <Plus className="w-3.5 h-3.5" />
-                                    )}
-                                    <span className={cn(
-                                      "border-b border-dotted",
-                                      hasInstruction ? "border-[#f59e0b]" : "border-[#0066b2]"
-                                    )}>
-                                      {hasInstruction ? "Instruction Saved" : "Instruction"}
-                                    </span>
-                                  </button>
+                                  </div>
                                   <div className="flex items-center bg-white border border-[#eef2f8] rounded-full p-1 shadow-[0_4px_12px_rgba(0,0,0,0.05)] h-12 min-w-[110px] justify-between">
                                     <button 
                                       onClick={(e) => handleMinusClick(e, item.name)}
@@ -539,13 +561,27 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
               </span>
             </div>
           </div>
-          <div className="px-5 pb-5 pt-1">
+          <div className="px-5 pb-5 pt-1 flex gap-3">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                if (activeInstructionItem) {
+                  handleClearInstruction(activeInstructionItem.name);
+                  setIsInstructionDialogOpen(false);
+                  setActiveInstructionItem(null);
+                }
+              }}
+              className="flex-1 h-12 border-[#fee2e2] bg-[#fff1f2]/30 text-[#ef4444] hover:bg-[#fff1f2] rounded-[16px] text-sm font-black flex items-center justify-center gap-2"
+            >
+              <Trash2 className="w-4 h-4" />
+              Clear
+            </Button>
             <Button 
               onClick={saveInstruction}
-              className="w-full h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[16px] text-sm font-black shadow-md flex items-center justify-center gap-2"
+              className="flex-[2] h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[16px] text-sm font-black shadow-md flex items-center justify-center gap-2"
             >
               <Check className="w-4 h-4 stroke-[3px]" />
-              Save Instruction
+              Save
             </Button>
           </div>
         </DialogContent>
@@ -733,7 +769,7 @@ function ItemDetailSheet({
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {item.allergens.length > 0 ? (
-                        <span className="text-[#6E6E6E] text-[12px] font-medium leading-tight">
+                        <span className="text-[#6E6E6E] text-[11px] font-medium leading-tight">
                           Allergen: {item.allergens.join(', ')}
                         </span>
                       ) : (
