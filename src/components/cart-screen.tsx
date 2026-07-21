@@ -285,31 +285,34 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
                               Note
                             </span>
                           </button>
-                          
+                        </div>
+
+                        {/* Right Action Group: Edit & Qty */}
+                        <div className="flex items-center gap-3">
                           <button 
                             onClick={() => onEditItem(item)}
-                            className="w-8 h-8 rounded-full bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all flex items-center justify-center shadow-sm"
+                            className="w-8 h-8 rounded-full bg-[#f0f7ff] text-[#0066b2] hover:bg-[#e1effe] active:scale-95 transition-all flex items-center justify-center shadow-sm shrink-0"
                             title="Edit Item"
                           >
                             <Pencil className="w-3.5 h-3.5" />
                           </button>
-                        </div>
 
-                        {/* Integrated Quantity Controls */}
-                        <div className="flex items-center bg-[#f8fbfe] rounded-full p-0.5 border border-gray-100 shadow-sm h-10 min-w-[90px] justify-between">
-                          <button 
-                            onClick={() => updateQty(item.id, -1)}
-                            className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#ef4444] shadow-sm active:scale-90 transition-all"
-                          >
-                            {item.quantity === 1 ? <Trash2 className="w-3.5 h-3.5" /> : <Minus className="w-3.5 h-3.5 stroke-[3px]" />}
-                          </button>
-                          <span className="text-[14px] font-black text-[#1a1c2e] px-1 tabular-nums">{item.quantity}</span>
-                          <button 
-                            onClick={() => updateQty(item.id, 1)}
-                            className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-md active:scale-90 transition-all"
-                          >
-                            <Plus className="w-3.5 h-3.5 stroke-[3px]" />
-                          </button>
+                          {/* Integrated Quantity Controls */}
+                          <div className="flex items-center bg-[#f8fbfe] rounded-full p-0.5 border border-gray-100 shadow-sm h-10 min-w-[90px] justify-between">
+                            <button 
+                              onClick={() => updateQty(item.id, -1)}
+                              className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-[#ef4444] shadow-sm active:scale-90 transition-all"
+                            >
+                              {item.quantity === 1 ? <Trash2 className="w-3.5 h-3.5" /> : <Minus className="w-3.5 h-3.5 stroke-[3px]" />}
+                            </button>
+                            <span className="text-[14px] font-black text-[#1a1c2e] px-1 tabular-nums">{item.quantity}</span>
+                            <button 
+                              onClick={() => updateQty(item.id, 1)}
+                              className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0066b2] text-white shadow-md active:scale-90 transition-all"
+                            >
+                              <Plus className="w-3.5 h-3.5 stroke-[3px]" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
