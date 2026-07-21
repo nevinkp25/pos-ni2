@@ -366,10 +366,11 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
 
       <div className="flex-1 px-6 pt-6 overflow-y-auto pb-24">
         {filteredMenuData.length > 0 ? (
-          <div className="bg-white rounded-[24px] shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-[#f0f4f8] overflow-hidden">
+          <div className="bg-white rounded-[24px] shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-[#f0f4f8]">
             {filteredMenuData.map((category, index) => {
               const isExpanded = expandedCategory === category.title;
               const categoryItemsInCart = getCategoryCartCount(category);
+              // Sticky logic: if expanded and more than 8 items
               const shouldBeSticky = isExpanded && category.items.length > 8;
 
               return (
@@ -378,7 +379,7 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
                     onClick={() => toggleCategory(category.title)}
                     className={cn(
                       "w-full h-16 px-6 flex items-center justify-between transition-colors active:bg-gray-50 bg-white",
-                      shouldBeSticky && "sticky top-0 z-20 shadow-sm"
+                      shouldBeSticky && "sticky top-0 z-20 shadow-sm border-b border-[#f0f4f8]"
                     )}
                   >
                     <span className="text-[14px] font-black text-[#334155] tracking-wide">
