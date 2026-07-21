@@ -370,14 +370,15 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
             {filteredMenuData.map((category, index) => {
               const isExpanded = expandedCategory === category.title;
               const categoryItemsInCart = getCategoryCartCount(category);
+              const shouldBeSticky = isExpanded && category.items.length > 8;
 
               return (
                 <div key={index} className={cn("relative", index !== filteredMenuData.length - 1 && "border-b border-[#f0f4f8]")}>
                   <button 
                     onClick={() => toggleCategory(category.title)}
                     className={cn(
-                      "w-full h-16 px-6 flex items-center justify-between transition-colors active:bg-gray-50 sticky top-0 z-10",
-                      isExpanded ? "bg-white shadow-sm" : "bg-white"
+                      "w-full h-16 px-6 flex items-center justify-between transition-colors active:bg-gray-50 bg-white",
+                      shouldBeSticky && "sticky top-0 z-20 shadow-sm"
                     )}
                   >
                     <span className="text-[14px] font-black text-[#334155] tracking-wide">
