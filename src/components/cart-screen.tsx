@@ -242,8 +242,16 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
                         <CurrencyAmount amount={itemTotal} weight="bold" className="text-[16px] text-[#1a1c2e] shrink-0" />
                       </div>
 
-                      {/* Modifications List (Flavor and Addons) */}
+                      {/* Modifications List (Base, Flavor and Addons) */}
                       <div className="space-y-2">
+                        {/* Base Price Row */}
+                        <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                          <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">●</span>
+                          <span className="text-[#94a3b8] text-[11px] font-black uppercase tracking-tight">Base Price</span>
+                          <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
+                          <CurrencyAmount amount={item.basePrice} weight="bold" className="text-[#94a3b8] text-[12px]" />
+                        </div>
+
                         {item.flavor && (
                           <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
                             <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">●</span>
