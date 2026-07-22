@@ -247,7 +247,16 @@ export function PayOrderDetailScreen({
                         <h3 className="text-[15px] font-black text-[#1a1c2e]">{item.name}</h3>
                         <CurrencyAmount amount={itemTotal} weight="bold" className="text-[16px] text-[#1a1c2e]" />
                       </div>
+                      
                       <div className="space-y-2">
+                        {/* Base Price Row */}
+                        <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                          <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">●</span>
+                          <span className="text-[#94a3b8] text-[11px] font-black uppercase tracking-tight">Base Price</span>
+                          <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
+                          <CurrencyAmount amount={item.basePrice} weight="bold" className="text-[#94a3b8] text-[12px]" />
+                        </div>
+
                         {item.flavor && (
                           <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
                             <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">●</span>
@@ -482,7 +491,7 @@ export function PayOrderDetailScreen({
               </div>
 
               {paymentBanner && (
-                <div className="w-full mt-10 mb-10 flex justify-center px-4">
+                <div className="w-full mt-10 mb-8 flex justify-center px-4">
                   <Image 
                     src={paymentBanner.imageUrl} 
                     alt="Supported Payment Methods" 
