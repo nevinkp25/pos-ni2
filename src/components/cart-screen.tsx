@@ -57,6 +57,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
   const subtotal = useMemo(() => {
     return cart.reduce((sum, item) => {
       let itemTotal = item.basePrice;
+      if (item.flavorPrice) itemTotal += item.flavorPrice;
       item.addons.forEach(a => {
         itemTotal += a.price * a.quantity;
       });
@@ -214,7 +215,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
           <div className="bg-white rounded-[32px] shadow-[0_8px_40px_rgba(0,0,0,0.04)] border border-[#f0f4f8] overflow-hidden mb-6">
             {cart.map((item, index) => {
               const hasInstructions = !!item.specialRequests;
-              const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
+              const itemBasePlusAddons = item.basePrice + (item.flavorPrice || 0) + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
               const itemTotal = itemBasePlusAddons * item.quantity;
 
               return (
@@ -241,19 +242,30 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
                         <CurrencyAmount amount={itemTotal} weight="bold" className="text-[16px] text-[#1a1c2e] shrink-0" />
                       </div>
 
-                      {/* Addons List with Dotted Lines */}
-                      {item.addons.length > 0 && (
-                        <div className="space-y-2">
-                          {item.addons.map((addon, idx) => (
-                            <div key={idx} className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
-                              <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
+                      {/* Modifications List (Flavor and Addons) */}
+                      <div className="space-y-2">
+                        {item.flavor && (
+                          <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                            <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">●</span>
+                            <span className="bg-[#f8fafc] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black uppercase tracking-tight">{item.flavor}</span>
+                            <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
+                            <CurrencyAmount amount={item.flavorPrice || 0} weight="bold" className="text-[#94a3b8] text-[12px]" />
+                          </div>
+                        )}
+                        {item.addons.map((addon, idx) => (
+                          <div key={idx} className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                            <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
+                            <div className="flex items-center gap-1.5">
                               <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">{addon.name}</span>
-                              <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
-                              <CurrencyAmount amount={addon.price * addon.quantity} weight="bold" className="text-[#94a3b8] text-[12px]" />
+                              {addon.quantity > 1 && (
+                                <span className="text-[10px] font-black text-[#94a3b8]">x{addon.quantity}</span>
+                              )}
                             </div>
-                          ))}
-                        </div>
-                      )}
+                            <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
+                            <CurrencyAmount amount={addon.price * addon.quantity} weight="bold" className="text-[#94a3b8] text-[12px]" />
+                          </div>
+                        ))}
+                      </div>
 
                       {/* Special Instruction Text */}
                       {hasInstructions && (
@@ -457,8 +469,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
             </div>
           </div>
           <div className="px-6 pb-6 pt-2 flex gap-3">
-            <Button 
-              variant="outline"
+            <button 
               onClick={() => {
                 if (activeItemId) {
                   clearItemInstruction(activeItemId);
@@ -470,7 +481,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
             >
               <Trash2 className="w-4 h-4" />
               Clear
-            </Button>
+            </button>
             <Button 
               onClick={saveInstruction}
               className="flex-[2] h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-sm font-black shadow-md uppercase tracking-wide"
@@ -510,8 +521,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
             </div>
           </div>
           <div className="px-6 pb-6 pt-2 flex gap-3">
-             <Button 
-              variant="outline"
+             <button 
               onClick={() => {
                 setKitchenInstructions('');
                 setIsKitchenDialogOpen(false);
@@ -520,7 +530,7 @@ export function CartScreen({ tableNumber, onBack, cart, setCart, onOrderSent, on
             >
               <Trash2 className="w-4 h-4" />
               Clear
-            </Button>
+            </button>
             <Button 
               onClick={saveKitchenInstruction}
               className="flex-[2] h-12 bg-[#0066b2] hover:bg-[#005596] text-white rounded-[18px] text-sm font-black shadow-md uppercase tracking-wide"

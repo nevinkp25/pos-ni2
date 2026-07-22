@@ -217,9 +217,9 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
             const isModExpanded = expandedItemModifications.includes(item.id);
             
             // Collect all modifications (flavor and addons)
-            const mods = [];
-            if (item.flavor) mods.push({ type: 'flavor', name: item.flavor, price: item.flavorPrice || 0 });
-            item.addons.forEach(a => mods.push({ type: 'addon', name: a.name, price: a.price }));
+            const mods: { type: string, name: string, price: number, quantity: number }[] = [];
+            if (item.flavor) mods.push({ type: 'flavor', name: item.flavor, price: item.flavorPrice || 0, quantity: 1 });
+            item.addons.forEach(a => mods.push({ type: 'addon', name: a.name, price: a.price, quantity: a.quantity }));
 
             const modsToShow = isModExpanded ? mods : mods.slice(0, 2);
             const remainingModsCount = mods.length - 2;
@@ -247,11 +247,20 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
 
                     <div className="space-y-2">
                       {modsToShow.map((mod, idx) => (
-                        <div key={idx} className="inline-flex items-center gap-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-4 py-2 mr-2 mb-1 animate-in fade-in zoom-in-95 duration-200">
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#94a3b8] shrink-0" />
-                          <span className="text-[#1a1c2e] text-[13px] font-bold">{mod.name}</span>
-                          <div className="bg-[#e0f2fe] text-[#0066b2] px-2 py-0.5 rounded-md text-[11px] font-black">
-                            {mod.price > 0 ? '+' : ''}<CurrencyAmount amount={mod.price} weight="bold" className="text-inherit" />
+                        <div key={idx} className="flex items-center justify-between gap-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-4 py-2 animate-in fade-in zoom-in-95 duration-200">
+                          <div className="flex items-center gap-3 flex-1 min-w-0">
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#94a3b8] shrink-0" />
+                            <div className="flex flex-col min-w-0">
+                              <span className="text-[#1a1c2e] text-[13px] font-bold leading-tight truncate">{mod.name}</span>
+                              {mod.quantity > 1 && (
+                                <span className="text-[#94a3b8] text-[10px] font-black uppercase tracking-tight mt-0.5">
+                                  Unit: <CurrencyAmount amount={mod.price} weight="bold" className="text-inherit" /> x{mod.quantity}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="bg-[#e0f2fe] text-[#0066b2] px-2 py-0.5 rounded-md text-[11px] font-black shrink-0">
+                            {mod.price > 0 ? '+' : ''}<CurrencyAmount amount={mod.price * mod.quantity} weight="bold" className="text-inherit" />
                           </div>
                         </div>
                       ))}
