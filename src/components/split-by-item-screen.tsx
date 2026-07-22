@@ -13,8 +13,6 @@ import {
   User,
   ChevronDown,
   ChevronUp,
-  Plus,
-  Minus
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
@@ -212,16 +210,41 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
             const itemPrice = itemBasePlusAddons * item.quantity;
 
             return (
-              <div key={item.id} onClick={() => toggleItem(item.id)} className={cn("bg-white rounded-[20px] p-4 shadow-[0_4px_12px_rgba(0,0,0,0.02)] border transition-all active:scale-[0.99] cursor-pointer", isSelected ? "border-[#0066b2] shadow-[0_6px_15px_rgba(0,102,178,0.04)]" : "border-gray-50")}>
+              <div key={item.id} onClick={() => toggleItem(item.id)} className={cn("bg-white rounded-[24px] p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] border transition-all active:scale-[0.99] cursor-pointer", isSelected ? "border-[#0066b2] shadow-[0_6px_15px_rgba(0,102,178,0.04)]" : "border-gray-50")}>
                 <div className="flex items-start gap-4">
-                  <div className={cn("w-6 h-6 rounded-full border-[2px] flex items-center justify-center shrink-0 transition-all mt-0.5", isSelected ? "bg-[#0066b2] border-[#0066b2]" : "border-gray-200")}>{isSelected && <Check className="w-3.5 h-3.5 text-white stroke-[4.5px]" />}</div>
-                  <div className="flex-1 space-y-1.5">
-                    <div className="flex justify-between items-start">
-                      <h3 className="text-[15px] font-black text-[#1a1c2e] leading-tight pr-2">{item.name}</h3>
-                      <CurrencyAmount amount={itemPrice} weight="bold" className="text-[15px] text-[#1a1c2e] shrink-0" />
+                  <div className={cn("w-7 h-7 rounded-full border-[2.5px] flex items-center justify-center shrink-0 transition-all mt-0.5", isSelected ? "bg-[#0066b2] border-[#0066b2]" : "border-gray-200")}>{isSelected && <Check className="w-4 h-4 text-white stroke-[4.5px]" />}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="text-[18px] font-black text-[#1a1c2e] leading-tight pr-4 truncate">{item.name}</h3>
+                      <CurrencyAmount amount={itemPrice} weight="bold" className="text-[18px] text-[#1a1c2e] shrink-0" />
                     </div>
-                    <div className="flex items-center gap-2 text-[#94a3b8] text-[12px] font-bold"><div className="bg-[#f0f7ff] text-[#0066b2] px-2 py-0.5 rounded-md font-black text-[10px]">x{item.quantity}</div></div>
-                    {item.addons.length > 0 && <div className="flex flex-wrap gap-1 pt-0.5">{item.addons.map((addon, idx) => (<div key={idx} className="bg-[#f8fafc] border border-gray-100 rounded-lg px-2 py-0.5 flex items-center gap-1.5"><span className="text-[#475569] text-[10px] font-black uppercase tracking-tighter">{addon.name}</span></div>))}</div>}
+                    
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="bg-[#f0f7ff] text-[#0066b2] px-2.5 py-0.5 rounded-lg font-black text-[12px]">x{item.quantity}</div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-[#94a3b8] text-[13px] font-bold">Base:</span>
+                        <CurrencyAmount amount={item.basePrice} weight="bold" className="text-[#94a3b8] text-[14px]" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      {item.flavor && (
+                        <div className="inline-flex items-center gap-2 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-4 py-2 mr-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#94a3b8] shrink-0" />
+                          <span className="text-[#1a1c2e] text-[13px] font-bold">{item.flavor}</span>
+                        </div>
+                      )}
+                      
+                      {item.addons.map((addon, idx) => (
+                        <div key={idx} className="inline-flex items-center gap-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-4 py-2 mr-2 mb-1">
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#94a3b8] shrink-0" />
+                          <span className="text-[#1a1c2e] text-[13px] font-bold">{addon.name}</span>
+                          <div className="bg-[#e0f2fe] text-[#0066b2] px-2 py-0.5 rounded-md text-[11px] font-black">
+                            +<CurrencyAmount amount={addon.price} weight="bold" className="text-inherit" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -254,19 +277,19 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                   <span>Item Price (Base)</span>
                   <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-inherit" />
                 </div>
-                <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
                   <span>Service Charge (10%) (Inclusive)</span>
                   <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-inherit" />
                 </div>
-                <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
                   <span>Tax (5%) (Inclusive)</span>
                   <CurrencyAmount amount={shareTax} weight="bold" className="text-inherit" />
                 </div>
-                <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
                   <span>Additional Charges (Exclusive)</span>
                   <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-inherit" />
                 </div>
-                <div className="flex justify-between items-center text-[12px] font-black text-[#94a3b8]">
+                <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
                   <span>Convenience Fee (Exclusive)</span>
                   <CurrencyAmount amount={shareConvenienceFee} weight="bold" className="text-inherit" />
                 </div>
@@ -322,24 +345,24 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                 </div>
                 <div className="bg-white rounded-[32px] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] border border-gray-50 space-y-4">
                   <div className="space-y-2.5">
-                    <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8]">Item Price (Base)</span>
+                    <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
+                      <span>Item Price (Base)</span>
                       <CurrencyAmount amount={yourShareSubtotal} weight="bold" className="text-[#1a1c2e]" />
                     </div>
-                    <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8]">Service Charge (10%) (Inclusive)</span>
+                    <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
+                      <span>Service Charge (10%) (Inclusive)</span>
                       <CurrencyAmount amount={shareServiceCharge} weight="bold" className="text-[#1a1c2e]" />
                     </div>
-                    <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8]">Tax (5%) (Inclusive)</span>
+                    <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
+                      <span>Tax (5%) (Inclusive)</span>
                       <CurrencyAmount amount={shareTax} weight="bold" className="text-[#1a1c2e]" />
                     </div>
-                    <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8]">Additional Charges (Exclusive)</span>
+                    <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
+                      <span>Additional Charges (Exclusive)</span>
                       <CurrencyAmount amount={shareAdditionalCharges} weight="bold" className="text-[#1a1c2e]" />
                     </div>
-                    <div className="flex justify-between items-center text-[13px] font-black">
-                      <span className="text-[#94a3b8]">Convenience Fee (Exclusive)</span>
+                    <div className="flex justify-between items-center text-[13px] font-black text-[#94a3b8]">
+                      <span>Convenience Fee (Exclusive)</span>
                       <CurrencyAmount amount={shareConvenienceFee} weight="bold" className="text-[#1a1c2e]" />
                     </div>
                   </div>
@@ -347,7 +370,10 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                   <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#1a1c2e]">Bill Amount</span><CurrencyAmount amount={yourShareTotal} weight="bold" className="text-[14px] text-[#1a1c2e]" /></div>
                   <div className="flex justify-between items-center text-[15px] font-black"><span className="text-[#94a3b8]">Tips</span><div className="flex items-center gap-1.5 text-[#26ab5f]"><span>+</span><CurrencyAmount amount={currentTipAmount} weight="bold" className="text-[14px] text-inherit" /></div></div>
                   <div className="w-full border-t border-dashed border-gray-100 py-1" />
-                  <div className="flex justify-between items-center"><span className="text-[13px] font-black text-[#94a3b8]">Grand Total</span><CurrencyAmount amount={grandTotal} weight="bold" className="text-[30px] text-[#0066b2]" /></div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[13px] font-black text-[#94a3b8]">Grand Total</span>
+                    <CurrencyAmount amount={grandTotal} weight="bold" className="text-[30px] text-[#0066b2]" />
+                  </div>
                 </div>
               </div>
               <div className="px-6 mt-10 space-y-4 pb-0">
