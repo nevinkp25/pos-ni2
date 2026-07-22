@@ -64,14 +64,14 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
 
   const overallTotalSubtotal = useMemo(() => {
     return (order?.items || []).reduce((sum, item) => {
-      const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
+      const itemBasePlusAddons = item.basePrice + (item.flavorPrice || 0) + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
       return sum + (itemBasePlusAddons * item.quantity);
     }, 0);
   }, [order]);
 
   const totalBillSubtotal = useMemo(() => {
     return items.reduce((sum, item) => {
-      const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
+      const itemBasePlusAddons = item.basePrice + (item.flavorPrice || 0) + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
       return sum + (itemBasePlusAddons * item.quantity);
     }, 0);
   }, [items]);
@@ -80,7 +80,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
     return items
       .filter(item => selectedItemIds.includes(item.id))
       .reduce((sum, item) => {
-        const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
+        const itemBasePlusAddons = item.basePrice + (item.flavorPrice || 0) + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
         return sum + (itemBasePlusAddons * item.quantity);
       }, 0);
   }, [selectedItemIds, items]);
@@ -218,14 +218,14 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
             
             // Collect all modifications (flavor and addons)
             const mods = [];
-            if (item.flavor) mods.push({ type: 'flavor', name: item.flavor, price: 0 }); // Usually variations are already in base, or we can look up price. Here we use 0 to represent selection.
+            if (item.flavor) mods.push({ type: 'flavor', name: item.flavor, price: item.flavorPrice || 0 });
             item.addons.forEach(a => mods.push({ type: 'addon', name: a.name, price: a.price }));
 
             const modsToShow = isModExpanded ? mods : mods.slice(0, 2);
             const remainingModsCount = mods.length - 2;
 
-            const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
-            const itemPrice = itemBasePlusAddons * item.quantity;
+            const itemUnitPrice = item.basePrice + (item.flavorPrice || 0) + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
+            const itemTotalPrice = itemUnitPrice * item.quantity;
 
             return (
               <div key={item.id} onClick={() => toggleItem(item.id)} className={cn("bg-white rounded-[24px] p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)] border transition-all active:scale-[0.99] cursor-pointer", isSelected ? "border-[#0066b2] shadow-[0_6px_15px_rgba(0,102,178,0.04)]" : "border-gray-50")}>
@@ -234,7 +234,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start mb-3">
                       <h3 className="text-[18px] font-black text-[#1a1c2e] leading-tight pr-4 truncate">{item.name}</h3>
-                      <CurrencyAmount amount={itemPrice} weight="bold" className="text-[18px] text-[#1a1c2e] shrink-0" />
+                      <CurrencyAmount amount={itemTotalPrice} weight="bold" className="text-[18px] text-[#1a1c2e] shrink-0" />
                     </div>
                     
                     <div className="flex items-center gap-3 mb-4">
@@ -250,11 +250,9 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                         <div key={idx} className="inline-flex items-center gap-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-4 py-2 mr-2 mb-1 animate-in fade-in zoom-in-95 duration-200">
                           <div className="w-1.5 h-1.5 rounded-full bg-[#94a3b8] shrink-0" />
                           <span className="text-[#1a1c2e] text-[13px] font-bold">{mod.name}</span>
-                          {mod.type === 'addon' && (
-                            <div className="bg-[#e0f2fe] text-[#0066b2] px-2 py-0.5 rounded-md text-[11px] font-black">
-                              +<CurrencyAmount amount={mod.price!} weight="bold" className="text-inherit" />
-                            </div>
-                          )}
+                          <div className="bg-[#e0f2fe] text-[#0066b2] px-2 py-0.5 rounded-md text-[11px] font-black">
+                            {mod.price > 0 ? '+' : ''}<CurrencyAmount amount={mod.price} weight="bold" className="text-inherit" />
+                          </div>
                         </div>
                       ))}
 

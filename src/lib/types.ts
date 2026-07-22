@@ -39,6 +39,7 @@ export interface CartItem {
   addons: CartItemAddon[];
   specialRequests: string;
   flavor?: string;
+  flavorPrice?: number;
 }
 
 export interface MenuItemOption {

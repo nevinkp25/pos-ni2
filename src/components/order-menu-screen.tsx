@@ -230,14 +230,14 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
     return cart.some(ci => ci.name === itemName && ci.specialRequests.trim().length > 0);
   };
 
-  const handleAddToCart = (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => {
+  const handleAddToCart = (item: MenuItem, flavor: string | undefined, flavorPrice: number | undefined, addons: CartItemAddon[], requests: string, qty: number) => {
     const activeEdit = internalEditingItem || editingItem;
     
     setCart(prev => {
       if (activeEdit) {
         return prev.map(ci => 
           ci.id === activeEdit.id 
-            ? { ...ci, flavor, addons, specialRequests: requests, quantity: qty }
+            ? { ...ci, flavor, flavorPrice, addons, specialRequests: requests, quantity: qty }
             : ci
         );
       }
@@ -256,7 +256,8 @@ export function OrderMenuScreen({ tableNumber, onBack, onHome, onOpenCart, cart,
         quantity: qty,
         addons,
         specialRequests: requests,
-        flavor
+        flavor,
+        flavorPrice
       }];
     });
     
@@ -636,7 +637,7 @@ function ItemDetailSheet({
   onClose: () => void; 
   item: MenuItem | null;
   mode: 'full' | 'compact';
-  onAdd: (item: MenuItem, flavor: string | undefined, addons: CartItemAddon[], requests: string, qty: number) => void;
+  onAdd: (item: MenuItem, flavor: string | undefined, flavorPrice: number | undefined, addons: CartItemAddon[], requests: string, qty: number) => void;
   editingItem?: CartItem | null;
 }) {
   const [selectedFlavor, setSelectedFlavor] = useState<MenuItemOption | null>(null);
@@ -925,7 +926,7 @@ function ItemDetailSheet({
                     price: item.addons?.find(a => a.name === name)?.price || 0
                   }));
                 
-                onAdd(item, selectedFlavor?.name, addons, specialRequests, itemQuantity);
+                onAdd(item, selectedFlavor?.name, selectedFlavor?.price, addons, specialRequests, itemQuantity);
                 onClose();
               }}
               className={cn(
