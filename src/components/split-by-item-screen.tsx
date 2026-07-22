@@ -42,6 +42,7 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
   const [isSettlementOpen, setIsSettlementOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isBreakdownExpanded, setIsBreakdownExpanded] = useState(false);
+  const [expandedItemModifications, setExpandedItemModifications] = useState<string[]>([]);
   const [selectedTip, setSelectedTip] = useState<number | null>(10);
   const [isCustomTipMode, setIsCustomTipMode] = useState(false);
   const [customTipValue, setCustomTipValue] = useState('');
@@ -100,6 +101,13 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
   const toggleItem = (id: string) => {
     setSelectedItemIds(prev =>
       prev.includes(id) ? prev.filter(i => id !== i) : [...prev, id]
+    );
+  };
+
+  const toggleModExpansion = (e: React.MouseEvent, itemId: string) => {
+    e.stopPropagation();
+    setExpandedItemModifications(prev =>
+      prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]
     );
   };
 
@@ -206,6 +214,16 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
           <span className="text-[11px] font-black text-[#94a3b8] uppercase tracking-widest px-1">Select items to include</span>
           {items.map((item) => {
             const isSelected = selectedItemIds.includes(item.id);
+            const isModExpanded = expandedItemModifications.includes(item.id);
+            
+            // Collect all modifications (flavor and addons)
+            const mods = [];
+            if (item.flavor) mods.push({ type: 'flavor', name: item.flavor, price: 0 }); // Usually variations are already in base, or we can look up price. Here we use 0 to represent selection.
+            item.addons.forEach(a => mods.push({ type: 'addon', name: a.name, price: a.price }));
+
+            const modsToShow = isModExpanded ? mods : mods.slice(0, 2);
+            const remainingModsCount = mods.length - 2;
+
             const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
             const itemPrice = itemBasePlusAddons * item.quantity;
 
@@ -228,22 +246,30 @@ export function SplitByItemScreen({ tableNumber, onBack, onPay }: SplitByItemScr
                     </div>
 
                     <div className="space-y-2">
-                      {item.flavor && (
-                        <div className="inline-flex items-center gap-2 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-4 py-2 mr-2">
+                      {modsToShow.map((mod, idx) => (
+                        <div key={idx} className="inline-flex items-center gap-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-4 py-2 mr-2 mb-1 animate-in fade-in zoom-in-95 duration-200">
                           <div className="w-1.5 h-1.5 rounded-full bg-[#94a3b8] shrink-0" />
-                          <span className="text-[#1a1c2e] text-[13px] font-bold">{item.flavor}</span>
-                        </div>
-                      )}
-                      
-                      {item.addons.map((addon, idx) => (
-                        <div key={idx} className="inline-flex items-center gap-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl px-4 py-2 mr-2 mb-1">
-                          <div className="w-1.5 h-1.5 rounded-full bg-[#94a3b8] shrink-0" />
-                          <span className="text-[#1a1c2e] text-[13px] font-bold">{addon.name}</span>
-                          <div className="bg-[#e0f2fe] text-[#0066b2] px-2 py-0.5 rounded-md text-[11px] font-black">
-                            +<CurrencyAmount amount={addon.price} weight="bold" className="text-inherit" />
-                          </div>
+                          <span className="text-[#1a1c2e] text-[13px] font-bold">{mod.name}</span>
+                          {mod.type === 'addon' && (
+                            <div className="bg-[#e0f2fe] text-[#0066b2] px-2 py-0.5 rounded-md text-[11px] font-black">
+                              +<CurrencyAmount amount={mod.price!} weight="bold" className="text-inherit" />
+                            </div>
+                          )}
                         </div>
                       ))}
+
+                      {remainingModsCount > 0 && (
+                        <button 
+                          onClick={(e) => toggleModExpansion(e, item.id)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#fffbeb] text-[#f59e0b] text-[11px] font-black active:scale-95 transition-all mt-1"
+                        >
+                          {isModExpanded ? (
+                            <>Show Less <ChevronUp className="w-3 h-3" /></>
+                          ) : (
+                            <>+{remainingModsCount} More <ChevronDown className="w-3 h-3" /></>
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
