@@ -84,6 +84,7 @@ export function PayOrderDetailScreen({
   const subtotal = useMemo(() => {
     return items.reduce((sum, item) => {
       let itemTotal = item.basePrice;
+      if (item.flavorPrice) itemTotal += item.flavorPrice;
       item.addons.forEach(a => {
         itemTotal += a.price * a.quantity;
       });
@@ -231,7 +232,7 @@ export function PayOrderDetailScreen({
             const isAddonsExpanded = expandedAddonItems.includes(item.id);
             const addonsToShow = isAddonsExpanded ? item.addons : item.addons.slice(0, 2);
             const moreCount = item.addons.length - 2;
-            const itemBasePlusAddons = item.basePrice + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
+            const itemBasePlusAddons = item.basePrice + (item.flavorPrice || 0) + item.addons.reduce((a, b) => a + (b.price * b.quantity), 0);
             const itemTotal = itemBasePlusAddons * item.quantity;
 
             return (
@@ -247,10 +248,23 @@ export function PayOrderDetailScreen({
                         <CurrencyAmount amount={itemTotal} weight="bold" className="text-[16px] text-[#1a1c2e]" />
                       </div>
                       <div className="space-y-2">
+                        {item.flavor && (
+                          <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                            <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">●</span>
+                            <span className="bg-[#f8fafc] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black uppercase tracking-tight">{item.flavor}</span>
+                            <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
+                            <CurrencyAmount amount={item.flavorPrice || 0} weight="bold" className="text-[#94a3b8] text-[12px]" />
+                          </div>
+                        )}
                         {addonsToShow.map((addon, idx) => (
                           <div key={idx} className="flex items-center gap-3 animate-in fade-in slide-in-from-top-1 duration-200">
                             <span className="text-[#94a3b8] text-[12px] font-bold shrink-0">+</span>
-                            <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">{addon.name}</span>
+                            <div className="flex items-center gap-1.5">
+                              <span className="bg-[#f1f5f9] text-[#475569] px-2.5 py-0.5 rounded-lg text-[11px] font-black">{addon.name}</span>
+                              {addon.quantity > 1 && (
+                                <span className="text-[10px] font-black text-[#94a3b8]">x{addon.quantity}</span>
+                              )}
+                            </div>
                             <div className="flex-1 border-b border-dotted border-gray-200 mt-1" />
                             <CurrencyAmount amount={addon.price * addon.quantity} weight="bold" className="text-[#94a3b8] text-[12px]" />
                           </div>
